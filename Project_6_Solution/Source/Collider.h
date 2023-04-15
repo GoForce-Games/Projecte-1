@@ -15,6 +15,9 @@ struct Collider
 		ENEMY,
 		PLAYER_SHOT,
 		ENEMY_SHOT,
+		PUZZLE_PIECE,
+		WALL_LEFT,
+		WALL_RIGHT,
 
 		MAX
 	};

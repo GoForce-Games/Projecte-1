@@ -10,6 +10,7 @@
 #include "ModuleParticles.h"
 #include "ModuleCollisions.h"
 #include "ModuleRender.h"
+#include "ModulePuzzlePieces.h"
 
 Application::Application()
 {
@@ -27,7 +28,9 @@ Application::Application()
 	modules[6] = particles = new ModuleParticles();
 	modules[7] = collisions = new ModuleCollisions();
 
-	modules[8] = render = new ModuleRender();
+	modules[8] = pieces = new ModulePuzzlePieces();
+
+	modules[9] = render = new ModuleRender();
 }
 
 Application::~Application()
