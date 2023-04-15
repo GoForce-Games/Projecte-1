@@ -23,7 +23,7 @@
 *.lo
 
 # Shared objects (inc. Windows DLLs)
-*.dll
+#*.dll
 *.so
 *.so.*
 *.dylib
@@ -41,6 +41,9 @@
 *.su
 *.idb
 *.pdb
+*.tlog
+*.log
+*.exe.recipe
 
 # Kernel Module Compile Results
 *.mod*
@@ -50,4 +53,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-/.vs/PanicBomber/v16
+/.vs/Project_6_Solution/v16
+
+# Asegura que las librerías no son ignoradas
+
+!External_Libraries/*/libx86/
+!**/libx86/*
