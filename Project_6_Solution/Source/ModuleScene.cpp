@@ -30,6 +30,10 @@ bool ModuleScene::Start()
 
 	// TODO 2: Add colliders for the first columns of the level
 
+	App->collisions->AddCollider({0,0,70,1024},Collider::Type::WALL_LEFT,(Module*)App->pieces);
+	App->collisions->AddCollider({460,0,70,1024},Collider::Type::WALL_RIGHT,(Module*)App->pieces);
+	App->collisions->AddCollider({0,690,1024,70},Collider::Type::WALL,(Module*)App->pieces);
+
 	return ret;
 }
 

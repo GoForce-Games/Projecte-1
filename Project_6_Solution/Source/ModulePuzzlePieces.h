@@ -4,12 +4,14 @@
 #include "Animation.h"
 #include "p2Point.h"
 #include "PuzzlePiece.h"
+#include "Collider.h"
 
 struct SDL_Texture;
-struct Collider;
 
 #define MAX_PIECES 200
 #define MAX_DROP_DELAY 75
+#define MIN_DROP_DELAY 5
+#define MAX_MOVE_DELAY 15
 
 class ModulePuzzlePieces :
     public Module
@@ -45,7 +47,13 @@ public:
 	// Active puzzle piece
 	PuzzlePiece* currentPiece = nullptr;
 
+	bool fastFall;
+
 	uint dropDelay = MAX_DROP_DELAY;
+	uint moveDelay = MAX_MOVE_DELAY;
+	
+	// Movement speed in pixels per frame
+	uint moveSpeed = 32;
 
 	// Pieces (either bombermen or bombs) currently on screen
 	PuzzlePiece* pieces[MAX_PIECES];
@@ -63,6 +71,8 @@ public:
 	Animation animIdle1;
 
 	Collider* collider = nullptr;
+
+	Collider::Type collidingWith = Collider::Type::NONE;
 
 	// To be used when clearing a group of bombermen or bombs
 	bool explode = false;
