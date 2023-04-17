@@ -28,7 +28,7 @@ bool ModuleScene::Start()
 
 	LOG("Loading number assets");
 
-	bool ret = true;
+	
 
 	//                                      Aquí está la puntuación
 	spritesTexture = App->textures->Load("Assets/sprites.png");
