@@ -23,7 +23,7 @@
 *.lo
 
 # Shared objects (inc. Windows DLLs)
-*.dll
+#*.dll
 *.so
 *.so.*
 *.dylib
@@ -41,6 +41,10 @@
 *.su
 *.idb
 *.pdb
+*.tlog
+*.log
+*.exe.recipe
+**/Debug/
 
 # Kernel Module Compile Results
 *.mod*
@@ -50,3 +54,13 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+/.vs/Project_6_Solution/v16
+
+# Archivos de Visual Studio no necesarios (iré actualizando esto a medida que me los encuentre)
+*.vcxproj.filters
+*.vcxproj.user
+
+# Asegura que las librerías no son ignoradas
+
+!External_Libraries/*/libx86/
+!**/libx86/*
