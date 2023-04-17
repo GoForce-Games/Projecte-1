@@ -14,7 +14,10 @@ ModulePuzzlePieces::ModulePuzzlePieces()
 	for (uint i = 0; i < MAX_PIECES; ++i)
 		pieces[i] = nullptr;
 
-
+	for (size_t i = 0; i < MAX_WALLS; i++)
+	{
+		walls[i] = nullptr;
+	}
 }
 
 ModulePuzzlePieces::~ModulePuzzlePieces()
@@ -33,30 +36,26 @@ bool ModulePuzzlePieces::Start()
 
 
 	// TODO textura para probar, hay que recortar el spritesheet
-	textureBomberman = App->textures->Load("Assets/option.png");
+	textureBomberman = App->textures->Load("Assets/testerman.png");
 	if (textureBomberman == nullptr) return false;
 
 	// Animacion temporal, sacado de la demo de R-type que hicimos en clase
-	animDefault.PushBack({ 4,8,64,56 });
-	animDefault.PushBack({ 72,8,64,56 });
-	animDefault.PushBack({ 140,8,64,56 });
-	animDefault.PushBack({ 276,8,64,56 });
-	animDefault.PushBack({ 344,8,64,56 });
-	animDefault.PushBack({ 412,8,64,56 });
-	animDefault.PushBack({ 480,8,64,56 });
-	animDefault.PushBack({ 548,8,64,56 });
-	animDefault.PushBack({ 616,8,64,56 });
-	animDefault.PushBack({ 684,8,64,56 });
-	animDefault.PushBack({ 752,8,64,56 });
+	animDefault.PushBack({ 0, 0, 16, 16 });
+	animDefault.PushBack({ 16, 0, 16, 16 });
+	animDefault.PushBack({ 32, 0, 16, 16 });
+	animDefault.PushBack({ 48, 0, 16, 16 });
 	animDefault.speed = 0.08f;
 
 	PuzzlePiece* piece = new PuzzlePiece();
-	piece->position.create(224, 100);
-	piece->collider = App->collisions->AddCollider({ 224,100,64,64 }, Collider::Type::PLAYER, this);
+	piece->position.create(64, 16);
+	piece->collider = App->collisions->AddCollider({ 64,16,16,16 }, Collider::Type::PLAYER, this);
 	piece->texture = textureBomberman;
 	piece->SetAnimation(animDefault);
 	piece->moving = true;
 	currentPiece = AddPuzzlePiece(*piece);
+
+	Collider& pCol = *currentPiece->collider;
+	collisionTester = new Collider(pCol.rect, pCol.type);
 
 
 	return true;
@@ -75,12 +74,16 @@ update_status ModulePuzzlePieces::Update()
 		piece->currentAnimation.Update();
 	}
 
-	if (currentPiece != nullptr) {
+	if (currentPiece != nullptr && !locked) {
 		// Movimiento de jugador
 
-		if (dropDelay == 0 && collidingWith != Collider::Type::WALL) {
-			dropDelay = fastFall ? MIN_DROP_DELAY : MAX_DROP_DELAY;
-			currentPiece->position.y += 32;
+
+		if (dropDelay == 0) {
+			if (!WillCollide({ 0,4 })) {
+				dropDelay = fastFall ? MIN_DROP_DELAY : MAX_DROP_DELAY;
+				currentPiece->position.y += 4;
+			}
+			else locked = true;
 		}
 		else {
 			dropDelay--;
@@ -96,7 +99,8 @@ update_status ModulePuzzlePieces::Update()
 
 		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT;
 
-		if (collidingWith != Collider::Type::WALL_LEFT) {
+		// Mueve a la izquierda
+		if (!WillCollide({ -16,0 })) {
 			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN) moveDelay = 0;
 			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_REPEAT) {
 
@@ -113,7 +117,8 @@ update_status ModulePuzzlePieces::Update()
 			}
 		}
 
-		if (collidingWith != Collider::Type::WALL_RIGHT) {
+		// Mueve a la derecha
+		if (!WillCollide({ 16,0 })) {
 			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN) moveDelay = 0;
 			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_REPEAT) {
 
@@ -131,7 +136,7 @@ update_status ModulePuzzlePieces::Update()
 		}
 
 		currentPiece->collider->SetPos(currentPiece->position.x, currentPiece->position.y);
-		
+
 	}
 
 
@@ -201,4 +206,19 @@ PuzzlePiece* ModulePuzzlePieces::AddPuzzlePiece(const PuzzlePiece& piece)
 void ModulePuzzlePieces::RemovePuzzlePiece(PuzzlePiece* piece)
 {
 	delete piece;
+}
+
+bool ModulePuzzlePieces::WillCollide(iPoint position)
+{
+	position += currentPiece->position;
+	collisionTester->SetPos(position.x, position.y);
+
+	for (size_t i = 0; i < MAX_WALLS; i++)
+	{
+		if (walls[i] != nullptr && collisionTester->Intersects(walls[i]->rect)) {
+			return true;
+		}
+	}
+
+	return false;
 }

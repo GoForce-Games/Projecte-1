@@ -5,6 +5,7 @@
 #include "ModuleRender.h"
 #include "ModuleAudio.h"
 #include "ModuleCollisions.h"
+#include "ModulePuzzlePieces.h"
 
 ModuleScene::ModuleScene()
 {
@@ -36,10 +37,10 @@ bool ModuleScene::Start()
 	// Colliders ---
 
 	// TODO 2: Add colliders for the first columns of the level
-
-	App->collisions->AddCollider({0,0,70,1024},Collider::Type::WALL_LEFT,(Module*)App->pieces);
-	App->collisions->AddCollider({460,0,70,1024},Collider::Type::WALL_RIGHT,(Module*)App->pieces);
-	App->collisions->AddCollider({0,690,1024,70},Collider::Type::WALL,(Module*)App->pieces);
+	ModulePuzzlePieces& pieces = *App->pieces;
+	pieces.walls[0] = App->collisions->AddCollider({9,9,7,206},Collider::Type::WALL_LEFT,(Module*)App->pieces);
+	pieces.walls[1] = App->collisions->AddCollider({144,9,7,206},Collider::Type::WALL_RIGHT,(Module*)App->pieces);
+	pieces.walls[2] = App->collisions->AddCollider({9,208,142,7},Collider::Type::WALL,(Module*)App->pieces);
 
 	return ret;
 }

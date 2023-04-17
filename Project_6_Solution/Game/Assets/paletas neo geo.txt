@@ -1,0 +1,10 @@
+Esto es una lista de las paletas usadas por los sprites. Para ver los sprites con el color correcto, hay que usar el Tile Viewer del emulador WinKawaks
+
+bomberman blanco = paleta 20
+bomberman negro = paleta 21
+bomberman rojo = paleta 22
+bomberman azul = paleta 23
+bomberman verde = paleta 24
+bomberman cosmico (?) = 27 (no esta en el juego realmente, simplemente la paleta me parecio curiosa
+fuego de explosiones = 26
+bombas normales = 27

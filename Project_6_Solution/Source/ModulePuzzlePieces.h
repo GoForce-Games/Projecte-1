@@ -9,9 +9,12 @@
 struct SDL_Texture;
 
 #define MAX_PIECES 200
-#define MAX_DROP_DELAY 75
-#define MIN_DROP_DELAY 5
-#define MAX_MOVE_DELAY 15
+
+#define MAX_WALLS 6
+
+#define MAX_DROP_DELAY 15
+#define MIN_DROP_DELAY 2
+#define MAX_MOVE_DELAY 5
 
 class ModulePuzzlePieces :
     public Module
@@ -43,17 +46,20 @@ public:
 
 	void RemovePuzzlePiece(PuzzlePiece* piece);
 
+	bool WillCollide(iPoint position);
+
 public:
 	// Active puzzle piece
 	PuzzlePiece* currentPiece = nullptr;
 
 	bool fastFall;
+	bool locked = false;
 
 	uint dropDelay = MAX_DROP_DELAY;
 	uint moveDelay = MAX_MOVE_DELAY;
 	
 	// Movement speed in pixels per frame
-	uint moveSpeed = 32;
+	uint moveSpeed = 16;
 
 	// Pieces (either bombermen or bombs) currently on screen
 	PuzzlePiece* pieces[MAX_PIECES];
@@ -71,6 +77,13 @@ public:
 	Animation animIdle1;
 
 	Collider* collider = nullptr;
+
+	// Collider de uso manual, no gestionado por ModuleCollsions
+	Collider* collisionTester = nullptr;
+
+	// Para colisiones manuales al mover las piezas
+	uint wallCount = 0;
+	Collider* walls[MAX_WALLS];
 
 	Collider::Type collidingWith = Collider::Type::NONE;
 
