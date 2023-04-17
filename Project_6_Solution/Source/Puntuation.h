@@ -4,7 +4,8 @@
 class Puntuacion
 {
 public:
-
+	Puntuacion();    // default constructor declaration
+	~Puntuacion();   // destructor declaration
 	int numeration[9];
 };
 
