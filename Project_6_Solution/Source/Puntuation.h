@@ -1,7 +1,7 @@
 #ifndef __PUNTUATION_H__
 #define __PUNTUATION_H__
 
-class Puntuacion : public Puntuacion
+class Puntuacion
 {
 public:
 
