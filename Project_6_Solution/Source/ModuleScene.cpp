@@ -26,6 +26,13 @@ bool ModuleScene::Start()
 	bgTexture = App->textures->Load("Assets/background.png");
 	App->audio->PlayMusic("Assets/stage1.ogg", 1.0f);
 
+	LOG("Loading number assets");
+
+	bool ret = true;
+
+	//                                      Aquí está la puntuación
+	spritesTexture = App->textures->Load("Assets/sprites.png");
+
 	// Colliders ---
 
 	// TODO 2: Add colliders for the first columns of the level

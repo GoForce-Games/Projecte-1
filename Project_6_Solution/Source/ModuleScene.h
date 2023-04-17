@@ -34,6 +34,9 @@ public:
 	
 	// The sprite rectangle for the ground
 	SDL_Texture* starsTexture = nullptr;
+
+	// The sprites
+	SDL_Texture* spritesTexture = nullptr;
 };
 
 #endif
