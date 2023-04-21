@@ -18,7 +18,7 @@ class ModuleInput : public Module
 {
 public:
 	// Constructor
-	ModuleInput();
+	ModuleInput(bool startEnabled = true);
 
 	// Destructor
 	~ModuleInput();
@@ -29,7 +29,7 @@ public:
 
 	// Called at the beginning of the application loop
 	// Updates all input data received from SDL
-	update_status PreUpdate() override;
+	Update_Status PreUpdate() override;
 
 	// Called on application exit.
 	// Uninitializes the SDL system for input detection

@@ -6,14 +6,14 @@
 
 struct SDL_Texture;
 
-class ModuleScene : public Module
+class SceneLevel1 : public Module
 {
 public:
 	//Constructor
-	ModuleScene();
+	SceneLevel1(bool startEnabled = true);
 
 	//Destructor
-	~ModuleScene();
+	~SceneLevel1();
 
 	// Called when the module is activated
 	// Loads the necessary textures for the map background
@@ -21,11 +21,11 @@ public:
 
 	// Called at the middle of the application loop
 	// Updates the scene's background animations
-	update_status Update() override;
+	Update_Status Update() override;
 
 	// Called at the end of the application loop.
 	// Performs the render call of all the parts of the scene's background
-	update_status PostUpdate() override;
+	Update_Status PostUpdate() override;
 
 public:
 	

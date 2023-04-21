@@ -11,24 +11,28 @@
 #include "ModuleCollisions.h"
 #include "ModuleRender.h"
 #include "ModulePuzzlePieces.h"
+#include "ModuleFadeToBlack.h"
 
 Application::Application()
 {
 	// The order in which the modules are added is very important.
 	// It will define the order in which Pre/Update/Post will be called
 	// Render should always be last, as our last action should be updating the screen
+	int i = 0;
 	modules[0] = window = new ModuleWindow();
 	modules[1] = input = new ModuleInput();
 	modules[2] = textures = new ModuleTextures();
 	modules[3] = audio = new ModuleAudio();
 
-	modules[4] = scene = new ModuleScene();
-	modules[5] = player = new ModulePlayer();
+	//modules[i++] = sceneIntro = new SceneIntro(false); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)
+	modules[4] = sceneLevel_1 = new SceneLevel1();
+
+	modules[5] = pieces = new ModulePuzzlePieces(true);
 
 	modules[6] = particles = new ModuleParticles();
 	modules[7] = collisions = new ModuleCollisions();
 
-	modules[8] = pieces = new ModulePuzzlePieces();
+	modules[8] = fade = new ModuleFadeToBlack();
 
 	modules[9] = render = new ModuleRender();
 }
@@ -58,17 +62,17 @@ bool Application::Init()
 	return ret;
 }
 
-update_status Application::Update()
+Update_Status Application::Update()
 {
-	update_status ret = update_status::UPDATE_CONTINUE;
+	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
-	for (int i = 0; i < NUM_MODULES && ret == update_status::UPDATE_CONTINUE; ++i)
+	for (int i = 0; i < NUM_MODULES && ret == Update_Status::UPDATE_CONTINUE; ++i)
 		ret = modules[i]->PreUpdate();
 
-	for (int i = 0; i < NUM_MODULES && ret == update_status::UPDATE_CONTINUE; ++i)
+	for (int i = 0; i < NUM_MODULES && ret == Update_Status::UPDATE_CONTINUE; ++i)
 		ret = modules[i]->Update();
 
-	for (int i = 0; i < NUM_MODULES && ret == update_status::UPDATE_CONTINUE; ++i)
+	for (int i = 0; i < NUM_MODULES && ret == Update_Status::UPDATE_CONTINUE; ++i)
 		ret = modules[i]->PostUpdate();
 
 	return ret;

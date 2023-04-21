@@ -9,7 +9,7 @@
 
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 
-ModulePuzzlePieces::ModulePuzzlePieces()
+ModulePuzzlePieces::ModulePuzzlePieces(bool startEnabled) : Module()
 {
 	for (uint i = 0; i < MAX_PIECES; ++i)
 		pieces[i] = nullptr;
@@ -61,9 +61,9 @@ bool ModulePuzzlePieces::Start()
 	return true;
 }
 
-update_status ModulePuzzlePieces::Update()
+Update_Status ModulePuzzlePieces::Update()
 {
-	update_status ret = update_status::UPDATE_CONTINUE;
+	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
 	for (uint i = 0; i < MAX_PIECES; i++)
 	{
@@ -143,9 +143,9 @@ update_status ModulePuzzlePieces::Update()
 	return ret;
 }
 
-update_status ModulePuzzlePieces::PostUpdate()
+Update_Status ModulePuzzlePieces::PostUpdate()
 {
-	update_status ret = update_status::UPDATE_CONTINUE;
+	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
 	for (uint i = 0; i < MAX_PIECES; i++)
 	{

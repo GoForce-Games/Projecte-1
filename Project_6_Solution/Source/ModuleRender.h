@@ -11,7 +11,7 @@ class ModuleRender : public Module
 {
 public:
 	//Constructor
-	ModuleRender();
+	ModuleRender(bool startEnabled = true);
 
 	//Destructor
 	~ModuleRender();
@@ -22,16 +22,16 @@ public:
 
 	// Called at the beginning of the application loop
 	// Clears the rendering context to a background color
-	update_status PreUpdate() override;
+	Update_Status PreUpdate() override;
 
 	// Called at the middle of the application loop
 	// Handles camera movement
-	update_status Update() override;
+	Update_Status Update() override;
 
 	// Called at the end of the application loop
 	// Displays a rectangle in the rendering context
 	// Updates the screen with the rendered content
-	update_status PostUpdate() override;
+	Update_Status PostUpdate() override;
 
 	// Called on application exit
 	// Destroys the rendering context

@@ -21,7 +21,7 @@ class ModulePuzzlePieces :
 {
 public:
     // Constructor
-    ModulePuzzlePieces();
+    ModulePuzzlePieces(bool startEnabled = true);
 
     // Destructor
     ~ModulePuzzlePieces();
@@ -32,11 +32,11 @@ public:
 
 	// Called at the middle of the application loop
 	// Processes new input and handles player movement
-	update_status Update() override;
+	Update_Status Update() override;
 
 	// Called at the end of the application loop
 	// Performs the render call of the player sprite
-	update_status PostUpdate() override;
+	Update_Status PostUpdate() override;
 
 	// Collision callback, called when the player intersects with a puzzle piece
 	void OnCollision(Collider* c1, Collider* c2) override;
@@ -52,7 +52,7 @@ public:
 	// Active puzzle piece
 	PuzzlePiece* currentPiece = nullptr;
 
-	bool fastFall;
+	bool fastFall = false;
 	bool locked = false;
 
 	uint dropDelay = MAX_DROP_DELAY;
@@ -72,7 +72,7 @@ public:
 	SDL_Texture* textureBomberman = nullptr;
 	SDL_Texture* textureBomb = nullptr;
 
-	// Animation array. Dynamic array (bombs only have 1 animation, while bombermen have multiple)
+	// Animaciones
 	Animation animDefault;
 	Animation animIdle1;
 

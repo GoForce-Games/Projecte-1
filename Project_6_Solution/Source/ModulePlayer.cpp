@@ -11,7 +11,7 @@
 #include "SDL/include/SDL_scancode.h"
 
 
-ModulePlayer::ModulePlayer()
+ModulePlayer::ModulePlayer(bool startEnabled) : Module(startEnabled)
 {
 	// idle animation - just one sprite
 	
@@ -33,14 +33,14 @@ bool ModulePlayer::Start()
 	return ret;
 }
 
-update_status ModulePlayer::Update()
+Update_Status ModulePlayer::Update()
 {
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
 
-update_status ModulePlayer::PostUpdate()
+Update_Status ModulePlayer::PostUpdate()
 {
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
 
 void ModulePlayer::OnCollision(Collider* c1, Collider* c2)

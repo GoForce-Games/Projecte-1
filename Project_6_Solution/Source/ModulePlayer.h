@@ -12,7 +12,7 @@ class ModulePlayer : public Module
 {
 public:
 	// Constructor
-	ModulePlayer();
+	ModulePlayer(bool startEnabled = true);
 
 	// Destructor
 	~ModulePlayer();
@@ -23,11 +23,11 @@ public:
 
 	// Called at the middle of the application loop
 	// Processes new input and handles player movement
-	update_status Update() override;
+	Update_Status Update() override;
 
 	// Called at the end of the application loop
 	// Performs the render call of the player sprite
-	update_status PostUpdate() override;
+	Update_Status PostUpdate() override;
 
 	// Collision callback, called when the player intersects with another collider
 	void OnCollision(Collider* c1, Collider* c2) override;

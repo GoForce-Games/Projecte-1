@@ -8,7 +8,7 @@
 
 #include "SDL/include/SDL_timer.h"
 
-ModuleParticles::ModuleParticles()
+ModuleParticles::ModuleParticles(bool startEnabled) : Module(startEnabled)
 {
 	for(uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 		particles[i] = nullptr;
@@ -77,7 +77,7 @@ void ModuleParticles::OnCollision(Collider* c1, Collider* c2)
 	}
 }
 
-update_status ModuleParticles::Update()
+Update_Status ModuleParticles::Update()
 {
 	for(uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -93,10 +93,10 @@ update_status ModuleParticles::Update()
 		}
 	}
 
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
 
-update_status ModuleParticles::PostUpdate()
+Update_Status ModuleParticles::PostUpdate()
 {
 	//Iterating all particle array and drawing any active particles
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
@@ -109,7 +109,7 @@ update_status ModuleParticles::PostUpdate()
 		}
 	}
 
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
 
 void ModuleParticles::AddParticle(const Particle& particle, int x, int y, Collider::Type colliderType, uint delay)

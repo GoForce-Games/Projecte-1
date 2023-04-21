@@ -11,9 +11,11 @@ class ModuleInput;
 class ModuleTextures;
 class ModuleAudio;
 class ModulePlayer;
-class ModuleScene;
+class SceneLevel1;
+class SceneIntro;
 class ModuleParticles;
 class ModuleCollisions;
+class ModuleFadeToBlack;
 class ModuleRender;
 class ModulePuzzlePieces;
 
@@ -32,7 +34,7 @@ public:
 	bool Init();
 
 	//Updates all modules (PreUpdate, Update and PostUpdate)
-	update_status Update();
+	Update_Status Update();
 
 	//Releases all the application data
 	bool CleanUp();
@@ -48,10 +50,14 @@ public:
 	ModuleAudio* audio = nullptr;
 
 	ModulePlayer* player = nullptr;
-	ModuleScene* scene = nullptr;
+
+	SceneIntro* sceneIntro = nullptr;
+	SceneLevel1* sceneLevel_1 = nullptr;
+
 	ModuleParticles* particles = nullptr;
 
 	ModuleCollisions* collisions = nullptr;
+	ModuleFadeToBlack* fade = nullptr;
 
 	ModuleRender* render = nullptr;
 

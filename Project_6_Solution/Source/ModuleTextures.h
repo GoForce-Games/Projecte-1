@@ -11,7 +11,7 @@ class ModuleTextures : public Module
 {
 public:
 	//Constructor
-	ModuleTextures();
+	ModuleTextures(bool startEnabled = true);
 
 	//Destructor
 	~ModuleTextures();

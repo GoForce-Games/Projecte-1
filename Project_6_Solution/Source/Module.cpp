@@ -1,5 +1,9 @@
 #include "Module.h"
 
+Module::Module(bool startEnabled)
+{
+}
+
 bool Module::Init()
 {
 	return true;
@@ -10,19 +14,19 @@ bool Module::Start()
 	return true;
 }
 
-update_status Module::PreUpdate()
+Update_Status Module::PreUpdate()
 {
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
 
-update_status Module::Update()
+Update_Status Module::Update()
 {
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
 
-update_status Module::PostUpdate()
+Update_Status Module::PostUpdate()
 {
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
 
 bool Module::CleanUp()
@@ -33,4 +37,23 @@ bool Module::CleanUp()
 void Module::OnCollision(Collider* c1, Collider* c2)
 {
 
+}
+
+void Module::Enable()
+{
+	if (!isEnabled)
+	{
+		isEnabled = true;
+		Start();
+	}
+}
+
+void Module::Disable()
+{
+	// TODO 0: Call CleanUp() for disabling a module
+	if (isEnabled)
+	{
+		isEnabled = false;
+		CleanUp();
+	}
 }

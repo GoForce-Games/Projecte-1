@@ -7,24 +7,24 @@
 #include "ModuleCollisions.h"
 #include "ModulePuzzlePieces.h"
 
-ModuleScene::ModuleScene()
+SceneLevel1::SceneLevel1(bool startEnabled) : Module(startEnabled)
 {
 
 }
 
-ModuleScene::~ModuleScene()
+SceneLevel1::~SceneLevel1()
 {
 
 }
 
 // Load assets
-bool ModuleScene::Start()
+bool SceneLevel1::Start()
 {
 	LOG("Loading background assets");
 
 	bool ret = true;
 
-	bgTexture = App->textures->Load("Assets/background.png");
+	bgTexture = App->textures->Load("Assets/Sprites/BattleArena.png");
 	App->audio->PlayMusic("Assets/stage1.ogg", 1.0f);
 
 	LOG("Loading number assets");
@@ -32,7 +32,7 @@ bool ModuleScene::Start()
 	
 
 	//                                      Aquí está la puntuación
-	spritesTexture = App->textures->Load("Assets/sprites.png");
+	spritesTexture = App->textures->Load("Assets/Sprites/sprites.png");
 
 	// Colliders ---
 
@@ -45,16 +45,16 @@ bool ModuleScene::Start()
 	return ret;
 }
 
-update_status ModuleScene::Update()
+Update_Status SceneLevel1::Update()
 {
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
 
 // Update: draw background
-update_status ModuleScene::PostUpdate()
+Update_Status SceneLevel1::PostUpdate()
 {
 	// Draw everything --------------------------------------
 	App->render->Blit(bgTexture, 0, 0, NULL);
 
-	return update_status::UPDATE_CONTINUE;
+	return Update_Status::UPDATE_CONTINUE;
 }
