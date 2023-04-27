@@ -9,9 +9,10 @@
 #include "ModuleScene.h"
 #include "ModuleParticles.h"
 #include "ModuleCollisions.h"
+#include "ModuleFadeToBlack.h"
+#include "ModuleFonts.h"
 #include "ModuleRender.h"
 #include "ModulePuzzlePieces.h"
-#include "ModuleFadeToBlack.h"
 
 Application::Application()
 {
@@ -19,22 +20,23 @@ Application::Application()
 	// It will define the order in which Pre/Update/Post will be called
 	// Render should always be last, as our last action should be updating the screen
 	int i = 0;
-	modules[0] = window = new ModuleWindow();
-	modules[1] = input = new ModuleInput();
-	modules[2] = textures = new ModuleTextures();
-	modules[3] = audio = new ModuleAudio();
+	modules[0] = window = new ModuleWindow(true);
+	modules[1] = input = new ModuleInput(true);
+	modules[2] = textures = new ModuleTextures(true);
+	modules[3] = audio = new ModuleAudio(true);
 
-	//modules[i++] = sceneIntro = new SceneIntro(false); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)
-	modules[4] = sceneLevel_1 = new SceneLevel1();
-
+	//modules[i++] = sceneIntro = new SceneIntro(true); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)
+	modules[4] = sceneLevel_1 = new SceneLevel1(true);
+	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
+	// Si esto peta al añadir un modulo quedais avisados
 	modules[5] = pieces = new ModulePuzzlePieces(true);
+	modules[6] = particles = new ModuleParticles(true);
 
-	modules[6] = particles = new ModuleParticles();
-	modules[7] = collisions = new ModuleCollisions();
+	modules[7] = collisions = new ModuleCollisions(true);
+	modules[8] = fade = new ModuleFadeToBlack(true);
+	modules[9] = fonts = new ModuleFonts(true);
 
-	modules[8] = fade = new ModuleFadeToBlack();
-
-	modules[9] = render = new ModuleRender();
+	modules[10] = render = new ModuleRender();
 }
 
 Application::~Application()

@@ -3,6 +3,8 @@
 
 #include "SDL/include/SDL_Rect.h"
 
+#define MAX_LISTENERS 5
+
 class Module;
 
 struct Collider
@@ -16,7 +18,7 @@ struct Collider
 		PLAYER_SHOT,
 		ENEMY_SHOT,
 		PUZZLE_PIECE,
-		WALL_LEFT,
+		WALL_LEFT, // TODO quitar los valores de paredes laterales
 		WALL_RIGHT,
 
 		MAX
@@ -29,11 +31,13 @@ struct Collider
 
 	bool Intersects(const SDL_Rect& r) const;
 
+	void AddListener(Module* listener);
+
 	//Variables
 	SDL_Rect rect;
 	bool pendingToDelete = false;
 	Type type;
-	Module* listener = nullptr;
+	Module* listeners[MAX_LISTENERS] = { nullptr };
 };
 
 

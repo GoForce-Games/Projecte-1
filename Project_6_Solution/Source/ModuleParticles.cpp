@@ -43,6 +43,21 @@ bool ModuleParticles::Start()
 	return true;
 }
 
+Update_Status ModuleParticles::PreUpdate()
+{
+	// Remove all particles scheduled for deletion
+	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
+	{
+		if (particles[i] != nullptr && particles[i]->pendingToDelete)
+		{
+			delete particles[i];
+			particles[i] = nullptr;
+		}
+	}
+
+	return Update_Status::UPDATE_CONTINUE;
+}
+
 bool ModuleParticles::CleanUp()
 {
 	LOG("Unloading particles");
@@ -67,11 +82,8 @@ void ModuleParticles::OnCollision(Collider* c1, Collider* c2)
 		// Always destroy particles that collide
 		if (particles[i] != nullptr && particles[i]->collider == c1)
 		{
-			// TODO 6: Make so every time a particle hits a wall it triggers an explosion particle
-			AddParticle(explosion, particles[i]->position.x, particles[i]->position.y);
-
-			delete particles[i];
-			particles[i] = nullptr;
+			particles[i]->pendingToDelete = true;
+			particles[i]->collider->pendingToDelete = true;
 			break;
 		}
 	}

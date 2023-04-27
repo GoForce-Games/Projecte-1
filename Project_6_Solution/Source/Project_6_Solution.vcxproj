@@ -80,6 +80,7 @@
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCollisions.h" />
     <ClInclude Include="ModuleFadeToBlack.h" />
+    <ClInclude Include="ModuleFonts.h" />
     <ClInclude Include="ModuleParticles.h" />
     <ClInclude Include="ModulePuzzlePieces.h" />
     <ClInclude Include="ModuleScene.h" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="p2Point.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="Path.h" />
     <ClInclude Include="Puntuation.h" />
     <ClInclude Include="PuzzlePiece.h" />
   </ItemGroup>
@@ -103,6 +105,7 @@
     <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCollisions.cpp" />
     <ClCompile Include="ModuleFadeToBlack.cpp" />
+    <ClCompile Include="ModuleFonts.cpp" />
     <ClCompile Include="ModuleParticles.cpp" />
     <ClCompile Include="ModulePuzzlePieces.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
@@ -114,6 +117,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Module.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Path.cpp" />
     <ClCompile Include="Puntuation.cpp" />
     <ClCompile Include="PuzzlePiece.cpp" />
   </ItemGroup>

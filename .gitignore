@@ -58,6 +58,7 @@ dkms.conf
 
 # Archivos de Visual Studio no necesarios (iré actualizando esto a medida que me los encuentre)
 *.vcxproj.filters
+*.vcxproj.user
 
 # Asegura que las librerías no son ignoradas
 
