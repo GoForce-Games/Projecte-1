@@ -13,6 +13,7 @@
 #include "ModuleFonts.h"
 #include "ModuleRender.h"
 #include "ModulePuzzlePieces.h"
+#include "Puntuation.h"
 
 Application::Application()
 {
@@ -35,8 +36,9 @@ Application::Application()
 	modules[7] = collisions = new ModuleCollisions(true);
 	modules[8] = fade = new ModuleFadeToBlack(true);
 	modules[9] = fonts = new ModuleFonts(true);
+	modules[10] = puntuation = new Puntuation(true);
 
-	modules[10] = render = new ModuleRender();
+	modules[11] = render = new ModuleRender();
 }
 
 Application::~Application()
