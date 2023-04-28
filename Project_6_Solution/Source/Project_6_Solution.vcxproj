@@ -95,6 +95,7 @@
     <ClInclude Include="p2Point.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Path.h" />
+    <ClInclude Include="PlayerPiece.h" />
     <ClInclude Include="Puntuation.h" />
     <ClInclude Include="PuzzlePiece.h" />
   </ItemGroup>
@@ -118,6 +119,7 @@
     <ClCompile Include="Module.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Path.cpp" />
+    <ClCompile Include="PlayerPiece.cpp" />
     <ClCompile Include="Puntuation.cpp" />
     <ClCompile Include="PuzzlePiece.cpp" />
   </ItemGroup>

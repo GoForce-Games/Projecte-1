@@ -11,6 +11,15 @@
 
 ModulePuzzlePieces::ModulePuzzlePieces(bool startEnabled) : Module()
 {
+}
+
+ModulePuzzlePieces::~ModulePuzzlePieces()
+{
+	CleanUp();
+}
+
+bool ModulePuzzlePieces::Start()
+{
 	for (uint i = 0; i < MAX_PIECES; ++i)
 		pieces[i] = nullptr;
 
@@ -18,21 +27,6 @@ ModulePuzzlePieces::ModulePuzzlePieces(bool startEnabled) : Module()
 	{
 		walls[i] = nullptr;
 	}
-}
-
-ModulePuzzlePieces::~ModulePuzzlePieces()
-{
-	for (uint i = 0; i < MAX_PIECES; i++)
-	{
-		if (pieces[i] != nullptr) {
-			delete pieces[i];
-			pieces[i] = nullptr;
-		}
-	}
-}
-
-bool ModulePuzzlePieces::Start()
-{
 
 
 	// TODO textura para probar, hay que recortar el spritesheet
@@ -190,6 +184,24 @@ void ModulePuzzlePieces::OnCollision(Collider* c1, Collider* c2)
 		}
 	}
 
+}
+
+bool ModulePuzzlePieces::CleanUp()
+{
+	bool ret = true;
+
+	App->textures->Unload(textureBomb);
+	App->textures->Unload(textureBomberman);
+
+	for (uint i = 0; i < MAX_PIECES; i++)
+	{
+		if (pieces[i] != nullptr) {
+			delete pieces[i];
+			pieces[i] = nullptr;
+		}
+	}
+
+	return ret;
 }
 
 PuzzlePiece* ModulePuzzlePieces::AddPuzzlePiece(const PuzzlePiece& piece)

@@ -41,6 +41,8 @@ public:
 	// Collision callback, called when the player intersects with a puzzle piece
 	void OnCollision(Collider* c1, Collider* c2) override;
 
+	bool CleanUp() override;
+
 	// Add new PuzzlePiece to the board
 	PuzzlePiece* AddPuzzlePiece(const PuzzlePiece& newPiece);
 
@@ -49,6 +51,9 @@ public:
 	bool WillCollide(iPoint position);
 
 public:
+	//Array bidimensional de punteros a pieza (PuzzlePiece** * table;)
+	PuzzlePiece** * table;
+
 	// Active puzzle piece
 	PuzzlePiece* currentPiece = nullptr;
 

@@ -64,3 +64,4 @@ dkms.conf
 
 !External_Libraries/*/libx86/
 !**/libx86/*
+/.vs
