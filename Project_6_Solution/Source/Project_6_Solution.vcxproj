@@ -108,6 +108,7 @@
     <ClCompile Include="ModuleFadeToBlack.cpp" />
     <ClCompile Include="ModuleFonts.cpp" />
     <ClCompile Include="ModuleParticles.cpp" />
+    <ClCompile Include="ModulePresentation.cpp" />
     <ClCompile Include="ModulePuzzlePieces.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
@@ -122,6 +123,9 @@
     <ClCompile Include="PlayerPiece.cpp" />
     <ClCompile Include="Puntuation.cpp" />
     <ClCompile Include="PuzzlePiece.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ModulePresentation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

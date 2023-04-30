@@ -61,6 +61,8 @@ public:
 	char scoreText[10] = { "\0" };
 	
 
+
+	char text [100] = { "\0" };
 };
 
 #endif //!__MODULE_PLAYER_H__
