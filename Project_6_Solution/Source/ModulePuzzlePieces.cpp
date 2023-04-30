@@ -178,7 +178,7 @@ void ModulePuzzlePieces::OnCollision(Collider* c1, Collider* c2)
 		case Collider::Type::WALL_RIGHT:
 		case Collider::Type::WALL:
 		case Collider::Type::PUZZLE_PIECE: {
-			collidingWith = c2->type;
+			collidingWith = c1->type;
 			break;
 		}
 		}
@@ -222,6 +222,7 @@ void ModulePuzzlePieces::RemovePuzzlePiece(PuzzlePiece* piece)
 
 bool ModulePuzzlePieces::WillCollide(iPoint position)
 {
+	position.SetToZero();
 	position += currentPiece->position;
 	collisionTester->SetPos(position.x, position.y);
 
