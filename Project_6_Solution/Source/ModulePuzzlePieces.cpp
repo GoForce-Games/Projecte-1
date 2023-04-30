@@ -6,6 +6,7 @@
 #include "ModuleCollisions.h"
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
+#include "ModuleScene.h"
 
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 
@@ -23,10 +24,11 @@ bool ModulePuzzlePieces::Start()
 	for (uint i = 0; i < MAX_PIECES; ++i)
 		pieces[i] = nullptr;
 
-	for (size_t i = 0; i < MAX_WALLS; i++)
-	{
-		walls[i] = nullptr;
-	}
+	if (!App->sceneLevel_1->IsEnabled())
+		for (size_t i = 0; i < MAX_WALLS; i++)
+		{
+			walls[i] = nullptr;
+		}
 
 
 	// TODO textura para probar, hay que recortar el spritesheet
@@ -222,7 +224,6 @@ void ModulePuzzlePieces::RemovePuzzlePiece(PuzzlePiece* piece)
 
 bool ModulePuzzlePieces::WillCollide(iPoint position)
 {
-	position.SetToZero();
 	position += currentPiece->position;
 	collisionTester->SetPos(position.x, position.y);
 

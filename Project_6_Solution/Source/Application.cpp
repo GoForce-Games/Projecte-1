@@ -27,7 +27,7 @@ Application::Application()
 	modules[3] = audio = new ModuleAudio(true);
 
 	//modules[i++] = sceneIntro = new SceneIntro(true); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)
-	modules[4] = sceneLevel_1 = new SceneLevel1(false);
+	modules[4] = sceneLevel_1 = new SceneLevel1(true);
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
 	modules[5] = pieces = new ModulePuzzlePieces(true);
