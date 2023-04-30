@@ -20,7 +20,7 @@ public:
 	uint score = 000;
 	int scoreFont = -1;
 	int textFont = -1;
-	char scoreText[10] = { "font test" };
+	char scoreText[10] = "font test";
 	void BlitText(int x, int y, int fontIndex, const char* text) const;
   
 };

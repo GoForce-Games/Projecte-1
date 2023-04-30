@@ -22,7 +22,7 @@ bool Puntuation::Start()
 
 	bool ret = true;
 
-	char lookupTable[] = { " !\"#$%&\'()*+,-./0123456789:;<=>?çabcdefghijklmnopqrstuvwxyz´`¨_|" };
+	char lookupTable[] = { " !\"#$%&\'()*+,-./0123456789:;<=>?çabcdefghijklmnopqrstuvwxyz´`¨_|º" };
 	char specialNumbers[] = { "0123456789:PT+-" };
 	textFont = App->fonts->Load("Assets/Fonts/fonts2.png", lookupTable, 4);
 	scoreFont = App->fonts->Load("Assets/Fonts/fonts3.png", specialNumbers, 1);

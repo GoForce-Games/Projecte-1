@@ -64,6 +64,10 @@ ModuleCollisions::ModuleCollisions(bool startEnabled) : Module(startEnabled)
 	matrix[Collider::Type::PUZZLE_PIECE][Collider::Type::PUZZLE_PIECE] = false; // Este a false porque las piezas no se mueven
 	matrix[Collider::Type::PUZZLE_PIECE][Collider::Type::WALL_LEFT] = true;
 	matrix[Collider::Type::PUZZLE_PIECE][Collider::Type::WALL_RIGHT] = true;
+
+
+	matrix[Collider::Type::WALL_LEFT][Collider::Type::WALL] = false;
+	matrix[Collider::Type::WALL_RIGHT][Collider::Type::WALL] = false;
 }
 
 // Destructor
