@@ -6,6 +6,8 @@
 #include "SDL/include/SDL.h"
 #pragma comment( lib, "SDL/libx86/SDL2.lib")
 #pragma comment( lib, "SDL/libx86/SDL2main.lib")
+#define MAX_SCORE_LENGTH 10
+
 class Puntuation : public Module
 {
 public:
@@ -17,11 +19,11 @@ public:
 	Update_Status Update() override;
 	Update_Status PostUpdate() override;
 
-	uint score = 000;
+	uint score = 999;
 	int scoreFont = -1;
 	int textFont = -1;
-	char scoreText[10] = "0";
-	void BlitText(int x, int y, int fontIndex, const char* text) const;
+	char scoreText[MAX_SCORE_LENGTH + sizeof(char)];
+	
   
 };
 
