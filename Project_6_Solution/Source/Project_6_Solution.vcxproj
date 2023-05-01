@@ -83,6 +83,7 @@
     <ClInclude Include="ModuleFonts.h" />
     <ClInclude Include="ModuleParticles.h" />
     <ClInclude Include="ModulePuzzlePieces.h" />
+    <ClInclude Include="ModulePuzzlePiecesV2.h" />
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModulePlayer.h" />
@@ -95,6 +96,7 @@
     <ClInclude Include="p2Point.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Path.h" />
+    <ClInclude Include="PlayArea.h" />
     <ClInclude Include="PlayerPiece.h" />
     <ClInclude Include="Puntuation.h" />
     <ClInclude Include="PuzzlePiece.h" />
@@ -109,6 +111,7 @@
     <ClCompile Include="ModuleFonts.cpp" />
     <ClCompile Include="ModuleParticles.cpp" />
     <ClCompile Include="ModulePuzzlePieces.cpp" />
+    <ClCompile Include="ModulePuzzlePiecesV2.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModulePlayer.cpp" />
@@ -119,6 +122,7 @@
     <ClCompile Include="Module.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Path.cpp" />
+    <ClCompile Include="PlayArea.cpp" />
     <ClCompile Include="PlayerPiece.cpp" />
     <ClCompile Include="Puntuation.cpp" />
     <ClCompile Include="PuzzlePiece.cpp" />

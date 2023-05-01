@@ -7,7 +7,7 @@ struct Collider;
 class Animation;
 struct SDL_Texture;
 
-struct PuzzlePiece {
+class PuzzlePiece {
 public:
 	// Constructor
 	PuzzlePiece();

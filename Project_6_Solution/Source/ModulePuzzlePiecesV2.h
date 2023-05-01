@@ -18,15 +18,15 @@ struct SDL_Texture;
 #define MIN_DROP_DELAY 2
 #define MAX_MOVE_DELAY 5
 
-class ModulePuzzlePieces :
+class ModulePuzzlePiecesV2 :
 	public Module
 {
 public:
 	// Constructor
-	ModulePuzzlePieces(bool startEnabled = true);
+	ModulePuzzlePiecesV2(bool startEnabled = true);
 
 	// Destructor
-	~ModulePuzzlePieces();
+	~ModulePuzzlePiecesV2();
 
 	// Called when the module is activated
 	// Loads the necessary textures for the player
@@ -103,4 +103,3 @@ public:
 	const static uint explosionFX = 0;
 
 };
-

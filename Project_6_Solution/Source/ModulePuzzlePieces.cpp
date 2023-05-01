@@ -12,6 +12,17 @@
 
 ModulePuzzlePieces::ModulePuzzlePieces(bool startEnabled) : Module()
 {
+
+
+	for (uint i = 0; i < MAX_PIECES; i++)
+	{
+		pieces[i] = nullptr;
+	}
+
+	for (uint i = 0; i < MAX_WALLS; i++)
+	{
+		walls[i] = nullptr;
+	}
 }
 
 ModulePuzzlePieces::~ModulePuzzlePieces()
@@ -21,15 +32,6 @@ ModulePuzzlePieces::~ModulePuzzlePieces()
 
 bool ModulePuzzlePieces::Start()
 {
-	for (uint i = 0; i < MAX_PIECES; ++i)
-		pieces[i] = nullptr;
-
-	if (!App->sceneLevel_1->IsEnabled())
-		for (size_t i = 0; i < MAX_WALLS; i++)
-		{
-			walls[i] = nullptr;
-		}
-
 
 	// TODO textura para probar, hay que recortar el spritesheet
 	textureBomberman = App->textures->Load("Assets/testerman.png");
@@ -98,10 +100,7 @@ Update_Status ModulePuzzlePieces::Update()
 		// Mueve a la izquierda
 		if (!WillCollide({ -16,0 })) {
 			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN) moveDelay = 0;
-			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_REPEAT) {
-
-				if (collidingWith == Collider::Type::WALL_RIGHT)
-					collidingWith = Collider::Type::NONE;
+			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_IDLE) {
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -116,10 +115,7 @@ Update_Status ModulePuzzlePieces::Update()
 		// Mueve a la derecha
 		if (!WillCollide({ 16,0 })) {
 			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN) moveDelay = 0;
-			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_REPEAT) {
-
-				if (collidingWith == Collider::Type::WALL_LEFT)
-					collidingWith = Collider::Type::NONE;
+			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_IDLE) {
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -163,28 +159,23 @@ void ModulePuzzlePieces::OnCollision(Collider* c1, Collider* c2)
 	// Si el listener se guardara en el objeto de colision
 	// esto seria mucho mas facil de hacer (y mas rapido de ejecutar)
 
+	/*// Ya no esta en uso ya que se comprueba la colisión con las paredes de forma preventiva
 	if (c1->type == Collider::Type::PLAYER) {
 		switch (c2->type) {
-		case Collider::Type::WALL: // TODO poner una funcion para colocar la pieza y hacer aparecer una nueva
-		case Collider::Type::WALL_LEFT:
-		case Collider::Type::WALL_RIGHT:
+		case Collider::Type::WALL:
 		case Collider::Type::PUZZLE_PIECE: {
-			collidingWith = c2->type;
 			break;
 		}
 		}
 	}
 	else if (c2->type == Collider::Type::PLAYER) {
 		switch (c1->type) {
-		case Collider::Type::WALL_LEFT:
-		case Collider::Type::WALL_RIGHT:
 		case Collider::Type::WALL:
 		case Collider::Type::PUZZLE_PIECE: {
-			collidingWith = c1->type;
 			break;
 		}
 		}
-	}
+	}*/
 
 }
 

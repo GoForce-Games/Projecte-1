@@ -33,7 +33,8 @@ public:
 		{{nullptr, nullptr},
 		 {nullptr, nullptr}};
 
-	iPoint pivot;
+	//Punto pivote para el grupo de 3 piezas... pensandolo bien, esto no sirve de mucho
+	iPoint position;
 
 	//Animaciones de posicion
 	Path* piecePaths[2][2];
