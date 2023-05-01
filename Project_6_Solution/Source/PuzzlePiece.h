@@ -1,10 +1,11 @@
+#pragma once
+
 #include "p2Point.h"
 #include "Globals.h"
 
 #include "Animation.h"
 
 struct Collider;
-class Animation;
 struct SDL_Texture;
 
 class PuzzlePiece {

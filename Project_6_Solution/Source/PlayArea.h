@@ -1,10 +1,10 @@
 #pragma once
 
+#include "PuzzlePiece.h"
+#include "PlayerPiece.h"
+
 #define PLAY_AREA_X 10
 #define PLAY_AREA_Y 13
-
-class PuzzlePiece;
-class PlayerPiece;
 
 class PlayArea
 {

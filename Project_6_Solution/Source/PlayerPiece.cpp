@@ -8,11 +8,15 @@ PlayerPiece::PlayerPiece()
 	pieces[1][0] = nullptr;
 	pieces[1][1] = nullptr;
 
+	piecePaths[0][0] = new Path();
+	piecePaths[0][1] = new Path();
+	piecePaths[1][0] = new Path();
+	piecePaths[1][1] = new Path();
+
 	piecePaths[0][0]->PushBack({4,0},4);
 	piecePaths[0][1]->PushBack({0,4},4);
 	piecePaths[1][0]->PushBack({-4,0},4);
 	piecePaths[1][1]->PushBack({0,-4},4);
-
 }
 
 PlayerPiece::PlayerPiece(PuzzlePiece* pieces_[3]) : PlayerPiece()

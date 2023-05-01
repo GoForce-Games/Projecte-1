@@ -5,8 +5,8 @@
 #include "p2Point.h"
 #include "PuzzlePiece.h"
 #include "Collider.h"
-#include "PlayArea.h"
 #include "PlayerPiece.h"
+#include "PlayArea.h"
 
 struct SDL_Texture;
 

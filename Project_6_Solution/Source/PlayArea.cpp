@@ -1,6 +1,6 @@
+#include "PuzzlePiece.h"
 #include "PlayArea.h"
 #include "Globals.h"
-#include "PuzzlePiece.h"
 #include "PlayerPiece.h"
 
 PlayArea::PlayArea()

@@ -7,6 +7,7 @@
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
 #include "ModuleScene.h"
+#include "PuzzlePiece.h"
 
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 
@@ -52,7 +53,7 @@ bool ModulePuzzlePieces::Start()
 	piece->moving = true;
 	currentPiece = AddPuzzlePiece(*piece);
 
-	Collider& pCol = *currentPiece->collider;
+	Collider pCol = *currentPiece->collider;
 	collisionTester = new Collider(pCol.rect, pCol.type);
 
 
@@ -210,7 +211,8 @@ PuzzlePiece* ModulePuzzlePieces::AddPuzzlePiece(const PuzzlePiece& piece)
 
 void ModulePuzzlePieces::RemovePuzzlePiece(PuzzlePiece* piece)
 {
-	delete piece;
+	if (piece != nullptr)
+		delete piece;
 }
 
 bool ModulePuzzlePieces::WillCollide(iPoint position)
