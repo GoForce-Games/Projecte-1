@@ -38,8 +38,8 @@ bool SceneLevel1::Start()
 
 	// TODO 2: Add colliders for the first columns of the level
 	ModulePuzzlePieces& pieces = *App->pieces;
-	pieces.walls[0] = App->collisions->AddCollider({9,9,7,206},Collider::Type::WALL_LEFT,(Module*)App->pieces);
-	pieces.walls[1] = App->collisions->AddCollider({144,9,7,206},Collider::Type::WALL_RIGHT,(Module*)App->pieces);
+	pieces.walls[0] = App->collisions->AddCollider({9,9,7,206},Collider::Type::WALL,(Module*)App->pieces);
+	pieces.walls[1] = App->collisions->AddCollider({144,9,7,206},Collider::Type::WALL,(Module*)App->pieces);
 	pieces.walls[2] = App->collisions->AddCollider({9,208,142,7},Collider::Type::WALL,(Module*)App->pieces);
 
 	return ret;

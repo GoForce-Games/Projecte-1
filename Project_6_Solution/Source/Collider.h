@@ -18,8 +18,6 @@ struct Collider
 		PLAYER_SHOT,
 		ENEMY_SHOT,
 		PUZZLE_PIECE,
-		WALL_LEFT, // TODO quitar los valores de paredes laterales
-		WALL_RIGHT,
 
 		MAX
 	};
@@ -38,6 +36,8 @@ struct Collider
 	bool pendingToDelete = false;
 	Type type;
 	Module* listeners[MAX_LISTENERS] = { nullptr };
+
+	bool enabled = true;
 };
 
 

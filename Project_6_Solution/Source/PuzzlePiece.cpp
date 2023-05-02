@@ -8,13 +8,16 @@ PuzzlePiece::PuzzlePiece() : position()
 {
 }
 
-PuzzlePiece::PuzzlePiece(const PuzzlePiece& p) :
-	moving(p.moving),
-	position(p.position),
-	collider(p.collider),
-	currentAnimation(p.currentAnimation),
-	texture(p.texture)
-{}
+PuzzlePiece::PuzzlePiece(const PuzzlePiece& p)
+{
+	moving = p.moving;
+	position.create(p.position.x,p.position.y);
+	collider = nullptr;
+	currentAnimation = p.currentAnimation;
+	texture = p.texture;
+	isEmpty = p.isEmpty;
+
+}
 
 PuzzlePiece::~PuzzlePiece()
 {

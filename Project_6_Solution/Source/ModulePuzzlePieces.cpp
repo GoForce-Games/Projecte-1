@@ -6,11 +6,17 @@
 #include "ModuleCollisions.h"
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
+#include "ModuleScene.h"
+#include "PuzzlePiece.h"
 
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 
+#define DEBUG_V2 true
+
 ModulePuzzlePieces::ModulePuzzlePieces(bool startEnabled) : Module()
 {
+	if (DEBUG_V2)debug = new ModulePuzzlePiecesV2(startEnabled);
+
 }
 
 ModulePuzzlePieces::~ModulePuzzlePieces()
@@ -20,14 +26,7 @@ ModulePuzzlePieces::~ModulePuzzlePieces()
 
 bool ModulePuzzlePieces::Start()
 {
-	for (uint i = 0; i < MAX_PIECES; ++i)
-		pieces[i] = nullptr;
-
-	for (size_t i = 0; i < MAX_WALLS; i++)
-	{
-		walls[i] = nullptr;
-	}
-
+	if (DEBUG_V2) return debug->Start();
 
 	// TODO textura para probar, hay que recortar el spritesheet
 	textureBomberman = App->textures->Load("Assets/testerman.png");
@@ -48,8 +47,11 @@ bool ModulePuzzlePieces::Start()
 	piece->moving = true;
 	currentPiece = AddPuzzlePiece(*piece);
 
-	Collider& pCol = *currentPiece->collider;
+	Collider pCol = *currentPiece->collider;
 	collisionTester = new Collider(pCol.rect, pCol.type);
+
+
+
 
 
 	return true;
@@ -57,6 +59,7 @@ bool ModulePuzzlePieces::Start()
 
 Update_Status ModulePuzzlePieces::Update()
 {
+	if (DEBUG_V2) return debug->Update();
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
 	for (uint i = 0; i < MAX_PIECES; i++)
@@ -65,7 +68,7 @@ Update_Status ModulePuzzlePieces::Update()
 
 		if (piece == nullptr) continue;
 
-		piece->currentAnimation.Update();
+		piece->Update();
 	}
 
 	if (currentPiece != nullptr && !locked) {
@@ -96,10 +99,7 @@ Update_Status ModulePuzzlePieces::Update()
 		// Mueve a la izquierda
 		if (!WillCollide({ -16,0 })) {
 			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN) moveDelay = 0;
-			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_REPEAT) {
-
-				if (collidingWith == Collider::Type::WALL_RIGHT)
-					collidingWith = Collider::Type::NONE;
+			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_IDLE) {
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -114,10 +114,7 @@ Update_Status ModulePuzzlePieces::Update()
 		// Mueve a la derecha
 		if (!WillCollide({ 16,0 })) {
 			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN) moveDelay = 0;
-			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_REPEAT) {
-
-				if (collidingWith == Collider::Type::WALL_LEFT)
-					collidingWith = Collider::Type::NONE;
+			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_IDLE) {
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -139,6 +136,7 @@ Update_Status ModulePuzzlePieces::Update()
 
 Update_Status ModulePuzzlePieces::PostUpdate()
 {
+	if (DEBUG_V2) return debug->PostUpdate();
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
 	for (uint i = 0; i < MAX_PIECES; i++)
@@ -161,28 +159,23 @@ void ModulePuzzlePieces::OnCollision(Collider* c1, Collider* c2)
 	// Si el listener se guardara en el objeto de colision
 	// esto seria mucho mas facil de hacer (y mas rapido de ejecutar)
 
+	/*// Ya no esta en uso ya que se comprueba la colisión con las paredes de forma preventiva
 	if (c1->type == Collider::Type::PLAYER) {
 		switch (c2->type) {
-		case Collider::Type::WALL: // TODO poner una funcion para colocar la pieza y hacer aparecer una nueva
-		case Collider::Type::WALL_LEFT:
-		case Collider::Type::WALL_RIGHT:
+		case Collider::Type::WALL:
 		case Collider::Type::PUZZLE_PIECE: {
-			collidingWith = c2->type;
 			break;
 		}
 		}
 	}
 	else if (c2->type == Collider::Type::PLAYER) {
 		switch (c1->type) {
-		case Collider::Type::WALL_LEFT:
-		case Collider::Type::WALL_RIGHT:
 		case Collider::Type::WALL:
 		case Collider::Type::PUZZLE_PIECE: {
-			collidingWith = c1->type;
 			break;
 		}
 		}
-	}
+	}*/
 
 }
 
@@ -201,11 +194,14 @@ bool ModulePuzzlePieces::CleanUp()
 		}
 	}
 
+	if (DEBUG_V2) return debug->CleanUp();
 	return ret;
 }
 
 PuzzlePiece* ModulePuzzlePieces::AddPuzzlePiece(const PuzzlePiece& piece)
 {
+
+
 	for (uint i = 0; i < MAX_PIECES; i++) {
 		if (pieces[i] == nullptr) {
 			PuzzlePiece* newPiece = new PuzzlePiece(piece);
@@ -217,12 +213,14 @@ PuzzlePiece* ModulePuzzlePieces::AddPuzzlePiece(const PuzzlePiece& piece)
 
 void ModulePuzzlePieces::RemovePuzzlePiece(PuzzlePiece* piece)
 {
-	delete piece;
+
+	if (piece != nullptr)
+		delete piece;
 }
 
 bool ModulePuzzlePieces::WillCollide(iPoint position)
 {
-	position.SetToZero();
+
 	position += currentPiece->position;
 	collisionTester->SetPos(position.x, position.y);
 

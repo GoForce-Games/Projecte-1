@@ -15,6 +15,8 @@
 #include "ModulePuzzlePieces.h"
 #include "Puntuation.h"
 #include "ModulePresentation.h"
+#include "Intro.h"
+#include "ModuleWinLose.h"
 
 Application::Application()
 {
@@ -27,19 +29,22 @@ Application::Application()
 	modules[2] = textures = new ModuleTextures(true);
 	modules[3] = audio = new ModuleAudio(true);
 	modules[4] = presentation = new ModulePresentation(true);
+
+	modules[5] = intro = new Intro(true);
 	//modules[i++] = sceneIntro = new SceneIntro(true); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)
-	modules[5] = sceneLevel_1 = new SceneLevel1(false);
+	modules[6] = win_lose = new WinLose(true);
+	modules[7] = sceneLevel_1 = new SceneLevel1(false);
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
-	modules[6] = pieces = new ModulePuzzlePieces(false);
-	modules[7] = particles = new ModuleParticles(true);
+	modules[8] = pieces = new ModulePuzzlePieces(false);
+	modules[9] = particles = new ModuleParticles(true);
 
-	modules[8] = collisions = new ModuleCollisions(true);
-	modules[9] = fade = new ModuleFadeToBlack(true);
-	modules[10] = fonts = new ModuleFonts(true);
-	modules[11] = puntuation = new Puntuation(false);
+	modules[10] = collisions = new ModuleCollisions(true);
+	modules[11] = fade = new ModuleFadeToBlack(true);
+	modules[12] = fonts = new ModuleFonts(true);
+	modules[13] = puntuation = new Puntuation(true);
 
-	modules[12] = render = new ModuleRender();
+	modules[14]= render = new ModuleRender();
 }
 
 Application::~Application()

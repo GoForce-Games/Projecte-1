@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Globals.h"
+#include "Puntuation.h"
 
 #define MAX_KEYS 256
 
@@ -34,6 +35,8 @@ public:
 	// Called on application exit.
 	// Uninitializes the SDL system for input detection
 	bool CleanUp() override;
+
+	SDL_Texture* WinTexture = nullptr;
 
 public:
 	// An array to fill in the state of all the keyboard keys

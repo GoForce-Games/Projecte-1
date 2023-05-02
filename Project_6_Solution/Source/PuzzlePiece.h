@@ -1,13 +1,16 @@
+#pragma once
+
 #include "p2Point.h"
 #include "Globals.h"
 
 #include "Animation.h"
 
+#define PIECE_SIZE 16
+
 struct Collider;
-class Animation;
 struct SDL_Texture;
 
-struct PuzzlePiece {
+class PuzzlePiece {
 public:
 	// Constructor
 	PuzzlePiece();
@@ -24,6 +27,8 @@ public:
 	void SetAnimation( Animation newAnimation);
 
 public:
+	bool isEmpty = false;
+
 	// Variable para indicar si la pieza está siendo movida por el jugador o no
 	bool moving = false;
 
