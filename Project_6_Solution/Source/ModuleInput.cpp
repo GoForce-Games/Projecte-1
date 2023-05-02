@@ -2,6 +2,9 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
+#include "Puntuation.h"
+#include "ModuleTextures.h"
+#include "ModuleRender.h"
 
 ModuleInput::ModuleInput(bool startEnabled) : Module(startEnabled)
 {}
@@ -49,8 +52,15 @@ Update_Status ModuleInput::PreUpdate()
 	{
 		return Update_Status::UPDATE_STOP;
 	}
+	
+	if (App->input->keys[SDL_SCANCODE_F2] == KEY_DOWN)
+	{
+		App->puntuation->score = App->puntuation->score + 100;
+	}
+	
 
 	return Update_Status::UPDATE_CONTINUE;
+	
 }
 
 bool ModuleInput::CleanUp()
