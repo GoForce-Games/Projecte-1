@@ -49,12 +49,32 @@ public:
 		return(r);
 	}
 
-	p2Point operator + (const p2Point &v) const
+	p2Point operator + (const p2Point& v) const
 	{
 		p2Point r;
 
 		r.x = x + v.x;
 		r.y = y + v.y;
+
+		return(r);
+	}
+
+	p2Point operator / (const TYPE& v) const
+	{
+		p2Point r;
+
+		r.x = x / v;
+		r.y = y / v;
+
+		return(r);
+	}
+
+	p2Point operator * (const TYPE& v) const
+	{
+		p2Point r;
+
+		r.x = x * v;
+		r.y = y * v;
 
 		return(r);
 	}
@@ -67,10 +87,26 @@ public:
 		return(*this);
 	}
 
-	const p2Point& operator +=(const p2Point &v)
+	const p2Point& operator +=(const p2Point& v)
 	{
 		x += v.x;
 		y += v.y;
+
+		return(*this);
+	}
+
+	const p2Point& operator /=(const TYPE& v)
+	{
+		x /= v.x;
+		y /= v.y;
+
+		return(*this);
+	}
+
+	const p2Point& operator *=(const TYPE& v)
+	{
+		x *= v.x;
+		y *= v.y;
 
 		return(*this);
 	}

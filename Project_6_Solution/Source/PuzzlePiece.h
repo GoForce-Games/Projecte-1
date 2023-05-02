@@ -5,6 +5,8 @@
 
 #include "Animation.h"
 
+#define PIECE_SIZE 16
+
 struct Collider;
 struct SDL_Texture;
 
@@ -25,6 +27,8 @@ public:
 	void SetAnimation( Animation newAnimation);
 
 public:
+	bool isEmpty = false;
+
 	// Variable para indicar si la pieza está siendo movida por el jugador o no
 	bool moving = false;
 

@@ -7,6 +7,7 @@
 #include "Collider.h"
 #include "PlayerPiece.h"
 #include "PlayArea.h"
+#include "ModulePuzzlePiecesV2.h"
 
 struct SDL_Texture;
 
@@ -101,6 +102,8 @@ public:
 	// No hace falta crear una variable extra por cada objeto para esto
 	// SFX id number
 	const static uint explosionFX = 0;
+
+	ModulePuzzlePiecesV2* debug;
 
 };
 

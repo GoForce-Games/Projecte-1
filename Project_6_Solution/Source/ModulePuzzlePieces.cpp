@@ -11,19 +11,12 @@
 
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 
+#define DEBUG_V2 true
+
 ModulePuzzlePieces::ModulePuzzlePieces(bool startEnabled) : Module()
 {
+	if (DEBUG_V2)debug = new ModulePuzzlePiecesV2(startEnabled);
 
-
-	for (uint i = 0; i < MAX_PIECES; i++)
-	{
-		pieces[i] = nullptr;
-	}
-
-	for (uint i = 0; i < MAX_WALLS; i++)
-	{
-		walls[i] = nullptr;
-	}
 }
 
 ModulePuzzlePieces::~ModulePuzzlePieces()
@@ -33,6 +26,7 @@ ModulePuzzlePieces::~ModulePuzzlePieces()
 
 bool ModulePuzzlePieces::Start()
 {
+	if (DEBUG_V2) return debug->Start();
 
 	// TODO textura para probar, hay que recortar el spritesheet
 	textureBomberman = App->textures->Load("Assets/testerman.png");
@@ -57,11 +51,15 @@ bool ModulePuzzlePieces::Start()
 	collisionTester = new Collider(pCol.rect, pCol.type);
 
 
+
+
+
 	return true;
 }
 
 Update_Status ModulePuzzlePieces::Update()
 {
+	if (DEBUG_V2) return debug->Update();
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
 	for (uint i = 0; i < MAX_PIECES; i++)
@@ -70,7 +68,7 @@ Update_Status ModulePuzzlePieces::Update()
 
 		if (piece == nullptr) continue;
 
-		piece->currentAnimation.Update();
+		piece->Update();
 	}
 
 	if (currentPiece != nullptr && !locked) {
@@ -138,6 +136,7 @@ Update_Status ModulePuzzlePieces::Update()
 
 Update_Status ModulePuzzlePieces::PostUpdate()
 {
+	if (DEBUG_V2) return debug->PostUpdate();
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
 	for (uint i = 0; i < MAX_PIECES; i++)
@@ -195,11 +194,14 @@ bool ModulePuzzlePieces::CleanUp()
 		}
 	}
 
+	if (DEBUG_V2) return debug->CleanUp();
 	return ret;
 }
 
 PuzzlePiece* ModulePuzzlePieces::AddPuzzlePiece(const PuzzlePiece& piece)
 {
+
+
 	for (uint i = 0; i < MAX_PIECES; i++) {
 		if (pieces[i] == nullptr) {
 			PuzzlePiece* newPiece = new PuzzlePiece(piece);
@@ -211,12 +213,14 @@ PuzzlePiece* ModulePuzzlePieces::AddPuzzlePiece(const PuzzlePiece& piece)
 
 void ModulePuzzlePieces::RemovePuzzlePiece(PuzzlePiece* piece)
 {
+
 	if (piece != nullptr)
 		delete piece;
 }
 
 bool ModulePuzzlePieces::WillCollide(iPoint position)
 {
+
 	position += currentPiece->position;
 	collisionTester->SetPos(position.x, position.y);
 

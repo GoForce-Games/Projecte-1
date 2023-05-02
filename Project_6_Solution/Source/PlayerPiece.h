@@ -10,7 +10,7 @@ public:
 	// Instancia de jugador sin piezas
 	PlayerPiece();
 	//Instancia de jugador con piezas
-	PlayerPiece(PuzzlePiece* pieces[3]);
+	PlayerPiece(PuzzlePiece* pieces[4]);
 
 	//Destructor
 	~PlayerPiece();
@@ -26,21 +26,18 @@ public:
 	bool Update();
 
 	// Añade piezas nuevas
-	void setPieces(PuzzlePiece* newPieces[3]);
+	void setPieces(PuzzlePiece* newPieces[4]);
 
 public:
 	PuzzlePiece* pieces[2][2] = 
 		{{nullptr, nullptr},
 		 {nullptr, nullptr}};
 
-	//Punto pivote para el grupo de 3 piezas... pensandolo bien, esto no sirve de mucho
+	//Punto posición absoluta del grupo, la posicion de las piezas es relativa a esta variable
 	iPoint position;
 
 	//Animaciones de posicion
 	Path* piecePaths[2][2];
-
-
-
 
 };
 
