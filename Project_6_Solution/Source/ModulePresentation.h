@@ -23,7 +23,7 @@ public:
 
 	bool CleanUp();
 		
-	
+	int textFont = 0;
 
 public:
 	

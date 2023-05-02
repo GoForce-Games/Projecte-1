@@ -8,6 +8,7 @@
 #include "ModuleWindow.h"
 #include "ModuleFonts.h"
 #include "ModulePlayer.h"
+#include "Puntuation.h"
 #include "../External_Libraries/SDL/include/SDL.h"
 
 
@@ -25,11 +26,8 @@ bool ModulePresentation::Start() {
 	LOG("Loading background assets");
 
 	bool ret = true;
-
-	//bgTexture = App->textures->Load("Assets/Sprites/sprites.png");
-	char lookupTable[] = { "abcdefghijklmnopqrstuvwxyz" };
-	textFont = App->fonts->Load("Assets/Fonts/Sprites.png", "abcdefghijklmnopqrstuvwxyz", 1);
-	
+	textFont = App->puntuation->textFont;
+	return ret;
 }
 Update_Status ModulePresentation::Update() {
 	if (App->input->keys[SDL_Scancode::SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
@@ -41,14 +39,16 @@ Update_Status ModulePresentation::Update() {
 Update_Status ModulePresentation::PostUpdate()
 {
 	
-	App->render->Blit(bgTexture, 0, 0, NULL);
-	App->fonts->BlitText(0, 0, textFont, "Produced by GoForce Game");
-	App->fonts->BlitText(0, 0, textFont, "Members");
-	App->fonts->BlitText(0, 0, textFont, "Rogue");
+	App->render->Blit(bgTexture, 0, 0, NULL); // TODO cargar el fondo
+	App->fonts->BlitText(0, 10, textFont, "Produced by GoForce Game");
+	App->fonts->BlitText(0, 10, textFont, "Members");
+	App->fonts->BlitText(0, 10, textFont, "Rogue");
+	
 	return Update_Status::UPDATE_CONTINUE;
 }
 bool ModulePresentation::CleanUp() {
-	App->player->Disable();
+	
+	return true;
 }
 
 
