@@ -158,6 +158,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 		// Mueve a la derecha
 		if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_IDLE) {
+
 			if (!WillCollide(PlayerCollisionCheck::RIGHT)) {
 
 				if (moveDelay == 0) {
@@ -182,6 +183,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 				locked = true;
 				DropPieces();
 			}
+			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo
 		}
 		else {
 			dropDelay--;
@@ -192,21 +194,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 	}
-
-
-	WillCollide(PlayerCollisionCheck::DEBUG);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
@@ -280,19 +268,20 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	}
 	case RIGHT: {
 		x = 1;
-		if (player.pieces[0][0]->collider->enabled)
+		if (player.pieces[0][1]->collider->enabled) y--;
+		if (player.pieces[1][1]->collider->enabled) y++;
 			break;
 	}
 	case TOP: {
 		y = -1;
-		if (player.pieces[0][0]->collider->enabled) {
-		}
+		if (player.pieces[0][0]->collider->enabled) x--;
+		if (player.pieces[0][1]->collider->enabled) x++;
 		break;
 	}
 	case BOTTOM: {
 		y = 1;
-		if (player.pieces[0][0]->collider->enabled) {
-		}
+		if (player.pieces[1][0]->collider->enabled) x--;
+		if (player.pieces[1][1]->collider->enabled) x++;
 		break;
 	}
 	default:
@@ -306,17 +295,23 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	}
 	else {
 		// Pone el colisionador a la izquierda o la derecha
-		rect.x = player.position.x + (PIECE_SIZE * x);
+		if (x > 0)
+		rect.x = player.position.x + (PIECE_SIZE * 2);
+		else
+		rect.x = player.position.x - PIECE_SIZE;
 	}
 
 	if (y == 0) {
 		//Hace que el colisionador ocupe todo el alto del jugador
-		rect.y = player.position.y;
+		rect.y = player.position.y + gravity;;
 		rect.h = PIECE_SIZE * 2;
 	}
 	else {
 		// Pone el colisionador debajo (+1) o arriba (-1) del jugador
-		rect.y = player.position.y + gravity + (PIECE_SIZE * y);
+		if (y < 0)
+			rect.y = player.position.y + (PIECE_SIZE * 2) + gravity;
+		else
+			rect.y = player.position.y - PIECE_SIZE + gravity;
 	}
 
 	if (direction != PlayerCollisionCheck::DEBUG) {
