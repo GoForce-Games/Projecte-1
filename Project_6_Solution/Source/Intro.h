@@ -1,8 +1,8 @@
 #ifndef __INTRO_H__
 #define __INTRO_H__
 
-#include "../Module.h"
-#include "../../Utils/Animation.h"
+#include "Module.h"
+#include "Animation.h"
 
 struct SDL_Texture;
 

@@ -20,6 +20,7 @@ class ModuleFonts;
 class ModuleRender;
 class ModulePuzzlePieces;
 class Puntuation;
+class Intro;
 
 class Application
 {

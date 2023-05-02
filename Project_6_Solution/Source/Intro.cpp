@@ -21,7 +21,8 @@ bool Intro::Start()
 
 	IntroTexture = App->textures->Load("Assets/Sprites/IntroScreen.png");
 	App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);
-	App->render->camera.x = 0 && App->render->camera.y = 0;
+	App->render->camera.x = 0;
+	App->render->camera.y = 0;
 
 	return ret;
 }
@@ -30,11 +31,10 @@ Update_Status Intro::Update()
 {
 	if (App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
 	{
-		App->fade->FadeToBlack(this, (Module*)App->stage1, 90);
+		App->fade->FadeToBlack(this, (Module*)App->sceneLevel_1, 90);
 	}
 	return Update_Status::UPDATE_CONTINUE;
 }
-
 
 Update_Status Intro::PostUpdate()
 {
