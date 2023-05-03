@@ -2,6 +2,9 @@
 #include "Collider.h"
 #include "Path.h"
 
+#include "Application.h"
+#include "ModulePuzzlePiecesV2.h"
+
 PlayerPiece::PlayerPiece()
 {
 	pieces[0][0] = nullptr;
@@ -51,9 +54,15 @@ bool PlayerPiece::CleanUp()
 	return true;
 }
 
-bool PlayerPiece::Rotate(bool clockwise)
+bool PlayerPiece::Rotate(bool clockwise = true)
 {
-	return false;
+
+	if (App->pieces->WillCollide(PlayerCollisionCheck::CENTER)) {
+		return false;
+	}
+
+
+	return true;
 }
 
 bool PlayerPiece::Update()

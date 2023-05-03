@@ -8,7 +8,7 @@
 
 #include "../External_Libraries/SDL/include/SDL.h"
 
-ModulePuzzlePiecesV2::ModulePuzzlePiecesV2(bool startEnabled)
+ModulePuzzlePiecesV2::ModulePuzzlePiecesV2(bool startEnabled) : Module(startEnabled)
 {
 	for (uint i = 0; i < MAX_PIECES; i++)
 	{
@@ -128,6 +128,16 @@ Update_Status ModulePuzzlePiecesV2::Update()
 		//Lee input
 
 		KEY_STATE* keys = App->input->keys;
+
+		// Rotacion
+
+		if (keys[SDL_Scancode::SDL_SCANCODE_P] == KEY_STATE::KEY_DOWN) {
+			player.Rotate(true);
+		}
+
+
+
+
 
 		// Acelera la caída
 		if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_DOWN) {

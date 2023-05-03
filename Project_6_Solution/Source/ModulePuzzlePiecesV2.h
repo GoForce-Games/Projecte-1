@@ -76,7 +76,7 @@ public:
 	PuzzlePiece templateMan;
 
 	//Pieza vacía, sin nada asignado
-	PuzzlePiece* emptyPiece;
+	PuzzlePiece* emptyPiece = nullptr;
 
 	PlayerPiece player;
 
