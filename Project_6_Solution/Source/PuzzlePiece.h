@@ -4,6 +4,7 @@
 #include "Globals.h"
 
 #include "Animation.h"
+#include <string>
 
 #define PIECE_SIZE 16
 
@@ -27,6 +28,9 @@ public:
 	void SetAnimation( Animation newAnimation);
 
 public:
+	// For debug purposes
+	std::string name;
+
 	bool isEmpty = false;
 
 	// Variable para indicar si la pieza está siendo movida por el jugador o no

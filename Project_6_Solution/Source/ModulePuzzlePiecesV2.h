@@ -20,6 +20,9 @@ struct SDL_Texture;
 #define MIN_DROP_DELAY 2
 #define MAX_MOVE_DELAY 5
 
+#define MOVE_SPEED PIECE_SIZE
+#define GRAVITY 4
+
 enum PlayerCollisionCheck {
 	CENTER,
 	LEFT,
@@ -92,10 +95,10 @@ public:
 	uint moveDelay = MAX_MOVE_DELAY;
 
 	// Movement speed in pixels per frame
-	uint moveSpeed = 16;
+	uint moveSpeed = MOVE_SPEED;
 
 	// Drop speed in pixels per frame
-	uint gravity = 4;
+	uint gravity = GRAVITY;
 
 	// Pieces (either bombermen or bombs) currently on screen
 	PuzzlePiece* pieces[MAX_PIECES];

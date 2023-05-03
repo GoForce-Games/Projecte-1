@@ -20,7 +20,7 @@ public:
 	bool CleanUp();
 
 	// Rota piezas
-	bool Rotate(bool clockwise);
+	bool Rotate();
 
 	// Actualiza el estado de las piezas
 	bool Update();
@@ -38,6 +38,8 @@ public:
 
 	//Animaciones de posicion
 	Path* piecePaths[2][2];
+
+	bool rotating = false;
 
 };
 

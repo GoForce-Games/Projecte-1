@@ -12,19 +12,25 @@ void Path::PushBack(fPoint speed, uint frames, Animation* animation)
 
 void Path::Update()
 {
-	currentStepFrame += 1;
+	if (!finished) {
+		currentStepFrame += 1;
 
-	if (currentStepFrame > steps[currentStep].framesDuration)
-	{
-		if (currentStep < totalSteps - 1) // If it is not the last step, advance
+		if (currentStepFrame > steps[currentStep].framesDuration)
 		{
-			currentStep++;
+			if (currentStep < totalSteps - 1) // If it is not the last step, advance
+			{
+				currentStep++;
+			}
+			else if (loop) // Otherwise, if the path loops, go back to the beginning
+			{
+				currentStep = 0;
+			}
+			else // If it's not a loop, set finished to true
+			{
+				finished = true;
+			}
+			currentStepFrame = 0;
 		}
-		else if (loop) // Otherwise, if the path loops, go back to the beginning
-		{
-			currentStep = 0;
-		}
-		currentStepFrame = 0;
 	}
 
 	relativePosition += steps[currentStep].speed;
@@ -44,4 +50,6 @@ void Path::Reset()
 {
 	currentStepFrame = 0;
 	currentStep = 0;
+	finished = false;
+	relativePosition.SetToZero();
 }

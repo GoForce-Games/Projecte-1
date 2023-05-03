@@ -2,6 +2,7 @@
 #define __PATH_H__
 
 #include "p2Point.h"
+#include <string>
 
 #define MAX_STEPS 25
 
@@ -33,6 +34,13 @@ public:
 	void Reset();
 
 public:
+
+	// For debug purposes
+	std::string name;
+
+	// Stores if the final frame of the path has been reached
+	bool finished = false;
+
 	// Defines wether the path should go back to the beginning when finished
 	bool loop = true;
 

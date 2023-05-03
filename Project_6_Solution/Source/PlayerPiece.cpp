@@ -17,18 +17,36 @@ PlayerPiece::PlayerPiece()
 	piecePaths[1][0] = new Path();
 	piecePaths[1][1] = new Path();
 
-	piecePaths[0][0]->PushBack({4,0},4);
-	piecePaths[0][1]->PushBack({0,4},4);
-	piecePaths[1][0]->PushBack({-4,0},4);
-	piecePaths[1][1]->PushBack({0,-4},4);
+	piecePaths[0][0]->name = "TopLeft";
+	piecePaths[0][1]->name = "TopRight";
+	piecePaths[1][0]->name = "BotLeft";
+	piecePaths[1][1]->name = "BotRight";
+
+	// Impide que se mueva si el jugador no le da a la tecla de rotacion
+	piecePaths[0][0]->PushBack({ 0,0 }, 1);
+	piecePaths[0][1]->PushBack({ 0,0 }, 1);
+	piecePaths[1][0]->PushBack({ 0,0 }, 1);
+	piecePaths[1][1]->PushBack({ 0,0 }, 1);
+
+	piecePaths[0][0]->PushBack({ 4,0 }, 3);
+	piecePaths[0][1]->PushBack({ 0,4 }, 3);
+	piecePaths[1][0]->PushBack({ 0,-4 }, 3);
+	piecePaths[1][1]->PushBack({ -4,0 }, 3);
+
+	piecePaths[0][0]->loop = false;
+	piecePaths[0][1]->loop = false;
+	piecePaths[1][0]->loop = false;
+	piecePaths[1][1]->loop = false;
+
+	piecePaths[0][0]->finished = true;
+	piecePaths[0][1]->finished = true;
+	piecePaths[1][0]->finished = true;
+	piecePaths[1][1]->finished = true;
 }
 
 PlayerPiece::PlayerPiece(PuzzlePiece* pieces_[4]) : PlayerPiece()
-{	
-	pieces[0][0] = pieces_[0];
-	pieces[0][1] = pieces_[1];
-	pieces[1][0] = pieces_[2];
-	pieces[1][1] = pieces_[3];
+{
+	setPieces(pieces_);
 }
 
 PlayerPiece::~PlayerPiece()
@@ -54,11 +72,23 @@ bool PlayerPiece::CleanUp()
 	return true;
 }
 
-bool PlayerPiece::Rotate(bool clockwise = true)
+bool PlayerPiece::Rotate()
 {
 
-	if (App->pieces->WillCollide(PlayerCollisionCheck::CENTER)) {
+	//Si rotar hace que se solape con otra pieza no continues
+	if (rotating || App->pieces->WillCollide(PlayerCollisionCheck::CENTER)) {
 		return false;
+	}
+
+	//Rota las piezas
+	rotating = true;
+
+	for (size_t i = 0; i < 2; i++)
+	{
+		for (size_t j = 0; j < 2; j++)
+		{
+			piecePaths[i][j]->Reset();
+		}
 	}
 
 
@@ -72,9 +102,40 @@ bool PlayerPiece::Update()
 		for (size_t j = 0; j < 2; j++)
 		{
 			if (pieces[i][j] == nullptr) continue;
-			pieces[i][j]->position.x = position.x + PIECE_SIZE * i;
-			pieces[i][j]->position.y = position.y + PIECE_SIZE * j;
+			pieces[i][j]->position.x = position.x + PIECE_SIZE * j;
+			pieces[i][j]->position.y = position.y + PIECE_SIZE * i;
+			pieces[i][j]->position += piecePaths[i][j]->GetRelativePosition();
 			pieces[i][j]->Update();
+		}
+	}
+
+	if (rotating) {
+		// Gira en el sentido del reloj por defecto (hara falta reimplementar para poder cambiar la direccion) (TODO)
+		for (size_t i = 0; i < 2; i++)
+		{
+			for (size_t j = 0; j < 2; j++)
+			{
+				piecePaths[i][j]->Update();
+			}
+		}
+
+
+		if (piecePaths[0][0]->finished) {
+			rotating = false;
+			PuzzlePiece* aux = pieces[0][0];
+			pieces[0][0] = pieces[1][0];
+			pieces[1][0] = pieces[1][1];
+			pieces[1][1] = pieces[0][1];
+			pieces[0][1] = aux;
+
+			for (size_t i = 0; i < 2; i++)
+			{
+				for (size_t j = 0; j < 2; j++)
+				{
+					piecePaths[i][j]->Reset();
+				}
+			}
+
 		}
 	}
 
@@ -91,4 +152,9 @@ void PlayerPiece::setPieces(PuzzlePiece* newPieces[4])
 	pieces[0][1] = newPieces[1];
 	pieces[1][0] = newPieces[2];
 	pieces[1][1] = newPieces[3];
+
+	pieces[0][0]->name = "TopLeft";
+	pieces[0][1]->name = "TopRight";
+	pieces[1][0]->name = "BotLeft";
+	pieces[1][1]->name = "BotRight";
 }

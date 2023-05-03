@@ -129,10 +129,18 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 		KEY_STATE* keys = App->input->keys;
 
+		
+		// Godmode: activa/desactiva gravedad
+		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == KEY_STATE::KEY_DOWN) {
+			gravity = (gravity == 0) ? GRAVITY : 0;
+		}
+		
+		
+		
 		// Rotacion
 
 		if (keys[SDL_Scancode::SDL_SCANCODE_P] == KEY_STATE::KEY_DOWN) {
-			player.Rotate(true);
+			player.Rotate();
 		}
 
 
