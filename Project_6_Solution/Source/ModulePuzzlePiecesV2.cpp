@@ -33,6 +33,8 @@ bool ModulePuzzlePiecesV2::Start()
 	textureBomberman = App->textures->Load("Assets/testerman.png");
 	if (textureBomberman == nullptr) return false;
 
+	App->collisions->Enable();
+
 	// Animacion temporal, sacado de la demo de R-type que hicimos en clase
 	animDefault.PushBack({ 0, 0, 16, 16 });
 	animDefault.PushBack({ 16, 0, 16, 16 });
@@ -70,7 +72,6 @@ bool ModulePuzzlePiecesV2::Start()
 		offset.y += PIECE_SIZE;
 	}
 
-
 	// Columna derecha
 	offset = playArea.position;
 	//offset.y += PIECE_SIZE;
@@ -93,10 +94,11 @@ bool ModulePuzzlePiecesV2::Start()
 		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_Y - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.x += PIECE_SIZE;
 	}
+	delete templateWall;
 
-
-
-
+	
+	
+	
 
 	PuzzlePiece* newPieces[4];
 	newPieces[0] = AddPuzzlePiece(templateMan);
@@ -238,7 +240,18 @@ void ModulePuzzlePiecesV2::OnCollision(Collider* c1, Collider* c2)
 
 bool ModulePuzzlePiecesV2::CleanUp()
 {
-	return false;
+	playArea.CleanUp();
+	App->collisions->CleanUp();
+	for (size_t i = 0; i < MAX_PIECES; i++)
+	{
+		if (pieces[i] != nullptr)
+			pieces[i] = nullptr;
+	}
+	App->textures->Unload(textureBomberman);
+	textureBomberman = nullptr;
+	App->textures->Unload(textureBomb);
+	textureBomb = nullptr;
+	return true;
 }
 
 void ModulePuzzlePiecesV2::GeneratePuzzlePieces(uint amount)

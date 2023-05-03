@@ -26,14 +26,21 @@ bool Puntuation::Start()
 
 	bool ret = true;
 
+	scoreText = new char[MAX_SCORE_LENGTH];
+
+	score = 000;
+	numeracion = 0;
+	scoreFont = -1;
+	textFont = -1;
+
 	char lookupTable[] = { " !\"#$%&\'()*+,-./0123456789:;<=>?çabcdefghijklmnopqrstuvwxyz´`¨_|º" };
 	char specialNumbers[] = { "0123456789:PT+-" };
 	textFont = App->fonts->Load("Assets/Fonts/fonts4.png", lookupTable, 4);
 	scoreFont = App->fonts->Load("Assets/Fonts/fonts3.png", specialNumbers, 1);
-	
+
 
 	return ret;
-	
+
 }
 
 Update_Status Puntuation::Update()
@@ -46,6 +53,17 @@ Update_Status Puntuation::PostUpdate()
 	sprintf_s(scoreText, MAX_SCORE_LENGTH, "%7d", score);
 	App->fonts->BlitText(0, 16, textFont, scoreText);
 	return Update_Status::UPDATE_CONTINUE;
+}
+
+bool Puntuation::CleanUp()
+{
+	App->fonts->UnLoad(textFont);
+	App->fonts->UnLoad(scoreFont);
+	if (scoreText != nullptr) {
+		delete scoreText;
+		scoreText = nullptr;
+	}
+	return true;
 }
 
 

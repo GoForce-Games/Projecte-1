@@ -23,6 +23,8 @@ struct SDL_Texture;
 #define MOVE_SPEED PIECE_SIZE
 #define GRAVITY 4
 
+#define EXPLODE_COUNTDOWN 100
+
 enum PlayerCollisionCheck {
 	CENTER,
 	LEFT,
@@ -132,7 +134,7 @@ public:
 	bool explode = false;
 
 	// Time until this piece disappears from the screen
-	uint explodeCountdown = 100;
+	uint explodeCountdown = EXPLODE_COUNTDOWN;
 
 	// No hace falta crear una variable extra por cada objeto para esto
 	// SFX id number

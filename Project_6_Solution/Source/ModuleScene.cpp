@@ -51,9 +51,12 @@ bool SceneLevel1::Start()
 
 bool SceneLevel1::CleanUp()
 {
+	App->textures->Unload(spritesTexture);
+
 	App->pieces->Disable();
 	App->puntuation->Disable();
 	App->win_lose->Disable();
+
 	return false;
 }
 

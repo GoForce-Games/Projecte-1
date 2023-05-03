@@ -28,7 +28,7 @@ Application::Application()
 	modules[1] = input = new ModuleInput(true);
 	modules[2] = textures = new ModuleTextures(true);
 	modules[3] = audio = new ModuleAudio(true);
-	modules[4] = presentation = new ModulePresentation(true);
+	modules[4] = presentation = new ModulePresentation(false);
 
 	modules[5] = intro = new Intro(true);
 	//modules[i++] = sceneIntro = new SceneIntro(true); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)

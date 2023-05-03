@@ -58,3 +58,19 @@ void PlayArea::checkGroupedPieces()
 void PlayArea::explodeBombs()
 {
 }
+
+bool PlayArea::CleanUp()
+{
+	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	{
+		for (size_t j = 0; j < PLAY_AREA_Y; j++)
+		{
+			if (table[i][j] != nullptr) {
+				delete table[i][j];
+				table[i][j] = nullptr;
+			}
+		}
+	}
+
+	return true;
+}

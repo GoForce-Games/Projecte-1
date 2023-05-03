@@ -11,6 +11,20 @@
 struct Collider;
 struct SDL_Texture;
 
+enum PieceType {
+	NONE,
+	BLACK,
+	WHITE,
+	RED,
+	BLUE,
+	GREEN,
+	BOMB,
+	PRIMED_BOMB,
+
+
+	MAX
+};
+
 class PuzzlePiece {
 public:
 	// Constructor
@@ -25,11 +39,13 @@ public:
 	// Active piece update (player movement)
 	void Update();
 
-	void SetAnimation( Animation newAnimation);
+	void SetAnimation(Animation newAnimation);
 
 public:
 	// For debug purposes
 	std::string name;
+
+
 
 	bool isEmpty = false;
 

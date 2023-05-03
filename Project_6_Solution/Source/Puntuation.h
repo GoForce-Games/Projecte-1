@@ -12,19 +12,29 @@
 class Puntuation : public Module
 {
 public:
-	Puntuation(bool startEnabled);    // default constructor declaration
-	~Puntuation();   // destructor declaration
+	// Constructor
+	Puntuation(bool startEnabled);    
+
+	// Destructor
+	~Puntuation();   
 	
 	bool Init() override;
+
 	bool Start() override;
+
 	Update_Status Update() override;
+
 	Update_Status PostUpdate() override;
 
-	int score = 000;
-	int numeracion = 0;
-	int scoreFont = -1;
-	int textFont = -1;
-	char scoreText[MAX_SCORE_LENGTH + sizeof(char)];
+	bool CleanUp() override;
+
+
+
+	int score;
+	int numeracion;
+	int scoreFont;
+	int textFont;
+	char* scoreText = nullptr;
 	
   
 };

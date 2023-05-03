@@ -22,6 +22,7 @@ public:
 
 	void explodeBombs();
 
+	bool CleanUp();
 
 
 public:

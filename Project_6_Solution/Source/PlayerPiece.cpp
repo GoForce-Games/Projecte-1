@@ -147,6 +147,7 @@ void PlayerPiece::setPieces(PuzzlePiece* newPieces[4])
 	for (uint i = 0; i < 4; i++)
 	{
 		newPieces[i]->moving = true;
+		// Check if type==NONE
 	}
 	pieces[0][0] = newPieces[0];
 	pieces[0][1] = newPieces[1];
