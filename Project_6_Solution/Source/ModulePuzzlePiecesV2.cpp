@@ -274,7 +274,20 @@ PuzzlePiece* ModulePuzzlePiecesV2::AddPuzzlePiece(const PuzzlePiece& piece, Coll
 
 void ModulePuzzlePiecesV2::RemovePuzzlePiece(PuzzlePiece* piece)
 {
+	if (piece == nullptr) return;
 
+	piece->name = "To be deleted"; // Para debug
+
+	for (size_t i = 0; i < MAX_PIECES; i++)
+	{
+		if (pieces[i] == piece) {
+			delete piece;
+			pieces[i] = nullptr;
+			break;
+		}
+		
+	}
+	
 }
 
 bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
@@ -366,7 +379,6 @@ void ModulePuzzlePiecesV2::DropPieces() {
 	iPoint posPlayer = player.position;
 	iPoint posZona = playArea.position;
 	iPoint posTablero = (player.position - playArea.position) / PIECE_SIZE;
-	posTablero;
 
 	for (size_t i = 0; i < 2; i++)
 	{
