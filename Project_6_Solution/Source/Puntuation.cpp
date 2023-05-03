@@ -7,7 +7,7 @@
 #include <string.h>
 using namespace std;
 
-Puntuation::Puntuation(bool startEnabled)
+Puntuation::Puntuation(bool startEnabled) : Module(startEnabled)
 {
 }
 
@@ -31,7 +31,6 @@ bool Puntuation::Start()
 	textFont = App->fonts->Load("Assets/Fonts/fonts4.png", lookupTable, 4);
 	scoreFont = App->fonts->Load("Assets/Fonts/fonts3.png", specialNumbers, 1);
 	
-	
 
 	return ret;
 	
@@ -44,7 +43,6 @@ Update_Status Puntuation::Update()
 
 Update_Status Puntuation::PostUpdate()
 {
-	
 	sprintf_s(scoreText, MAX_SCORE_LENGTH, "%7d", score);
 	App->fonts->BlitText(0, 16, textFont, scoreText);
 	return Update_Status::UPDATE_CONTINUE;

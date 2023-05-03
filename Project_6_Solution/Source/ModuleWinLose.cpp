@@ -20,34 +20,65 @@ WinLose::~WinLose()
 // Load assets
 bool WinLose::Start()
 {
-    LOG("Loading background assets");
+	LOG("Loading background assets");
 
-    bool ret = true;
+	bool ret = true;
 
-    WinTexture = App->textures->Load("Assets/Sprites/win_lose.png");
+	WinTexture = App->textures->Load("Assets/Sprites/win_lose.png");
+	LoseTexture = App->textures->Load("Assets/Sprites/lose_win.png");
 
-    LoseTexture = App->textures->Load("Assets/Sprites/lose_win.png");
 
+	return ret;
 
-    if (App->input->keys[SDL_SCANCODE_F3] == KEY_DOWN)
-    {
-        App->render->Blit(LoseTexture, 0, 0, NULL);
-    }
-    return ret;
-
-    if (App->puntuation->score == 1000)
-    {
-        App->render->Blit(WinTexture, 0, 0, NULL);
-    }
 }
 
 Update_Status WinLose::Update()
 {
-    return Update_Status::UPDATE_CONTINUE;
+	if (gameFinish && App->puntuation->score < 1000)
+	{
+		gameFinish = false;
+		ActiveTexture = LoseTexture;
+		App->audio->PlayMusic("Assets/Music/Lose.ogg", 1.0f);
+	}
+	if (gameFinish && App->puntuation->score >= 1000)
+	{
+		gameFinish = false;
+		ActiveTexture = WinTexture;
+		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
+	}
+	if (App->input->keys[SDL_SCANCODE_F3] == KEY_DOWN)
+	{
+		gameFinish = true;
+
+	}
+	return Update_Status::UPDATE_CONTINUE;
 }
 
 // Update: draw background  
 Update_Status WinLose::PostUpdate()
 {
-    return Update_Status::UPDATE_CONTINUE;
+	if (ActiveTexture != nullptr)
+	{
+		App->render->Blit(ActiveTexture, 0, 0, NULL, false);
+	}
+
+	return Update_Status::UPDATE_CONTINUE;
+}
+bool WinLose::CleanUp()
+{
+	if (WinTexture != nullptr)
+	{
+		SDL_DestroyTexture(WinTexture);
+		WinTexture = nullptr;
+	}
+	if (LoseTexture != nullptr)
+	{
+		SDL_DestroyTexture(LoseTexture);
+		LoseTexture = nullptr;
+	}
+	if (ActiveTexture != nullptr)
+	{
+		ActiveTexture = nullptr;
+	}
+	return true;
 }
