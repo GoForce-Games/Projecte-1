@@ -13,7 +13,7 @@
 
 #define DEBUG_V2 true
 
-ModulePuzzlePieces::ModulePuzzlePieces(bool startEnabled) : Module()
+ModulePuzzlePieces::ModulePuzzlePieces(bool startEnabled) : Module(startEnabled)
 {
 	if (DEBUG_V2)debug = new ModulePuzzlePiecesV2(startEnabled);
 
