@@ -44,14 +44,14 @@ Application::Application()
 	modules[12] = fonts = new ModuleFonts(true);
 	modules[13] = puntuation = new Puntuation(true);
 
-	modules[14]= render = new ModuleRender();
+	modules[14] = render = new ModuleRender();
 }
 
 Application::~Application()
 {
 	for (int i = 0; i < NUM_MODULES; ++i)
 	{
-		
+
 		//Important: when deleting a pointer, set it to nullptr afterwards
 		//It allows us for null check in other parts of the code
 		delete modules[i];
@@ -63,10 +63,10 @@ bool Application::Init()
 {
 	bool ret = true;
 
-	for (int i = 0; i < NUM_MODULES && ret; ++i) 
+	for (int i = 0; i < NUM_MODULES && ret; ++i)
 		ret = modules[i]->Init();
-		
-	
+
+
 
 	//By now we will consider that all modules are always active
 	for (int i = 0; i < NUM_MODULES && ret; ++i)
@@ -80,13 +80,16 @@ Update_Status Application::Update()
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
 	for (int i = 0; i < NUM_MODULES && ret == Update_Status::UPDATE_CONTINUE; ++i)
-		ret = modules[i]->PreUpdate();
+		if (modules[i]->IsEnabled())
+			ret = modules[i]->PreUpdate();
 
 	for (int i = 0; i < NUM_MODULES && ret == Update_Status::UPDATE_CONTINUE; ++i)
-		ret = modules[i]->Update();
+		if (modules[i]->IsEnabled())
+			ret = modules[i]->Update();
 
 	for (int i = 0; i < NUM_MODULES && ret == Update_Status::UPDATE_CONTINUE; ++i)
-		ret = modules[i]->PostUpdate();
+		if (modules[i]->IsEnabled())
+			ret = modules[i]->PostUpdate();
 
 	return ret;
 }
