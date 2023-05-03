@@ -37,6 +37,8 @@ bool SceneLevel1::Start()
 	// Colliders ---
 
 	// Las paredes se instancian en ModulePuzzlePieces porque requieren que se cree primero un objeto de dicha clase
+
+	//Asegurate de que el modulo de juego este activo
 	App->pieces->Enable();
 
 	return ret;

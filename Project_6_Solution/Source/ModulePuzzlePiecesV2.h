@@ -72,6 +72,9 @@ public:
 	void DropPieces();
 
 public:
+	
+	// Avoid enabling twice
+	bool isInitialized = false;
 
 	PuzzlePiece templateMan;
 

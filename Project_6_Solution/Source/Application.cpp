@@ -64,13 +64,15 @@ bool Application::Init()
 	bool ret = true;
 
 	for (int i = 0; i < NUM_MODULES && ret; ++i)
-		ret = modules[i]->Init();
+		if (modules[i]->IsEnabled())
+			ret = modules[i]->Init();
 
 
 
 	//By now we will consider that all modules are always active
 	for (int i = 0; i < NUM_MODULES && ret; ++i)
-		ret = modules[i]->Start();
+		if (modules[i]->IsEnabled())
+			ret = modules[i]->Start();
 
 	return ret;
 }
@@ -99,7 +101,8 @@ bool Application::CleanUp()
 	bool ret = true;
 
 	for (int i = NUM_MODULES - 1; i >= 0 && ret; --i)
-		ret = modules[i]->CleanUp();
+		if (modules[i]->IsEnabled())
+			ret = modules[i]->CleanUp();
 
 	return ret;
 }
