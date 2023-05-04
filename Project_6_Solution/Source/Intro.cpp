@@ -6,6 +6,8 @@
 #include "ModuleInput.h"
 #include "ModuleFadeToBlack.h"
 #include <SDL/include/SDL_scancode.h>
+#include <iostream>
+using namespace std;
 
 Intro::Intro(bool startEnabled) : Module(startEnabled)
 {}
@@ -20,6 +22,7 @@ bool Intro::Start()
 	bool ret = true;
 
 	IntroTexture = App->textures->Load("Assets/Sprites/IntroScreen.png");
+	IntroTexture2 = App->textures->Load("Assets/Sprites/IntroScreen2.png");
 	App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
@@ -38,7 +41,13 @@ Update_Status Intro::Update()
 
 Update_Status Intro::PostUpdate()
 {
+	
 	App->render->Blit(IntroTexture, 0, 0, NULL);
+	App->render->Blit(IntroTexture2, 0, 0, NULL);
+	
+	
+	
 
 	return Update_Status::UPDATE_CONTINUE;
 }
+
