@@ -3,6 +3,10 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleFonts.h"
+#include "..//External_Libraries/SDL_image/include/SDL_image.h"
+
+#include "SDL/include/SDL_scancode.h"
+
 
 #include<string.h>
 
@@ -14,6 +18,17 @@ ModuleFonts::ModuleFonts(bool isEnabled) : Module(isEnabled)
 ModuleFonts::~ModuleFonts()
 {
 
+}
+
+bool ModuleFonts::Start()
+{
+	char lookupTable[] = { " !\"#$%&\'()*+,-./0123456789:;<=>?çabcdefghijklmnopqrstuvwxyz´`¨_|º" };
+	char specialNumbers[] = { "0123456789:PT+-" };
+	textFont = App->fonts->Load("Assets/Fonts/fonts4.png", lookupTable, 4);
+	scoreFont = App->fonts->Load("Assets/Fonts/fonts3.png", specialNumbers, 1);
+
+	bool ret = true;
+	return ret;
 }
 
 // Load new texture from file path
@@ -50,8 +65,6 @@ int ModuleFonts::Load(const char* texture_path, const char* characters, uint row
 
 	font.texture = tex;
 	font.rows = rows;
-
-	
 	
 	strcpy_s(fonts[id].table, MAX_FONT_CHARS, characters);
 	font.totalLength = strlen(characters);

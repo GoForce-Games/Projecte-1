@@ -28,22 +28,22 @@ Application::Application()
 	modules[1] = input = new ModuleInput(true);
 	modules[2] = textures = new ModuleTextures(true);
 	modules[3] = audio = new ModuleAudio(true);
-	modules[4] = presentation = new ModulePresentation(false);
+	modules[4] = fonts = new ModuleFonts(true);
+	modules[5] = presentation = new ModulePresentation(false);
 
-	modules[5] = intro = new Intro(true);
+	modules[6] = intro = new Intro(true);
 	//modules[i++] = sceneIntro = new SceneIntro(true); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)
 
-	modules[6] = sceneLevel_1 = new SceneLevel1(false);
-	modules[7] = puntuation = new Puntuation(false);
-	modules[8] = win_lose = new WinLose(false);
+	modules[7] = sceneLevel_1 = new SceneLevel1(false);
+	modules[8] = puntuation = new Puntuation(false);
+	modules[9] = win_lose = new WinLose(false);
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
-	modules[9] = pieces = new ModulePuzzlePiecesV2(false);
-	modules[10] = particles = new ModuleParticles(true);
+	modules[10] = pieces = new ModulePuzzlePiecesV2(false);
+	modules[11] = particles = new ModuleParticles(true);
 
-	modules[11] = collisions = new ModuleCollisions(true);
-	modules[12] = fade = new ModuleFadeToBlack(true);
-	modules[13] = fonts = new ModuleFonts(true);
+	modules[12] = collisions = new ModuleCollisions(true);
+	modules[13] = fade = new ModuleFadeToBlack(true);
 
 	modules[14] = render = new ModuleRender();
 }

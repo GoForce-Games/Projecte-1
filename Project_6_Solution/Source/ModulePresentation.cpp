@@ -40,9 +40,9 @@ Update_Status ModulePresentation::PostUpdate()
 {
 	
 	App->render->Blit(bgTexture, 0, 0, NULL); // TODO cargar el fondo
-	App->fonts->BlitText(0, 10, textFont, "Produced by GoForce Game");
-	App->fonts->BlitText(0, 10, textFont, "Members");
-	App->fonts->BlitText(0, 10, textFont, "Rogue");
+	App->fonts->BlitText(0, 10, *textFont, "Produced by GoForce Game");
+	App->fonts->BlitText(0, 10, *textFont, "Members");
+	App->fonts->BlitText(0, 10, *textFont, "Rogue");
 	
 	return Update_Status::UPDATE_CONTINUE;
 }
