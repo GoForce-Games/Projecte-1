@@ -31,7 +31,7 @@ bool Intro::Start()
 Update_Status Intro::Update()
 {
 
-	App->fade->FadeToBlack((Module*)this, (Module*)App->intro2, 0);
+	App->fade->FadeToBlack((Module*)this, (Module*)App->intro2, 90);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
