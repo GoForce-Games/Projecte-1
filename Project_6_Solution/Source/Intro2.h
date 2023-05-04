@@ -1,23 +1,23 @@
-#ifndef __INTRO_H__
-#define __INTRO_H__
+#ifndef __INTRO2_H__
+#define __INTRO2_H__
 
 #include "Module.h"
 #include "Animation.h"
 
 struct SDL_Texture;
 
-class Intro : public Module
+class Intro2 : public Module
 {
 public:
-	Intro(bool startEnabled);
-	~Intro();
+	Intro2(bool startEnabled);
+	~Intro2();
 
 	bool Start() override;
 
 	Update_Status Update() override;
 	Update_Status PostUpdate() override;
 
-	SDL_Texture* IntroTexture = nullptr;
+	SDL_Texture* IntroTexture2 = nullptr;
 };
 
 #endif

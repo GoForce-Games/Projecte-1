@@ -1,4 +1,4 @@
-#include "Intro.h"
+#include "Intro2.h"
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
@@ -9,19 +9,19 @@
 #include <iostream>
 using namespace std;
 
-Intro::Intro(bool startEnabled) : Module(startEnabled)
+Intro2::Intro2(bool startEnabled) : Module(startEnabled)
 {}
 
-Intro::~Intro()
+Intro2::~Intro2()
 {}
 
-bool Intro::Start()
+bool Intro2::Start()
 {
 	LOG("Loading intro assets");
 
 	bool ret = true;
 
-	IntroTexture = App->textures->Load("Assets/Sprites/IntroScreen.png");
+	IntroTexture2 = App->textures->Load("Assets/Sprites/IntroScreen2.png");
 	App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
@@ -29,18 +29,20 @@ bool Intro::Start()
 	return ret;
 }
 
-Update_Status Intro::Update()
+Update_Status Intro2::Update()
 {
 
-	App->fade->FadeToBlack((Module*)this, (Module*)App->intro2, 45);
+	if (App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
+	{
+		App->fade->FadeToBlack((Module*)this, (Module*)App->sceneLevel_1, 90);
+	}
 
 	return Update_Status::UPDATE_CONTINUE;
 }
 
-Update_Status Intro::PostUpdate()
+Update_Status Intro2::PostUpdate()
 {
-	App->render->Blit(IntroTexture, 0, 0, NULL);
+	App->render->Blit(IntroTexture2, 0, 0, NULL);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
-
