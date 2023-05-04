@@ -22,7 +22,6 @@ bool Intro::Start()
 	bool ret = true;
 
 	IntroTexture = App->textures->Load("Assets/Sprites/IntroScreen.png");
-	App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
 
@@ -32,7 +31,7 @@ bool Intro::Start()
 Update_Status Intro::Update()
 {
 
-	App->fade->FadeToBlack((Module*)this, (Module*)App->intro2, 45);
+	App->fade->FadeToBlack((Module*)this, (Module*)App->intro2, 0);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
