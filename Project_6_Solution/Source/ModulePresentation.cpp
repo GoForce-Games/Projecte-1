@@ -27,23 +27,21 @@ bool ModulePresentation::Start() {
 
 	bool ret = true;
 	textFont = App->puntuation->textFont;
+	PresentationTexture = App->textures->Load("Assets/Sprites/presentation.png");
+
 	return ret;
 }
 Update_Status ModulePresentation::Update() {
+
 	if (App->input->keys[SDL_Scancode::SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
 	{
-		App->fade->FadeToBlack(this, (Module*)App->sceneLevel_1, 90);
+		App->fade->FadeToBlack(this, (Module*)App->intro, 90);
 	}
 	return Update_Status::UPDATE_CONTINUE;
 }
 Update_Status ModulePresentation::PostUpdate()
 {
-	
-	App->render->Blit(bgTexture, 0, 0, NULL); // TODO cargar el fondo
-	App->fonts->BlitText(0, 10, *textFont, "Produced by GoForce Game");
-	App->fonts->BlitText(0, 10, *textFont, "Members");
-	App->fonts->BlitText(0, 10, *textFont, "Rogue");
-	
+	App->render->Blit(PresentationTexture, 0, 0, NULL);
 	return Update_Status::UPDATE_CONTINUE;
 }
 bool ModulePresentation::CleanUp() {

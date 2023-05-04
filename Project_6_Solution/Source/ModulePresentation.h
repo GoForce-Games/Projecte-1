@@ -28,6 +28,7 @@ public:
 public:
 	
 	SDL_Texture* bgTexture = nullptr;
+	SDL_Texture* PresentationTexture = nullptr;
 };
 
 #endif
