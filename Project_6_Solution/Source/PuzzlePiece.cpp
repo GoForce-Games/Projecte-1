@@ -24,6 +24,7 @@ PuzzlePiece::~PuzzlePiece()
 {
 	if (collider != nullptr) {
 		collider->pendingToDelete = true;
+		collider = nullptr;
 	}
 }
 
