@@ -28,6 +28,10 @@ enum PieceType {
 
 class PuzzlePiece {
 public:
+
+	static const char* enumLookup[];
+
+
 	// Constructor
 	PuzzlePiece();
 

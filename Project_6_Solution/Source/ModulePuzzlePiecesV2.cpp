@@ -8,9 +8,12 @@
 
 #include "../External_Libraries/SDL/include/SDL.h"
 
+#include <random>
+#include <time.h>
+
 ModulePuzzlePiecesV2::ModulePuzzlePiecesV2(bool startEnabled) : Module(startEnabled)
 {
-	
+
 }
 
 ModulePuzzlePiecesV2::~ModulePuzzlePiecesV2()
@@ -20,6 +23,7 @@ ModulePuzzlePiecesV2::~ModulePuzzlePiecesV2()
 
 bool ModulePuzzlePiecesV2::Start()
 {
+	srand(time(NULL));
 	locked = false;
 
 	for (uint i = 0; i < MAX_PIECES; i++)
@@ -115,8 +119,8 @@ bool ModulePuzzlePiecesV2::Start()
 	}
 
 	delete templateWall;
-	
-	
+
+
 
 	PuzzlePiece* newPieces[4];
 	newPieces[0] = AddPuzzlePiece(templateMan);
@@ -149,14 +153,14 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 		KEY_STATE* keys = App->input->keys;
 
-		
+
 		// Godmode: activa/desactiva gravedad
 		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == KEY_STATE::KEY_DOWN) {
 			gravity = (gravity == 0) ? GRAVITY : 0;
 		}
-		
-		
-		
+
+
+
 		// Rotacion
 
 		if (keys[SDL_Scancode::SDL_SCANCODE_P] == KEY_STATE::KEY_DOWN) {
@@ -236,6 +240,20 @@ Update_Status ModulePuzzlePiecesV2::Update()
 	else { // Logica a aplicar entre piezas nuevas
 		playArea.DropPieces();
 		playArea.checkGroupedPieces();
+		/*
+		std::stack<PuzzlePiece*> s;
+		GeneratePuzzlePieces(s, 3);
+		PuzzlePiece* newPieces[4];
+		newPieces[0] = s.top();
+		s.pop();
+		newPieces[1] = s.top();
+		s.pop();
+		newPieces[2] = s.top();
+		s.pop();
+		newPieces[3] = AddPuzzlePiece(*emptyPiece);
+		player.setPieces(newPieces);
+		*/
+		player.position.create(64, 16);
 	}
 
 
@@ -279,8 +297,19 @@ bool ModulePuzzlePiecesV2::CleanUp()
 	return true;
 }
 
-void ModulePuzzlePiecesV2::GeneratePuzzlePieces(uint amount)
+std::stack<PuzzlePiece*>& ModulePuzzlePiecesV2::GeneratePuzzlePieces(std::stack<PuzzlePiece*>& stack, uint amount)
 {
+
+	for (uint i = 0; i < amount; i++)
+	{
+		PuzzlePiece* newPiece = AddPuzzlePiece(templateMan);
+		newPiece->type = (PieceType)(2 + (rand() % 3));
+		stack.push(newPiece);
+		//TODO asignar animaciones individuales
+	}
+
+
+	return stack;
 }
 
 PuzzlePiece* ModulePuzzlePiecesV2::AddPuzzlePiece(const PuzzlePiece& piece, Collider::Type type)
@@ -290,7 +319,8 @@ PuzzlePiece* ModulePuzzlePiecesV2::AddPuzzlePiece(const PuzzlePiece& piece, Coll
 			//Crea nueva pieza con una caja de colision copiada de la plantilla
 			PuzzlePiece* newPiece = new PuzzlePiece(piece);
 			newPiece->collider = App->collisions->AddCollider(templateMan.collider->rect, type);
-			newPiece->collider->SetPos(newPiece->position.x, newPiece->position.y);
+			if (newPiece->collider != nullptr) //TODO solucionar problema de colliders
+				newPiece->collider->SetPos(newPiece->position.x, newPiece->position.y);
 			return pieces[i] = newPiece;
 		}
 	}
@@ -311,9 +341,9 @@ void ModulePuzzlePiecesV2::RemovePuzzlePiece(PuzzlePiece* piece)
 			pieces[i] = nullptr;
 			break;
 		}
-		
+
 	}
-	
+
 }
 
 bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
@@ -340,7 +370,7 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 		x = 1;
 		if (player.pieces[0][1]->collider->enabled) y--;
 		if (player.pieces[1][1]->collider->enabled) y++;
-			break;
+		break;
 	}
 	case TOP: {
 		y = -1;
@@ -366,9 +396,9 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	else {
 		// Pone el colisionador a la izquierda o la derecha
 		if (x > 0)
-		rect.x = player.position.x + (PIECE_SIZE * 2);
+			rect.x = player.position.x + (PIECE_SIZE * 2);
 		else
-		rect.x = player.position.x - PIECE_SIZE;
+			rect.x = player.position.x - PIECE_SIZE;
 	}
 
 	if (y == 0) {
@@ -379,7 +409,7 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	else {
 		// Pone el colisionador debajo (+1) o arriba (-1) del jugador
 		if (y > 0)
-			rect.y = player.position.y + (PIECE_SIZE) + gravity;
+			rect.y = player.position.y + (PIECE_SIZE)+gravity;
 		else
 			rect.y = player.position.y - PIECE_SIZE + gravity;
 	}
@@ -412,7 +442,7 @@ void ModulePuzzlePiecesV2::PlacePieces() {
 		for (size_t j = 0; j < 2; j++)
 		{
 			if (!player.pieces[i][j]->isEmpty)
-			playArea.table[posTablero.x + i][posTablero.y + j] = player.pieces[i][j];
+				playArea.table[posTablero.x + i][posTablero.y + j] = player.pieces[i][j];
 			player.pieces[i][j] = nullptr;
 		}
 	}

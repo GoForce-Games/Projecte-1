@@ -4,6 +4,21 @@
 #include "Animation.h"
 #include "Collider.h"
 
+const char* PuzzlePiece::enumLookup[] = {
+		"NONE",
+	"BLACK",
+	"WHITE",
+	"RED",
+	"BLUE",
+	"GREEN",
+	"BOMB",
+	"PRIMED_BOMB",
+	"WALL",
+
+
+	"MAX"
+};
+
 PuzzlePiece::PuzzlePiece() : position()
 {
 	type = PieceType::NONE;

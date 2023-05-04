@@ -8,6 +8,8 @@
 #define PLAY_AREA_X 10
 #define PLAY_AREA_Y 13
 
+#define GROUP_MIN_COUNT 3
+
 class PlayArea
 {
 public:
@@ -19,7 +21,7 @@ public:
 
 	bool Update();
 
-	void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type, uint& count);
+	void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type);
 
 	void checkGroupedPieces();
 

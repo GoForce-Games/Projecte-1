@@ -2,6 +2,7 @@
 #include "Module.h"
 
 #include <queue>
+#include <stack>
 
 #include "Animation.h"
 #include "p2Point.h"
@@ -63,7 +64,7 @@ public:
 
 	bool CleanUp() override;
 
-	void GeneratePuzzlePieces(uint amount);
+	std::stack<PuzzlePiece*>& ModulePuzzlePiecesV2::GeneratePuzzlePieces(std::stack<PuzzlePiece*>& stack, uint amount);
 
 	// Add new PuzzlePiece to the board
 	PuzzlePiece* AddPuzzlePiece(const PuzzlePiece& newPiece, Collider::Type type = Collider::Type::PUZZLE_PIECE);

@@ -30,7 +30,8 @@ void PlayArea::Init(PuzzlePiece* fillWith)
 	{
 		for (uint j = 0; j < PLAY_AREA_Y; j++)
 		{
-			table[i][j] = manager->AddPuzzlePiece(*fillWith,fillWith->collider->type);
+			if (table[i][j] == nullptr)
+				table[i][j] = manager->AddPuzzlePiece(*fillWith, fillWith->collider->type);
 		}
 	}
 }
@@ -42,7 +43,7 @@ bool PlayArea::Update()
 		for (size_t j = 0; j < PLAY_AREA_Y; j++)
 		{
 			if (table[i][j] != nullptr) {
-				table[i][j]->position.create(position.x + PIECE_SIZE * i, position.y + PIECE_SIZE * (j+1));
+				table[i][j]->position.create(position.x + PIECE_SIZE * i, position.y + PIECE_SIZE * (j + 1));
 				table[i][j]->Update();
 			}
 		}
@@ -65,10 +66,17 @@ void PlayArea::NewPieceSet(PlayerPiece* player)
 }
 */
 
-void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type, uint& count) {
+void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type) {
+	// Si la pieza ya esta en el grupo no hace falta añadirla (no deberia pasar nunca, esto es para evitar recursiones infinitas)
+	for (iPoint p : group)
+	{
+		if (p == table[currPos.x][currPos.y]->position) {
+			return;
+		}
+	}
 	group.push_back(table[currPos.x][currPos.y]->position);
 	bool existsInGroup = false;
-	for (size_t i = -1; i < 2; i += 2)
+	for (int i = -1; i < 2; i += 2)
 	{
 		//Si no es del mismo tipo salta esta iteracion
 		if (table[currPos.x + i][currPos.y]->type != type) continue;
@@ -89,11 +97,11 @@ void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceTyp
 		}
 		else { //Si aun no ha sido añadido, lo añade y sigue buscando recursivamente
 			currPos.x += i;
-			RecurseGroups(group, currPos, type, ++count);
+			RecurseGroups(group, currPos, type);
 		}
 	}
-	
-	for (size_t i = -1; i < 2; i += 2)
+
+	for (int i = -1; i < 2; i += 2)
 	{
 		//Si no es del mismo tipo salta esta iteracion
 		if (table[currPos.x][currPos.y + i]->type != type) continue;
@@ -114,7 +122,7 @@ void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceTyp
 		}
 		else { //Si aun no ha sido añadido, lo añade y sigue buscando recursivamente
 			currPos.y += i;
-			RecurseGroups(group, currPos, type, ++count);
+			RecurseGroups(group, currPos, type);
 		}
 	}
 }
@@ -122,7 +130,7 @@ void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceTyp
 void PlayArea::checkGroupedPieces()
 {
 	// Posiciones de las piezas a quitar
-	std::stack<std::stack<iPoint>> groupsToRemove;
+	std::deque<std::deque<iPoint>> groupsToRemove;
 
 	PuzzlePiece* p = nullptr;
 
@@ -131,6 +139,17 @@ void PlayArea::checkGroupedPieces()
 		for (size_t j = 0; j < PLAY_AREA_Y; j++)
 		{
 			p = table[i][j];
+			if (p->type != PieceType::NONE && p->type != PieceType::WALL) {
+				std::deque<iPoint> deq;
+				iPoint pos;
+				pos.create(i,j);
+				LOG("%s %s\n", "Empieza la busqueda de piezas", (PuzzlePiece::enumLookup[p->type]));
+				RecurseGroups(deq, pos, p->type);
+				if (deq.size() >= GROUP_MIN_COUNT) {
+					groupsToRemove.push_back(deq);
+				}
+			}
+
 		}
 	}
 
@@ -160,55 +179,55 @@ bool PlayArea::CleanUp()
 void PlayArea::debugPiecePosition() {
 	LOG("ALERTA, EL USO DE LA FUNCION PlayArea::debugPiecePosition() IMPLICA UN ALTO IMPACTO EN RENDIMIENTO DEBIDO A SU IMPLEMENTACION")
 
-	for (size_t i = 0; i < PLAY_AREA_Y; i++)
-	{
-		for (size_t j = 0; j < PLAY_AREA_X; j++)
+		for (size_t i = 0; i < PLAY_AREA_Y; i++)
 		{
-			switch (table[j][i]->type)
+			for (size_t j = 0; j < PLAY_AREA_X; j++)
 			{
-			case NONE: {
-				OutputDebugString("-");
+				switch (table[j][i]->type)
+				{
+				case NONE: {
+					OutputDebugString("-");
 
-				break;
+					break;
+				}
+				case WALL: {
+					OutputDebugString("P");
+
+					break;
+				}
+				case WHITE: {
+					OutputDebugString("B");
+
+					break;
+				}
+				case BLACK: {
+					OutputDebugString("N");
+
+					break;
+				}
+				case BLUE: {
+					OutputDebugString("A");
+
+					break;
+				}
+				case GREEN: {
+					OutputDebugString("V");
+
+					break;
+				}
+				case BOMB: {
+					OutputDebugString("K");
+
+					break;
+				}
+				default:
+					break;
+				}
+
+
 			}
-			case WALL: {
-				OutputDebugString("P");
-
-				break;
-			}
-			case WHITE: {
-				OutputDebugString("B");
-
-				break;
-			}
-			case BLACK: {
-				OutputDebugString("N");
-
-				break;
-			}
-			case BLUE: {
-				OutputDebugString("A");
-
-				break;
-			}
-			case GREEN: {
-				OutputDebugString("V");
-
-				break;
-			}
-			case BOMB: {
-				OutputDebugString("K");
-
-				break;
-			}
-			default:
-				break;
-			}
-
-
+			OutputDebugString("\n");
 		}
-		OutputDebugString("\n");
-	}
 
 
 }
