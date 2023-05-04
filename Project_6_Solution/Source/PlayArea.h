@@ -3,6 +3,7 @@
 #include "PuzzlePiece.h"
 #include "PlayerPiece.h"
 #include "p2Point.h"
+#include <deque>
 
 #define PLAY_AREA_X 10
 #define PLAY_AREA_Y 13
@@ -17,6 +18,8 @@ public:
 	void Init(PuzzlePiece* fillWith = nullptr);
 
 	bool Update();
+
+	void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type, uint& count);
 
 	void checkGroupedPieces();
 
