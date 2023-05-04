@@ -60,6 +60,7 @@ Update_Status WinLose::PostUpdate()
 	if (ActiveTexture != nullptr)
 	{
 		App->render->Blit(ActiveTexture, 0, 0, NULL, false);
+		SDL_Delay(10);
 	}
 
 	return Update_Status::UPDATE_CONTINUE;
