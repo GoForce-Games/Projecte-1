@@ -5,6 +5,7 @@
 #include "PlayerPiece.h"
 #include "Collider.h"
 #include "ModulePuzzlePiecesV2.h"
+#include <stack>
 
 PlayArea::PlayArea()
 {
@@ -64,9 +65,78 @@ void PlayArea::NewPieceSet(PlayerPiece* player)
 }
 */
 
+void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type, uint& count) {
+	group.push_back(table[currPos.x][currPos.y]->position);
+	bool existsInGroup = false;
+	for (size_t i = -1; i < 2; i += 2)
+	{
+		//Si no es del mismo tipo salta esta iteracion
+		if (table[currPos.x + i][currPos.y]->type != type) continue;
+
+		//Busca si ya se encuentra en el grupo
+		for (iPoint p : group)
+		{
+			if (p == table[currPos.x + i][currPos.y]->position) {
+				existsInGroup = true;
+				break;
+			}
+		}
+
+		//Si ya ha sido añadido salta a la siguiente iteracion
+		if (existsInGroup) {
+			existsInGroup = false;
+			continue;
+		}
+		else { //Si aun no ha sido añadido, lo añade y sigue buscando recursivamente
+			currPos.x += i;
+			RecurseGroups(group, currPos, type, ++count);
+		}
+	}
+	
+	for (size_t i = -1; i < 2; i += 2)
+	{
+		//Si no es del mismo tipo salta esta iteracion
+		if (table[currPos.x][currPos.y + i]->type != type) continue;
+
+		//Busca si ya se encuentra en el grupo
+		for (iPoint p : group)
+		{
+			if (p == table[currPos.x][currPos.y + i]->position) {
+				existsInGroup = true;
+				break;
+			}
+		}
+
+		//Si ya ha sido añadido salta a la siguiente iteracion
+		if (existsInGroup) {
+			existsInGroup = false;
+			continue;
+		}
+		else { //Si aun no ha sido añadido, lo añade y sigue buscando recursivamente
+			currPos.y += i;
+			RecurseGroups(group, currPos, type, ++count);
+		}
+	}
+}
+
 void PlayArea::checkGroupedPieces()
 {
+	// Posiciones de las piezas a quitar
+	std::stack<std::stack<iPoint>> groupsToRemove;
+
+	PuzzlePiece* p = nullptr;
+
+	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	{
+		for (size_t j = 0; j < PLAY_AREA_Y; j++)
+		{
+			p = table[i][j];
+		}
+	}
+
 }
+
+
 
 void PlayArea::explodeBombs()
 {

@@ -102,6 +102,18 @@ bool ModulePuzzlePiecesV2::Start()
 		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_Y - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.x += PIECE_SIZE;
 	}
+
+	//Techo (por ciertas razones relacionadas con la deteccion de grupos)
+	// Fondo
+	offset = playArea.position;
+	offset.y += 0;
+	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	{
+		templateWall->position = offset;
+		PuzzlePiece* piece = playArea.table[i][0] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		offset.x += PIECE_SIZE;
+	}
+
 	delete templateWall;
 	
 	
@@ -361,13 +373,13 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 
 	if (y == 0) {
 		//Hace que el colisionador ocupe todo el alto del jugador
-		rect.y = player.position.y + gravity;;
+		rect.y = player.position.y + gravity;
 		rect.h = PIECE_SIZE * 2;
 	}
 	else {
 		// Pone el colisionador debajo (+1) o arriba (-1) del jugador
-		if (y < 0)
-			rect.y = player.position.y + (PIECE_SIZE * 2) + gravity;
+		if (y > 0)
+			rect.y = player.position.y + (PIECE_SIZE) + gravity;
 		else
 			rect.y = player.position.y - PIECE_SIZE + gravity;
 	}
@@ -412,7 +424,7 @@ bool ModulePuzzlePiecesV2::PieceCanDrop(PuzzlePiece* piece)
 	iPoint position = player.position;
 	collisionTester->SetPos(position.x, position.y);
 	collisionTester->rect.w = PIECE_SIZE;
-	collisionTester->rect.h = PIECE_SIZE;
+	collisionTester->rect.h = gravity;
 
 	for (size_t i = 0; i < MAX_WALLS; i++)
 	{

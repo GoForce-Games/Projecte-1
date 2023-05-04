@@ -22,6 +22,7 @@ The controls of the game in are:
 · F1 - GOD MODE
 · F2 - Add 100 points to score
 · F3 - If score >= 1000 show Win Screen, else show Lose Screen
+· F9 - Toggle gravity on/off
 · A - Left
 · S - Down
 · D - Right
