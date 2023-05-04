@@ -20,10 +20,13 @@ has been released for various consoles and platforms over the years, and is know
 Controls
 The controls of the game in are:
 · F1 - GOD MODE
+· F2 - Add 100 points to score
+· F3 - If score >= 1000 show Win Screen, else show Lose Screen
 · A - Left
 · S - Down
 · D - Right
-· Space - Rotate Pieces
+· P - Rotate Pieces
+· Space - Go to next screen (In group screen and game start screen)
 · Arrows - Moving Camera
 · ESC - Leave Game
 
