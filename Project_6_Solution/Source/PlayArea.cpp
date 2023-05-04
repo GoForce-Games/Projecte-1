@@ -41,7 +41,7 @@ bool PlayArea::Update()
 		for (size_t j = 0; j < PLAY_AREA_Y; j++)
 		{
 			if (table[i][j] != nullptr) {
-				table[i][j]->position.create(position.x + PIECE_SIZE * i, position.y + (PIECE_SIZE+1) * j);
+				table[i][j]->position.create(position.x + PIECE_SIZE * i, position.y + PIECE_SIZE * (j+1));
 				table[i][j]->Update();
 			}
 		}
@@ -88,6 +88,7 @@ bool PlayArea::CleanUp()
 }
 
 void PlayArea::debugPiecePosition() {
+	LOG("ALERTA, EL USO DE LA FUNCION PlayArea::debugPiecePosition() IMPLICA UN ALTO IMPACTO EN RENDIMIENTO DEBIDO A SU IMPLEMENTACION")
 
 	for (size_t i = 0; i < PLAY_AREA_Y; i++)
 	{
@@ -144,8 +145,8 @@ void PlayArea::debugPiecePosition() {
 
 void PlayArea::DropPieces()
 {
-	OutputDebugString("Haciendo caer a las piezas...\n");
-	debugPiecePosition();
+	//OutputDebugString("Haciendo caer a las piezas...\n");
+	//debugPiecePosition();
 	for (size_t i = 0; i < PLAY_AREA_Y - 2; i++)
 	{
 		for (size_t j = 1; j < PLAY_AREA_X - 1; j++)
@@ -165,17 +166,14 @@ void PlayArea::DropPieces()
 
 		}
 	}
-	OutputDebugString("Resultado:\n");
-	debugPiecePosition();
+	//OutputDebugString("Resultado:\n");
+	//debugPiecePosition();
 	return;
 }
 
 
 bool PlayArea::PieceCanDrop(PuzzlePiece* pieceTop, PuzzlePiece* pieceBot)
 {
-	if (pieceTop->type == WHITE || pieceBot->type == WHITE) {
-		LOG("HEY!");
-	}
 	if (pieceTop == nullptr || pieceTop->isEmpty) return false; // Estas intentando mover "nada"
 	if (pieceBot == nullptr || pieceBot->isEmpty) return true; // No hay nada debajo
 
