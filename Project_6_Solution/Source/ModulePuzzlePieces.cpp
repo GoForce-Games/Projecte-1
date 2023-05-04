@@ -213,9 +213,13 @@ PuzzlePiece* ModulePuzzlePieces::AddPuzzlePiece(const PuzzlePiece& piece)
 
 void ModulePuzzlePieces::RemovePuzzlePiece(PuzzlePiece* piece)
 {
-
-	if (piece != nullptr)
-		delete piece;
+	for (size_t i = 0; i < MAX_PIECES; i++)
+	{
+		if (pieces[i] == piece) {
+			delete piece;
+			pieces[i] = nullptr;
+		}
+	}
 }
 
 bool ModulePuzzlePieces::WillCollide(iPoint position)

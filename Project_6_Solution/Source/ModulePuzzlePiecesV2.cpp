@@ -20,6 +20,8 @@ ModulePuzzlePiecesV2::~ModulePuzzlePiecesV2()
 
 bool ModulePuzzlePiecesV2::Start()
 {
+	locked = false;
+
 	for (uint i = 0; i < MAX_PIECES; i++)
 	{
 		pieces[i] = nullptr;
@@ -249,13 +251,15 @@ void ModulePuzzlePiecesV2::OnCollision(Collider* c1, Collider* c2)
 
 bool ModulePuzzlePiecesV2::CleanUp()
 {
+	RemovePuzzlePiece(&templateMan);
 	playArea.CleanUp();
 	App->collisions->CleanUp();
+
 	for (size_t i = 0; i < MAX_PIECES; i++)
 	{
-		if (pieces[i] != nullptr)
-			pieces[i] = nullptr;
+		RemovePuzzlePiece(pieces[i]);
 	}
+
 	App->textures->Unload(textureBomberman);
 	textureBomberman = nullptr;
 	App->textures->Unload(textureBomb);
@@ -290,6 +294,7 @@ void ModulePuzzlePiecesV2::RemovePuzzlePiece(PuzzlePiece* piece)
 	for (size_t i = 0; i < MAX_PIECES; i++)
 	{
 		if (pieces[i] == piece) {
+			piece->collider->pendingToDelete = true;
 			delete piece;
 			pieces[i] = nullptr;
 			break;

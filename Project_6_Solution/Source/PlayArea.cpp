@@ -1,5 +1,6 @@
-#include "PuzzlePiece.h"
 #include "PlayArea.h"
+#include "PuzzlePiece.h"
+#include "Application.h"
 #include "Globals.h"
 #include "PlayerPiece.h"
 #include "Collider.h"
@@ -7,7 +8,13 @@
 
 PlayArea::PlayArea()
 {
-	Init();
+	for (uint i = 0; i < PLAY_AREA_X; i++)
+	{
+		for (uint j = 0; j < PLAY_AREA_Y; j++)
+		{
+			table[i][j] = nullptr;
+		}
+	}
 }
 
 PlayArea::~PlayArea()
@@ -16,11 +23,13 @@ PlayArea::~PlayArea()
 
 void PlayArea::Init(PuzzlePiece* fillWith)
 {
+	ModulePuzzlePiecesV2* manager = App->pieces;
+
 	for (uint i = 0; i < PLAY_AREA_X; i++)
 	{
 		for (uint j = 0; j < PLAY_AREA_Y; j++)
 		{
-			table[i][j] = fillWith;
+			table[i][j] = manager->AddPuzzlePiece(*fillWith,fillWith->collider->type);
 		}
 	}
 }
@@ -31,8 +40,10 @@ bool PlayArea::Update()
 	{
 		for (size_t j = 0; j < PLAY_AREA_Y; j++)
 		{
-			if (table[i][j] != nullptr)
+			if (table[i][j] != nullptr) {
+				table[i][j]->position.create(position.x + PIECE_SIZE * i, position.y + (PIECE_SIZE+1) * j);
 				table[i][j]->Update();
+			}
 		}
 	}
 
@@ -68,7 +79,6 @@ bool PlayArea::CleanUp()
 		for (size_t j = 0; j < PLAY_AREA_Y; j++)
 		{
 			if (table[i][j] != nullptr) {
-				delete table[i][j];
 				table[i][j] = nullptr;
 			}
 		}
@@ -147,8 +157,8 @@ void PlayArea::DropPieces()
 					table[j][i + 1] = aux;
 
 					//Actualiza la posicion de las piezas
-					table[j][i]->position.y += PIECE_SIZE;
-					table[j][i + 1]->position.y -= PIECE_SIZE;
+					//table[j][i]->position.y += PIECE_SIZE;
+					//table[j][i + 1]->position.y -= PIECE_SIZE;
 
 
 				}
