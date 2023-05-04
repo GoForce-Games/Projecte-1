@@ -22,6 +22,8 @@ PlayerPiece::PlayerPiece()
 	piecePaths[1][0]->name = "BotLeft";
 	piecePaths[1][1]->name = "BotRight";
 
+	
+
 	// Impide que se mueva si el jugador no le da a la tecla de rotacion
 	piecePaths[0][0]->PushBack({ 0,0 }, 1);
 	piecePaths[0][1]->PushBack({ 0,0 }, 1);
@@ -158,4 +160,6 @@ void PlayerPiece::setPieces(PuzzlePiece* newPieces[4])
 	pieces[0][1]->name = "TopRight";
 	pieces[1][0]->name = "BotLeft";
 	pieces[1][1]->name = "BotRight";
+
+	App->pieces->playArea.watched = pieces[1][0];
 }

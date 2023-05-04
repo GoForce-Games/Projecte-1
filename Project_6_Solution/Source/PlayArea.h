@@ -24,11 +24,21 @@ public:
 
 	bool CleanUp();
 
+	void PlayArea::debugPiecePosition();
+
+	void DropPieces();
+
+	bool PieceCanDrop(PuzzlePiece* pieceTop, PuzzlePiece* pieceBot);
+
 
 public:
+	PuzzlePiece* watched = nullptr;
+
 	iPoint position;
 
 	//Array bidimensional de punteros a pieza
 	PuzzlePiece* table[PLAY_AREA_X][PLAY_AREA_Y];
+
+	Collider* collisionTester = nullptr;
 };
 

@@ -43,7 +43,7 @@ bool ModulePuzzlePieces::Start()
 	piece->position.create(64, 16);
 	piece->collider = App->collisions->AddCollider({ 64,16,16,16 }, Collider::Type::PLAYER, this);
 	piece->texture = textureBomberman;
-	piece->SetAnimation(animDefault);
+	piece->SetAnimation(&animDefault);
 	piece->moving = true;
 	currentPiece = AddPuzzlePiece(*piece);
 
@@ -143,7 +143,7 @@ Update_Status ModulePuzzlePieces::PostUpdate()
 	{
 		PuzzlePiece* piece = pieces[i];
 		if (piece == nullptr) continue;
-		SDL_Rect currFrame = piece->currentAnimation.GetCurrentFrame();
+		SDL_Rect currFrame = piece->currentAnimation->GetCurrentFrame();
 		iPoint pos = piece->position;
 		SDL_Texture* texture = piece->texture;
 		App->render->Blit(texture, pos.x, pos.y, &currFrame);
@@ -223,6 +223,8 @@ bool ModulePuzzlePieces::WillCollide(iPoint position)
 
 	position += currentPiece->position;
 	collisionTester->SetPos(position.x, position.y);
+	collisionTester->rect.w = PIECE_SIZE;
+	collisionTester->rect.h = PIECE_SIZE;
 
 	for (size_t i = 0; i < MAX_WALLS; i++)
 	{

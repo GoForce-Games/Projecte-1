@@ -74,7 +74,9 @@ public:
 	bool WillCollide(PlayerCollisionCheck direction);
 
 	//Saca las piezas del jugador y las coloca en el tablero donde les toca
-	void DropPieces();
+	void PlacePieces();
+
+	bool PieceCanDrop(PuzzlePiece* piece);
 
 public:
 	

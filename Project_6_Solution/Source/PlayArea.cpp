@@ -2,6 +2,8 @@
 #include "PlayArea.h"
 #include "Globals.h"
 #include "PlayerPiece.h"
+#include "Collider.h"
+#include "ModulePuzzlePiecesV2.h"
 
 PlayArea::PlayArea()
 {
@@ -73,4 +75,102 @@ bool PlayArea::CleanUp()
 	}
 
 	return true;
+}
+
+void PlayArea::debugPiecePosition() {
+
+	for (size_t i = 0; i < PLAY_AREA_Y; i++)
+	{
+		for (size_t j = 0; j < PLAY_AREA_X; j++)
+		{
+			switch (table[j][i]->type)
+			{
+			case NONE: {
+				OutputDebugString("-");
+
+				break;
+			}
+			case WALL: {
+				OutputDebugString("P");
+
+				break;
+			}
+			case WHITE: {
+				OutputDebugString("B");
+
+				break;
+			}
+			case BLACK: {
+				OutputDebugString("N");
+
+				break;
+			}
+			case BLUE: {
+				OutputDebugString("A");
+
+				break;
+			}
+			case GREEN: {
+				OutputDebugString("V");
+
+				break;
+			}
+			case BOMB: {
+				OutputDebugString("K");
+
+				break;
+			}
+			default:
+				break;
+			}
+
+
+		}
+		OutputDebugString("\n");
+	}
+
+
+}
+
+void PlayArea::DropPieces()
+{
+	OutputDebugString("Haciendo caer a las piezas...\n");
+	debugPiecePosition();
+	for (size_t i = 0; i < PLAY_AREA_Y - 2; i++)
+	{
+		for (size_t j = 1; j < PLAY_AREA_X - 1; j++)
+		{
+			if (table[i][j] != nullptr)
+				if (PieceCanDrop(table[j][i], table[j][i + 1])) {
+					PuzzlePiece* aux = table[j][i];
+					table[j][i] = table[j][i + 1];
+					table[j][i + 1] = aux;
+
+					//Actualiza la posicion de las piezas
+					table[j][i]->position.y += PIECE_SIZE;
+					table[j][i + 1]->position.y -= PIECE_SIZE;
+
+
+				}
+
+		}
+	}
+	OutputDebugString("Resultado:\n");
+	debugPiecePosition();
+	return;
+}
+
+
+bool PlayArea::PieceCanDrop(PuzzlePiece* pieceTop, PuzzlePiece* pieceBot)
+{
+	if (pieceTop->type == WHITE || pieceBot->type == WHITE) {
+		LOG("HEY!");
+	}
+	if (pieceTop == nullptr || pieceTop->isEmpty) return false; // Estas intentando mover "nada"
+	if (pieceBot == nullptr || pieceBot->isEmpty) return true; // No hay nada debajo
+
+	//if (pieceBot->type == PieceType::WALL) return false; // No puede intercambiar con una pared
+	if (pieceBot->type == PieceType::NONE) return true; // Espacio sin colision debajo
+
+	return false;
 }

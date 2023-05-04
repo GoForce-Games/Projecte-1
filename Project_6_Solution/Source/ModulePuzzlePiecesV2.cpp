@@ -10,15 +10,7 @@
 
 ModulePuzzlePiecesV2::ModulePuzzlePiecesV2(bool startEnabled) : Module(startEnabled)
 {
-	for (uint i = 0; i < MAX_PIECES; i++)
-	{
-		pieces[i] = nullptr;
-	}
-
-	for (uint i = 0; i < MAX_WALLS; i++)
-	{
-		walls[i] = nullptr;
-	}
+	
 }
 
 ModulePuzzlePiecesV2::~ModulePuzzlePiecesV2()
@@ -28,6 +20,15 @@ ModulePuzzlePiecesV2::~ModulePuzzlePiecesV2()
 
 bool ModulePuzzlePiecesV2::Start()
 {
+	for (uint i = 0; i < MAX_PIECES; i++)
+	{
+		pieces[i] = nullptr;
+	}
+
+	for (uint i = 0; i < MAX_WALLS; i++)
+	{
+		walls[i] = nullptr;
+	}
 
 	// TODO textura para probar, hay que recortar el spritesheet
 	textureBomberman = App->textures->Load("Assets/testerman.png");
@@ -50,17 +51,22 @@ bool ModulePuzzlePiecesV2::Start()
 	templateMan.collider = App->collisions->AddCollider({ -64,-64,16,16 }, Collider::Type::NONE);
 	templateMan.position.create(-64, -64);
 	templateMan.texture = textureBomberman;
-	templateMan.SetAnimation(animDefault);
+	templateMan.SetAnimation(&animDefault);
 	templateMan.moving = false;
+	templateMan.type = PieceType::WHITE;
 
 
 	emptyPiece = AddPuzzlePiece(templateMan, Collider::Type::NONE);
-	emptyPiece->currentAnimation = animNone;
+	emptyPiece->currentAnimation = &animNone;
 	emptyPiece->isEmpty = true;
+	emptyPiece->type = PieceType::NONE;
+
+	playArea.Init(emptyPiece);
 
 	//Paredes
-	PuzzlePiece* templateWall = new PuzzlePiece();
+	PuzzlePiece* templateWall = new PuzzlePiece(*emptyPiece);
 	templateWall->moving = false;
+	templateWall->type = PieceType::WALL;
 
 	// Columna izquierda
 	iPoint offset = playArea.position;
@@ -95,8 +101,6 @@ bool ModulePuzzlePiecesV2::Start()
 		offset.x += PIECE_SIZE;
 	}
 	delete templateWall;
-
-	
 	
 	
 
@@ -109,7 +113,7 @@ bool ModulePuzzlePiecesV2::Start()
 
 	collisionTester = App->collisions->AddCollider({ -64,-64,16,16 }, Collider::Type::PLAYER);
 
-
+	playArea.collisionTester = collisionTester;
 
 	player.position.create(64, 16);
 
@@ -201,7 +205,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 			}
 			else {
 				locked = true;
-				DropPieces();
+				PlacePieces();
 			}
 			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo
 		}
@@ -215,6 +219,11 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 
 	}
+	else { // Logica a aplicar entre piezas nuevas
+		playArea.DropPieces();
+		playArea.checkGroupedPieces();
+	}
+
 
 	return Update_Status::UPDATE_CONTINUE;
 }
@@ -225,7 +234,7 @@ Update_Status ModulePuzzlePiecesV2::PostUpdate()
 	{
 		PuzzlePiece* p = pieces[i];
 		if (p == nullptr) continue;
-		SDL_Rect& currFrame = p->currentAnimation.GetCurrentFrame();
+		SDL_Rect& currFrame = p->currentAnimation->GetCurrentFrame();
 		iPoint& pos = p->position;
 		SDL_Texture* texture = p->texture;
 		App->render->Blit(texture, pos.x, pos.y, &currFrame);
@@ -375,10 +384,11 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	return false;
 }
 
-void ModulePuzzlePiecesV2::DropPieces() {
+void ModulePuzzlePiecesV2::PlacePieces() {
 	iPoint posPlayer = player.position;
 	iPoint posZona = playArea.position;
 	iPoint posTablero = (player.position - playArea.position) / PIECE_SIZE;
+	posTablero.y--;
 
 	for (size_t i = 0; i < 2; i++)
 	{
@@ -386,7 +396,26 @@ void ModulePuzzlePiecesV2::DropPieces() {
 		{
 			if (!player.pieces[i][j]->isEmpty)
 			playArea.table[posTablero.x + i][posTablero.y + j] = player.pieces[i][j];
+			player.pieces[i][j] = nullptr;
 		}
 	}
+	playArea.debugPiecePosition();
+}
+
+bool ModulePuzzlePiecesV2::PieceCanDrop(PuzzlePiece* piece)
+{
+	iPoint position = player.position;
+	collisionTester->SetPos(position.x, position.y);
+	collisionTester->rect.w = PIECE_SIZE;
+	collisionTester->rect.h = PIECE_SIZE;
+
+	for (size_t i = 0; i < MAX_WALLS; i++)
+	{
+		if (walls[i] != nullptr && collisionTester->Intersects(walls[i]->rect)) {
+			return true;
+		}
+	}
+
+	return false;
 }
 

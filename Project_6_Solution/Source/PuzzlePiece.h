@@ -20,6 +20,7 @@ enum PieceType {
 	GREEN,
 	BOMB,
 	PRIMED_BOMB,
+	WALL,
 
 
 	MAX
@@ -39,13 +40,13 @@ public:
 	// Active piece update (player movement)
 	void Update();
 
-	void SetAnimation(Animation newAnimation);
+	void SetAnimation(Animation* newAnimation);
 
 public:
 	// For debug purposes
 	std::string name;
 
-
+	PieceType type;
 
 	bool isEmpty = false;
 
@@ -59,7 +60,7 @@ public:
 	Collider* collider = nullptr;
 
 	// The piece's current animation
-	Animation currentAnimation;
+	Animation* currentAnimation = nullptr;
 
 	SDL_Texture* texture = nullptr;
 
