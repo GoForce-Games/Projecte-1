@@ -18,6 +18,8 @@ public:
 	Update_Status PostUpdate() override;
 
 	SDL_Texture* IntroTexture = nullptr;
+	SDL_Texture* IntroBackground = nullptr;
+
 };
 
 #endif

@@ -21,6 +21,7 @@ bool Intro::Start()
 
 	bool ret = true;
 
+	IntroBackground = App->textures->Load("Assets/Sprites/IntroBackground.png");
 	IntroTexture = App->textures->Load("Assets/Sprites/IntroScreen.png");
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
@@ -38,6 +39,7 @@ Update_Status Intro::Update()
 
 Update_Status Intro::PostUpdate()
 {
+	App->render->Blit(IntroBackground, 0, 0, NULL);
 	App->render->Blit(IntroTexture, 0, 0, NULL);
 
 	return Update_Status::UPDATE_CONTINUE;
