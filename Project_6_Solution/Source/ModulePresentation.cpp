@@ -33,7 +33,7 @@ bool ModulePresentation::Start() {
 }
 Update_Status ModulePresentation::Update() {
 
-	if (App->input->keys[SDL_Scancode::SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
+	if (App->input->keys[SDL_Scancode::SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
 		App->fade->FadeToBlack(this, (Module*)App->intro, 90);
 	}
