@@ -10,6 +10,7 @@
 
 #include <random>
 #include <time.h>
+#include <iostream>
 
 ModulePuzzlePiecesV2::ModulePuzzlePiecesV2(bool startEnabled) : Module(startEnabled)
 {
@@ -142,7 +143,7 @@ bool ModulePuzzlePiecesV2::Start()
 
 Update_Status ModulePuzzlePiecesV2::Update()
 {
-
+	GamePad& pad = App->input->pads[0];
 	//Update Animations
 	playArea.Update();
 	player.Update();
@@ -151,11 +152,11 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 		//Lee input
 
-		KEY_STATE* keys = App->input->keys;
+		Key_State* keys = App->input->keys;
 
 
 		// Godmode: activa/desactiva gravedad
-		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == KEY_STATE::KEY_DOWN) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == Key_State::KEY_DOWN) {
 			gravity = (gravity == 0) ? GRAVITY : 0;
 		}
 
@@ -163,7 +164,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 		// Rotacion
 
-		if (keys[SDL_Scancode::SDL_SCANCODE_P] == KEY_STATE::KEY_DOWN) {
+		if ((keys[SDL_Scancode::SDL_SCANCODE_P] == Key_State::KEY_DOWN) || pad.a){
 			player.Rotate();
 		}
 
@@ -172,19 +173,19 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 
 		// Acelera la caída
-		if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_DOWN) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN) {
 			dropDelay = MIN_DROP_DELAY;
 		}
-		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT;
+		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT;
 
 
 		//El primer frame en el que intentas moverte a un lado es instantaneo
-		if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN) moveDelay = 0;
-		else if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN)	moveDelay = 0;
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN) moveDelay = 0;
+		else if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN)	moveDelay = 0;
 
 
 		// Mueve a la izquierda
-		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_IDLE) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE) {
 
 			if (!WillCollide(PlayerCollisionCheck::LEFT)) {
 
@@ -199,7 +200,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 		}
 
 		// Mueve a la derecha
-		if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_IDLE) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_IDLE) {
 
 			if (!WillCollide(PlayerCollisionCheck::RIGHT)) {
 
