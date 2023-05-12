@@ -3,6 +3,7 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleAudio.h"
+#include "Puntuation.h"
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
 #include "Globals.h"
