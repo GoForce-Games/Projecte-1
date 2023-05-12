@@ -77,10 +77,12 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="GameConstants.h" />
     <ClInclude Include="Intro2.h" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCollisions.h" />
+    <ClInclude Include="ModulePuzzlePiecesV3.h" />
     <ClInclude Include="ModuleFadeToBlack.h" />
     <ClInclude Include="ModuleFonts.h" />
     <ClInclude Include="ModuleParticles.h" />
@@ -112,6 +114,7 @@
     <ClCompile Include="Intro.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCollisions.cpp" />
+    <ClCompile Include="ModulePuzzlePiecesV3.cpp" />
     <ClCompile Include="ModuleFadeToBlack.cpp" />
     <ClCompile Include="ModuleFonts.cpp" />
     <ClCompile Include="ModuleParticles.cpp" />

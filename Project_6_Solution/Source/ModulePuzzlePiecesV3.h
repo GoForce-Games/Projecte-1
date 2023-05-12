@@ -1,30 +1,14 @@
 #pragma once
 #include "Module.h"
-
-#include <queue>
 #include <stack>
-
-#include "Animation.h"
-#include "p2Point.h"
+#include <queue>
 #include "PuzzlePiece.h"
 #include "Collider.h"
 #include "PlayerPiece.h"
 #include "PlayArea.h"
 
-struct SDL_Texture;
+#include "GameConstants.h"
 
-#define MAX_PIECES 200
-
-#define MAX_WALLS 6
-
-#define MAX_DROP_DELAY 15
-#define MIN_DROP_DELAY 2
-#define MAX_MOVE_DELAY 5
-
-#define MOVE_SPEED PIECE_SIZE
-#define GRAVITY 4
-
-#define EXPLODE_COUNTDOWN 100
 
 enum PlayerCollisionCheck {
 	CENTER,
@@ -33,17 +17,21 @@ enum PlayerCollisionCheck {
 	TOP,
 	BOTTOM,
 	DEBUG
+
+
 };
 
-class ModulePuzzlePiecesV2 :
-	public Module
+class ModulePuzzlePiecesV3 :
+    public Module
 {
 public:
 	// Constructor
-	ModulePuzzlePiecesV2(bool startEnabled = true);
+	ModulePuzzlePiecesV3(bool startEnabled = true);
 
 	// Destructor
-	~ModulePuzzlePiecesV2();
+	~ModulePuzzlePiecesV3();
+
+	bool Init() override;
 
 	// Called when the module is activated
 	// Loads the necessary textures for the player
@@ -62,7 +50,7 @@ public:
 
 	bool CleanUp() override;
 
-	std::stack<PuzzlePiece*>& ModulePuzzlePiecesV2::GeneratePuzzlePieces(std::stack<PuzzlePiece*>& stack, uint amount);
+	std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<PuzzlePiece*>& stack, uint amount);
 
 	// Add new PuzzlePiece to the board
 	PuzzlePiece* AddPuzzlePiece(const PuzzlePiece& newPiece, Collider::Type type = Collider::Type::PUZZLE_PIECE);
@@ -77,8 +65,39 @@ public:
 
 	bool PieceCanDrop(PuzzlePiece* piece);
 
-public:
+private: // Helper functions
 	
+	// Initializers
+
+	void EnableDependencies();
+
+	void LoadTextures();
+
+	void InitAnims();
+
+	void InitTemplates();
+
+	void InitWalls();
+
+	void InitPlayers();
+
+	void InitMisc();
+
+	// Gameplay methods for Update()
+
+	void ProcessInput();
+
+	void ApplyPhysics();
+
+	void ApplyLogic();
+
+	// Coordinate-related helper methods
+
+	iPoint ScreenToLocal(PlayArea& localArea, iPoint sCoordinates);
+
+	iPoint AreaToScreen(PlayArea& localArea, iPoint lCoordinates);
+
+public:
 	// Avoid enabling twice
 	bool isInitialized = false;
 
@@ -94,14 +113,14 @@ public:
 	bool fastFall = false;
 	bool locked = false;
 
-	uint dropDelay = MAX_DROP_DELAY;
-	uint moveDelay = MAX_MOVE_DELAY;
+	uint dropDelay;
+	uint moveDelay;
 
 	// Movement speed in pixels per frame
-	uint moveSpeed = MOVE_SPEED;
+	uint moveSpeed;
 
 	// Drop speed in pixels per frame
-	uint gravity = GRAVITY;
+	uint gravity;
 
 	// Pieces (either bombermen or bombs) currently on screen
 	PuzzlePiece* pieces[MAX_PIECES];
@@ -128,17 +147,11 @@ public:
 	Collider* collisionTester = nullptr;
 
 	// Para colisiones manuales al mover las piezas
-	uint wallCount = 0;
+	uint wallCount;
 	Collider* walls[MAX_WALLS];
 
-	// To be used when clearing a group of bombermen or bombs
-	bool explode = false;
-
-	// Time until this piece disappears from the screen
-	uint explodeCountdown = EXPLODE_COUNTDOWN;
-
-	// No hace falta crear una variable extra por cada objeto para esto
 	// SFX id number
-	const static uint explosionFX = 0;
+	const uint explosionFX = 0;
 
 };
+
