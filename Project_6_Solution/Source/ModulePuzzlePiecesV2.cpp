@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
+#include "ModuleAudio.h"
 
 #include "../External_Libraries/SDL/include/SDL.h"
 
@@ -137,6 +138,8 @@ bool ModulePuzzlePiecesV2::Start()
 	player.position.create(64, 16);
 
 
+	rotateFX = App->audio->LoadFx("Assets/SFX/rotate.wav");
+	lockedFX = App->audio->LoadFx("Assets/SFX/piecelocked.wav");
 
 	return true;
 }
@@ -166,6 +169,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 		if ((keys[SDL_Scancode::SDL_SCANCODE_P] == Key_State::KEY_DOWN) || pad.a){
 			player.Rotate();
+			App->audio->PlayFx(rotateFX);
 		}
 
 
@@ -224,6 +228,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 			}
 			else {
 				locked = true;
+				App->audio->PlayFx(lockedFX);
 				PlacePieces();
 			}
 			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo
@@ -461,7 +466,7 @@ bool ModulePuzzlePiecesV2::PieceCanDrop(PuzzlePiece* piece)
 	{
 		if (walls[i] != nullptr && collisionTester->Intersects(walls[i]->rect)) {
 			return true;
-		}
+		} 
 	}
 
 	return false;

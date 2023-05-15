@@ -18,6 +18,7 @@ public:
 	Update_Status PostUpdate() override;
 
 	SDL_Texture* IntroTexture2 = nullptr;
+	uint titleFX = 0;
 };
 
 #endif
