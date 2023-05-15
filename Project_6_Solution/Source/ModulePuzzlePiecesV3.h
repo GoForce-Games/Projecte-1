@@ -9,18 +9,6 @@
 
 #include "GameConstants.h"
 
-
-enum PlayerCollisionCheck {
-	CENTER,
-	LEFT,
-	RIGHT,
-	TOP,
-	BOTTOM,
-	DEBUG
-
-
-};
-
 class ModulePuzzlePiecesV3 :
     public Module
 {

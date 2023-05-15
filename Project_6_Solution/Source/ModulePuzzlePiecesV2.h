@@ -141,4 +141,6 @@ public:
 	// SFX id number
 	const static uint explosionFX = 0;
 
+	uint rotateFX = 0;
+	uint lockedFX = 0;
 };
