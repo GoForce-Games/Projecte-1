@@ -46,9 +46,9 @@ PlayerPiece::PlayerPiece()
 	piecePaths[1][1]->finished = true;
 }
 
-PlayerPiece::PlayerPiece(PuzzlePiece* pieces_[4]) : PlayerPiece()
+PlayerPiece::PlayerPiece(PuzzlePiece* pieces[4]) : PlayerPiece()
 {
-	setPieces(pieces_);
+	setPieces(pieces);
 }
 
 PlayerPiece::~PlayerPiece()

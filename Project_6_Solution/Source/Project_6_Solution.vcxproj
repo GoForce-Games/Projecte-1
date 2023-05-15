@@ -103,6 +103,7 @@
     <ClInclude Include="Path.h" />
     <ClInclude Include="PlayArea.h" />
     <ClInclude Include="PlayerPiece.h" />
+    <ClInclude Include="PlayerPieceV2.h" />
     <ClInclude Include="Puntuation.h" />
     <ClInclude Include="PuzzlePiece.h" />
   </ItemGroup>
@@ -134,8 +135,10 @@
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PlayArea.cpp" />
     <ClCompile Include="PlayerPiece.cpp" />
+    <ClCompile Include="PlayerPieceV2.cpp" />
     <ClCompile Include="Puntuation.cpp" />
     <ClCompile Include="PuzzlePiece.cpp" />
+    <ClCompile Include="PuzzleUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ModulePresentation.h" />

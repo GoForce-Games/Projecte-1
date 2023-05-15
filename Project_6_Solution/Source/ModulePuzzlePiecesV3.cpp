@@ -4,6 +4,9 @@
 #include "ModuleCollisions.h"
 #include "ModuleTextures.h"
 
+#include "../External_Libraries/SDL/include/SDL.h"
+#include "ModuleInput.h"
+
 ModulePuzzlePiecesV3::ModulePuzzlePiecesV3(bool startEnabled) : Module(startEnabled)
 {
 	dropDelay = MAX_DROP_DELAY;
@@ -61,8 +64,7 @@ void ModulePuzzlePiecesV3::OnCollision(Collider* c1, Collider* c2)
 
 bool ModulePuzzlePiecesV3::CleanUp()
 {
-	return true
-		;
+	return true;
 }
 
 std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<PuzzlePiece*>& stack, uint amount)
@@ -190,6 +192,8 @@ void ModulePuzzlePiecesV3::InitWalls()
 
 void ModulePuzzlePiecesV3::InitPlayers()
 {
+	player.gamepad = &(App->input->pads[0]);
+
 	player.position.create(64, 16);
 
 	PuzzlePiece* newPieces[4];
@@ -209,22 +213,130 @@ void ModulePuzzlePiecesV3::InitMisc()
 
 void ModulePuzzlePiecesV3::ProcessInput()
 {
+	if (!locked) {
+		GamePad& pad = *(player.gamepad);
+
+		//Lee input
+
+		Key_State* keys = App->input->keys;
+
+
+		// Godmode: activa/desactiva gravedad
+		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == Key_State::KEY_DOWN) {
+			gravity = (gravity == 0) ? GRAVITY : 0;
+		}
+
+
+		// Rotacion
+
+		if ((keys[SDL_Scancode::SDL_SCANCODE_P] == Key_State::KEY_DOWN) || pad.a) {
+			player.Rotate();
+		}
+
+
+
+		// Acelera la caída
+		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN) {
+			dropDelay = MIN_DROP_DELAY;
+		}
+		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT;
+
+
+		//El primer frame en el que intentas moverte a un lado es instantaneo
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN) moveDelay = 0;
+		else if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN)	moveDelay = 0;
+
+
+		// Mueve a la izquierda
+		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE) {
+
+			if (!WillCollide(PlayerCollisionCheck::LEFT)) {
+
+				if (moveDelay == 0) {
+					moveDelay = MAX_MOVE_DELAY;
+					player.position.x -= moveSpeed;
+				}
+				else {
+					moveDelay--;
+				}
+			}
+		}
+
+		// Mueve a la derecha
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_IDLE) {
+
+			if (!WillCollide(PlayerCollisionCheck::RIGHT)) {
+
+				if (moveDelay == 0) {
+					moveDelay = MAX_MOVE_DELAY;
+					player.position.x += moveSpeed;
+				}
+				else {
+					moveDelay--;
+				}
+			}
+		}
+	}
 }
 
 void ModulePuzzlePiecesV3::ApplyPhysics()
 {
+	if (!locked) {
+		//Aplica gravedad
+
+		if (dropDelay == 0) {
+			if (!WillCollide(PlayerCollisionCheck::BOTTOM)) {
+				dropDelay = fastFall ? MIN_DROP_DELAY : MAX_DROP_DELAY;
+				player.position.y += gravity;
+			}
+			else {
+				locked = true;
+				PlacePieces();
+			}
+			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo
+		}
+		else {
+			dropDelay--;
+		}
+	}
 }
 
 void ModulePuzzlePiecesV3::ApplyLogic()
 {
+	if (locked) {
+		playArea.DropPieces();
+		playArea.checkGroupedPieces();
+		/*
+		std::stack<PuzzlePiece*> s;
+		GeneratePuzzlePieces(s, 3);
+		PuzzlePiece* newPieces[4];
+		newPieces[0] = s.top();
+		s.pop();
+		newPieces[1] = s.top();
+		s.pop();
+		newPieces[2] = s.top();
+		s.pop();
+		newPieces[3] = AddPuzzlePiece(*emptyPiece);
+		player.setPieces(newPieces);
+		*/
+		player.position.create(64, 16);
+	}
 }
 
-iPoint ModulePuzzlePiecesV3::ScreenToLocal(PlayArea& localArea, iPoint sCoordinates)
+iPoint ModulePuzzlePiecesV3::WorldToLocal(PlayArea& localArea, iPoint sCoordinates)
 {
-	return iPoint();
+	iPoint nPoint;
+	nPoint.create(sCoordinates.x, sCoordinates.y);
+	nPoint -= localArea.position;
+
+	return nPoint;
 }
 
-iPoint ModulePuzzlePiecesV3::AreaToScreen(PlayArea& localArea, iPoint lCoordinates)
+iPoint ModulePuzzlePiecesV3::AreaToWorld(PlayArea& localArea, iPoint lCoordinates)
 {
-	return iPoint();
+	iPoint nPoint;
+	nPoint.create(lCoordinates.x, lCoordinates.y);
+	nPoint += localArea.position;
+
+	return nPoint;
 }

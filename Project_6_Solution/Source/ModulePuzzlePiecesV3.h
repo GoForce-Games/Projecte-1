@@ -4,7 +4,7 @@
 #include <queue>
 #include "PuzzlePiece.h"
 #include "Collider.h"
-#include "PlayerPiece.h"
+#include "PlayerPieceV2.h"
 #include "PlayArea.h"
 
 #include "GameConstants.h"
@@ -93,9 +93,9 @@ private: // Helper functions
 
 	// Coordinate-related helper methods
 
-	iPoint ScreenToLocal(PlayArea& localArea, iPoint sCoordinates);
+	iPoint WorldToLocal(PlayArea& localArea, iPoint sCoordinates);
 
-	iPoint AreaToScreen(PlayArea& localArea, iPoint lCoordinates);
+	iPoint AreaToWorld(PlayArea& localArea, iPoint lCoordinates);
 
 public:
 	// Avoid enabling twice
@@ -106,7 +106,7 @@ public:
 	//Pieza vacía, sin nada asignado
 	PuzzlePiece* emptyPiece = nullptr;
 
-	PlayerPiece player;
+	PlayerPieceV2 player;
 
 	PlayArea playArea;
 
