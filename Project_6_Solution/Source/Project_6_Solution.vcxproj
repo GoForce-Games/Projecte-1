@@ -82,6 +82,7 @@
     <ClInclude Include="Intro.h" />
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCollisions.h" />
+    <ClInclude Include="ModuleLose.h" />
     <ClInclude Include="ModulePuzzlePiecesV3.h" />
     <ClInclude Include="ModuleFadeToBlack.h" />
     <ClInclude Include="ModuleFonts.h" />
@@ -115,6 +116,7 @@
     <ClCompile Include="Intro.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCollisions.cpp" />
+    <ClCompile Include="ModuleLose.cpp" />
     <ClCompile Include="ModulePuzzlePiecesV3.cpp" />
     <ClCompile Include="ModuleFadeToBlack.cpp" />
     <ClCompile Include="ModuleFonts.cpp" />

@@ -18,6 +18,7 @@
 #include "Intro.h"
 #include "Intro2.h"
 #include "ModuleWinLose.h"
+#include "ModuleLose.h"
 
 Application::Application()
 {
@@ -39,15 +40,16 @@ Application::Application()
 	modules[8] = sceneLevel_1 = new SceneLevel1(false);
 	modules[9] = puntuation = new Puntuation(false);
 	modules[10] = win_lose = new WinLose(false);
+	modules[11] = lose_screen = new ModuleLose(false);
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
-	modules[11] = pieces = new ModulePuzzlePiecesV2(false);
-	modules[12] = particles = new ModuleParticles(true);
+	modules[12] = pieces = new ModulePuzzlePiecesV2(false);
+	modules[13] = particles = new ModuleParticles(true);
 
-	modules[13] = collisions = new ModuleCollisions(true);
-	modules[14] = fade = new ModuleFadeToBlack(true);
+	modules[14] = collisions = new ModuleCollisions(true);
+	modules[15] = fade = new ModuleFadeToBlack(true);
 
-	modules[15] = render = new ModuleRender();
+	modules[16] = render = new ModuleRender();
 }
 
 Application::~Application()

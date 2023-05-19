@@ -7,6 +7,7 @@
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
 #include "Globals.h"
+#include "ModuleFadeToBlack.h"
 
 WinLose::WinLose(bool startEnabled) : Module(startEnabled)
 {
@@ -63,6 +64,7 @@ Update_Status WinLose::Update()
 		gameFinish = false;
 		currentAnimation = &LoseAnimation;
 		App->audio->PlayMusic("Assets/Music/Lose.ogg", 1.0f);
+		App->fade->FadeToBlack(this, (Module*)App->lose_screen ,90);
 	}
 	if (gameFinish && App->puntuation->score >= 1000)
 	{

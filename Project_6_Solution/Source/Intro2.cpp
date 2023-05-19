@@ -33,8 +33,8 @@ bool Intro2::Start()
 
 Update_Status Intro2::Update()
 {
-
-	if (App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
+	GamePad& pad = App->input->pads[0];
+	if (App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN || pad.a)
 	{
 		App->audio->PlayFx(titleFX);
 		App->fade->FadeToBlack((Module*)this, (Module*)App->sceneLevel_1, 90);

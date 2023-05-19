@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 
-#define NUM_MODULES 16
+#define NUM_MODULES 17
 
 class Module;
 class ModuleWindow;
@@ -24,6 +24,7 @@ class Puntuation;
 class Intro;
 class Intro2;
 class WinLose;
+class ModuleLose;
 
 class Application
 {
@@ -72,6 +73,7 @@ public:
 	ModulePuzzlePiecesV2* pieces = nullptr;
 	Puntuation* puntuation = nullptr;
 	WinLose* win_lose = nullptr;
+	ModuleLose* lose_screen = nullptr;
 
 	Intro* intro = nullptr;
 	Intro2* intro2 = nullptr;

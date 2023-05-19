@@ -89,6 +89,8 @@ public:
 
 	// An array to fill in all detected gamepads
 	GamePad pads[MAX_PADS] = { PAD_IDLE };
+
+	
 };
 
 #endif // __ModuleInput_H__
