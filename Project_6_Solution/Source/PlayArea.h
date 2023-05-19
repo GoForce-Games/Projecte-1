@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PuzzlePiece.h"
-#include "PlayerPiece.h"
+#include "PlayerPieceV2.h"
 #include "p2Point.h"
 #include <deque>
 

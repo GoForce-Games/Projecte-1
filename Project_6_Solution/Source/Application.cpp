@@ -12,7 +12,7 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleFonts.h"
 #include "ModuleRender.h"
-#include "ModulePuzzlePiecesV2.h"
+#include "ModulePuzzlePiecesV3.h"
 #include "Puntuation.h"
 #include "ModulePresentation.h"
 #include "Intro.h"
@@ -41,7 +41,7 @@ Application::Application()
 	modules[10] = win_lose = new WinLose(false);
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
-	modules[11] = pieces = new ModulePuzzlePiecesV2(false);
+	modules[11] = pieces = new ModulePuzzlePiecesV3(false);
 	modules[12] = particles = new ModuleParticles(true);
 
 	modules[13] = collisions = new ModuleCollisions(true);

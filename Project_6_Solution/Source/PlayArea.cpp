@@ -4,7 +4,7 @@
 #include "Globals.h"
 #include "PlayerPiece.h"
 #include "Collider.h"
-#include "ModulePuzzlePiecesV2.h"
+#include "ModulePuzzlePiecesV3.h"
 #include <stack>
 
 PlayArea::PlayArea()
@@ -24,7 +24,7 @@ PlayArea::~PlayArea()
 
 void PlayArea::Init(PuzzlePiece* fillWith)
 {
-	ModulePuzzlePiecesV2* manager = App->pieces;
+	ModulePuzzlePiecesV3* manager = App->pieces;
 
 	for (uint i = 0; i < PLAY_AREA_X; i++)
 	{

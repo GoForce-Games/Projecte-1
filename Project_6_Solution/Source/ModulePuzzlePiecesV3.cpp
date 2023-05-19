@@ -3,17 +3,30 @@
 #include "Application.h"
 #include "ModuleCollisions.h"
 #include "ModuleTextures.h"
+#include "ModuleRender.h"
 
 #include "../External_Libraries/SDL/include/SDL.h"
 #include "ModuleInput.h"
 
 ModulePuzzlePiecesV3::ModulePuzzlePiecesV3(bool startEnabled) : Module(startEnabled)
 {
+	// TODO poner animaciones en el constructor
 	dropDelay = MAX_DROP_DELAY;
 	moveDelay = MAX_MOVE_DELAY;
 	moveSpeed = MOVE_SPEED;
 	gravity = GRAVITY;
 	wallCount = 0;
+	for (uint i = 0; i < MAX_PIECES; i++)
+	{
+		pieces[i] = nullptr;
+	}
+
+	for (uint i = 0; i < MAX_WALLS; i++)
+	{
+		walls[i] = nullptr;
+	}
+
+	InitAnims();
 }
 
 ModulePuzzlePiecesV3::~ModulePuzzlePiecesV3()
@@ -38,9 +51,8 @@ bool ModulePuzzlePiecesV3::Start()
 {
 	EnableDependencies();
 	LoadTextures();
-	InitAnims();
 	InitTemplates();
-	playArea.Init();
+	playArea.Init(emptyPiece);
 	InitWalls();
 	InitPlayers();
 	InitMisc();
@@ -50,11 +62,23 @@ bool ModulePuzzlePiecesV3::Start()
 
 Update_Status ModulePuzzlePiecesV3::Update()
 {
+	ProcessInput();
+	ApplyPhysics();
+	ApplyLogic(); // TODO logic devuelve estado de juego (?)
 	return Update_Status::UPDATE_CONTINUE;
 }
 
 Update_Status ModulePuzzlePiecesV3::PostUpdate()
 {
+	for (size_t i = 0; i < MAX_PIECES; i++)
+	{
+		PuzzlePiece* p = pieces[i];
+		if (p == nullptr) continue;
+		SDL_Rect& currFrame = p->currentAnimation->GetCurrentFrame();
+		iPoint& pos = p->position;
+		SDL_Texture* texture = p->texture;
+		App->render->Blit(texture, pos.x, pos.y, &currFrame);
+	}
 	return Update_Status::UPDATE_CONTINUE;
 }
 
@@ -64,6 +88,19 @@ void ModulePuzzlePiecesV3::OnCollision(Collider* c1, Collider* c2)
 
 bool ModulePuzzlePiecesV3::CleanUp()
 {
+	RemovePuzzlePiece(&templateMan);
+	playArea.CleanUp();
+	App->collisions->CleanUp();
+
+	for (size_t i = 0; i < MAX_PIECES; i++)
+	{
+		RemovePuzzlePiece(pieces[i]);
+	}
+
+	App->textures->Unload(textureBomberman);
+	textureBomberman = nullptr;
+	App->textures->Unload(textureBomb);
+	textureBomb = nullptr;
 	return true;
 }
 
@@ -72,8 +109,18 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<
 	return stack;
 }
 
-PuzzlePiece* ModulePuzzlePiecesV3::AddPuzzlePiece(const PuzzlePiece& newPiece, Collider::Type type)
+PuzzlePiece* ModulePuzzlePiecesV3::AddPuzzlePiece(const PuzzlePiece& piece, Collider::Type type)
 {
+	for (uint i = 0; i < MAX_PIECES; i++) {
+		if (pieces[i] == nullptr) {
+			//Crea nueva pieza con una caja de colision copiada de la plantilla
+			PuzzlePiece* newPiece = new PuzzlePiece(piece);
+			newPiece->collider = App->collisions->AddCollider(templateMan.collider->rect, type);
+			if (newPiece->collider != nullptr) //TODO solucionar problema de colliders
+				newPiece->collider->SetPos(newPiece->position.x, newPiece->position.y);
+			return pieces[i] = newPiece;
+		}
+	}
 	return nullptr;
 }
 
@@ -213,7 +260,7 @@ void ModulePuzzlePiecesV3::InitMisc()
 
 void ModulePuzzlePiecesV3::ProcessInput()
 {
-	if (!locked) {
+	if (!player.locked) {
 		GamePad& pad = *(player.gamepad);
 
 		//Lee input
@@ -281,7 +328,7 @@ void ModulePuzzlePiecesV3::ProcessInput()
 
 void ModulePuzzlePiecesV3::ApplyPhysics()
 {
-	if (!locked) {
+	if (!player.locked) {
 		//Aplica gravedad
 
 		if (dropDelay == 0) {
@@ -290,7 +337,7 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 				player.position.y += gravity;
 			}
 			else {
-				locked = true;
+				player.locked = true;
 				PlacePieces();
 			}
 			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo
@@ -303,7 +350,8 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 
 void ModulePuzzlePiecesV3::ApplyLogic()
 {
-	if (locked) {
+	// No se aplica logica cuando hay una pieza en juego
+	if (player.locked) {
 		playArea.DropPieces();
 		playArea.checkGroupedPieces();
 		/*

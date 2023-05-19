@@ -43,6 +43,7 @@ public:
 	Path* piecePaths[2][2];
 
 	bool rotating = false;
+	bool locked = false;
 
 };
 
