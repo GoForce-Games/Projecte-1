@@ -7,7 +7,7 @@
 #include "ModuleInput.h"
 #pragma comment( lib, "SDL/libx86/SDL2.lib")
 #pragma comment( lib, "SDL/libx86/SDL2main.lib")
-#define MAX_SCORE_LENGTH 10
+#define MAX_SCORE_LENGTH 7
 
 class Puntuation : public Module
 {
