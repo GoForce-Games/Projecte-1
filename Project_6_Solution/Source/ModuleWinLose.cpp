@@ -59,24 +59,25 @@ bool WinLose::Start()
 Update_Status WinLose::Update()
 {
 
+	if (App->input->keys[SDL_SCANCODE_F3] == KEY_DOWN)
+	{
+		gameFinish = true;
+	}
 	if (gameFinish && App->puntuation->score < 1000)
 	{
 		gameFinish = false;
 		currentAnimation = &LoseAnimation;
 		App->audio->PlayMusic("Assets/Music/Lose.ogg", 1.0f);
-		App->fade->FadeToBlack(this, (Module*)App->lose_screen ,90);
+		App->fade->FadeToBlack((Module*)this, (Module*)App->lose_screen, 0);
 	}
 	if (gameFinish && App->puntuation->score >= 1000)
 	{
 		gameFinish = false;
-		currentAnimation = &WinAnimation;
+		/*currentAnimation = &WinAnimation;*/
 		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
+		App->fade->FadeToBlack((Module*)this, (Module*)App->intro, 0);
 	}
-	if (App->input->keys[SDL_SCANCODE_F3] == KEY_DOWN)
-	{
-		gameFinish = true;
-
-	}
+	
 
 	currentAnimation->Update();
 
