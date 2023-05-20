@@ -28,7 +28,7 @@ bool ModuleFonts::Start()
 
 	textFont = App->fonts->Load("Assets/Fonts/fonts4.png", lookupTable, 4);
 	scoreFont = App->fonts->Load("Assets/Fonts/fonts3.png", specialNumbers, 1);
-	scoreFont2 = App - fonts->Load("Assets/Fonts/fonts5.png", scoreTable, 1);
+	scoreFont2 = App->fonts->Load("Assets/Fonts/fonts5.png", scoreTable, 1);
 
 	bool ret = true;
 	return ret;

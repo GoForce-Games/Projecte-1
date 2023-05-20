@@ -32,7 +32,7 @@ bool Puntuation::Start()
 	score = 000;
 	numeracion = 0;
 	scoreFont = &(App->fonts->scoreFont);
-	textFont = &(App->fonts->textFont);
+	textFont = &(App->fonts->scoreFont2);
 	
 	
 
