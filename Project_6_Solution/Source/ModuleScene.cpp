@@ -9,6 +9,9 @@
 #include "Puntuation.h"
 #include "ModuleWinLose.h"
 #include "ModuleFadeToBlack.h"
+#include "Intro.h"
+#include "Intro2.h"
+#include "ModuleLose.h"
 
 SceneLevel1::SceneLevel1(bool startEnabled) : Module(startEnabled)
 {
@@ -45,6 +48,9 @@ bool SceneLevel1::Start()
 	App->pieces->Enable();
 	App->puntuation->Enable();
 	App->win_lose->Enable();
+	//App->intro->Enable();
+	//App->intro2->Enable();
+	//App->lose_screen->Enable();
 
 	return ret;
 }
@@ -56,6 +62,9 @@ bool SceneLevel1::CleanUp()
 	App->pieces->Disable();
 	App->puntuation->Disable();
 	App->win_lose->Disable();
+	//App->intro->Disable();
+	//App->intro2->Disable();
+	//App->lose_screen->Disable();
 
 	return false;
 }

@@ -22,8 +22,8 @@ bool Intro2::Start()
 
 	bool ret = true;
 
-	IntroTexture2 = App->textures->Load("Assets/Sprites/IntroScreen2.png");
-	/*App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);*/
+	IntroTexture2 = App->textures->Load("Assets/Sprites/IntroBackground.png");
+	App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
 	titleFX = App->audio->LoadFx("Assets/SFX/titlescreen.wav");
