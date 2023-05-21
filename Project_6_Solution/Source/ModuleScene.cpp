@@ -10,7 +10,6 @@
 #include "ModuleWinLose.h"
 #include "ModuleFadeToBlack.h"
 #include "Intro.h"
-#include "Intro2.h"
 #include "ModuleLose.h"
 
 SceneLevel1::SceneLevel1(bool startEnabled) : Module(startEnabled)

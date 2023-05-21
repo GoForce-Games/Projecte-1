@@ -16,7 +16,6 @@
 #include "Puntuation.h"
 #include "ModulePresentation.h"
 #include "Intro.h"
-#include "Intro2.h"
 #include "ModuleWinLose.h"
 #include "ModuleLose.h"
 
@@ -44,13 +43,12 @@ Application::Application()
 	modules[10] = particles = new ModuleParticles(true);
 
 	modules[11] = intro = new Intro(false);
-	modules[12] = intro2 = new Intro2(false);
-	modules[13] = lose_screen = new ModuleLose(false);
+	modules[12] = lose_screen = new ModuleLose(false);
 
-	modules[14] = collisions = new ModuleCollisions(true);
-	modules[15] = fade = new ModuleFadeToBlack(true);
+	modules[13] = collisions = new ModuleCollisions(true);
+	modules[14] = fade = new ModuleFadeToBlack(true);
 
-	modules[16] = render = new ModuleRender();
+	modules[15] = render = new ModuleRender();
 }
 
 Application::~Application()
