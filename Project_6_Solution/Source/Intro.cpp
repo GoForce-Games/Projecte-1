@@ -25,7 +25,7 @@ Intro::Intro(bool startEnabled) : Module(startEnabled)
 
 	IAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &IntroAnimation);
 }
-
+ 
 Intro::~Intro()
 {}
 
@@ -49,12 +49,12 @@ Update_Status Intro::Update()
 	IntroAnimation.Update();
 
 	// TODO1: pasar al nivel1 cuando se pulse espacioo acabe animacion;
-	/*
+	
 	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
 		App->fade->FadeToBlack((Module*)App->sceneIntro, (Module*)App->sceneLevel_1, 90);
 	}
-	*/
+	
 
 	return Update_Status::UPDATE_CONTINUE;
 }
@@ -64,4 +64,12 @@ Update_Status Intro::PostUpdate()
 	App->render->Blit(IntroTexture, 0, 0, &(IAnimationPath.GetCurrentAnimation()->GetCurrentFrame()), 1.0f);
 
 	return Update_Status::UPDATE_CONTINUE;
+}
+
+bool Intro::CleanUp()
+{
+	// TODO Remove All Memory Leaks
+	App->sceneIntro->Disable();
+
+	return true;
 }

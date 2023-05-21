@@ -15,6 +15,8 @@ public:
 
 	bool Start() override;
 
+	bool CleanUp();
+
 	Update_Status Update() override;
 	Update_Status PostUpdate() override;
 
