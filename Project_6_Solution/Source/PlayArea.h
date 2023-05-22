@@ -5,8 +5,8 @@
 #include "p2Point.h"
 #include <deque>
 
-#define PLAY_AREA_X 10
-#define PLAY_AREA_Y 13
+#define PLAY_AREA_W 10
+#define PLAY_AREA_H 13
 
 #define GROUP_MIN_COUNT 3
 
@@ -42,7 +42,7 @@ public:
 	iPoint position;
 
 	//Array bidimensional de punteros a pieza
-	PuzzlePiece* table[PLAY_AREA_X][PLAY_AREA_Y];
+	PuzzlePiece* table[PLAY_AREA_H][PLAY_AREA_W];
 
 	Collider* collisionTester = nullptr;
 };

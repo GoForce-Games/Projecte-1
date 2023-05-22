@@ -62,6 +62,8 @@ bool ModulePuzzlePiecesV3::Start()
 
 Update_Status ModulePuzzlePiecesV3::Update()
 {
+	player.Update();
+	playArea.Update();
 	ProcessInput();
 	ApplyPhysics();
 	ApplyLogic(); // TODO logic devuelve estado de juego (?)
@@ -130,12 +132,105 @@ void ModulePuzzlePiecesV3::RemovePuzzlePiece(PuzzlePiece* piece)
 
 bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
 {
-	// TODO usar el modulo de colisiones existente
+	// TODO usar el modulo de colisiones existente si puede ser
+	SDL_Rect& rect = collisionTester->rect;
+	rect.w = PIECE_SIZE;
+	rect.h = PIECE_SIZE;
+	int x = 0, y = 0;
+
+	switch (direction)
+	{
+	case CENTER: {
+		break;
+	}
+	case LEFT: {
+		x = -1;
+
+		//Si el colisionador de la pieza correspondiente esta desactivado no hace falta comprobar más allá de donde se encuentra
+		if (player.pieces[0][0]->collider->enabled) y--;
+		if (player.pieces[1][0]->collider->enabled) y++;
+		break;
+	}
+	case RIGHT: {
+		x = 1;
+		if (player.pieces[0][1]->collider->enabled) y--;
+		if (player.pieces[1][1]->collider->enabled) y++;
+		break;
+	}
+	case TOP: {
+		y = -1;
+		if (player.pieces[0][0]->collider->enabled) x--;
+		if (player.pieces[0][1]->collider->enabled) x++;
+		break;
+	}
+	case BOTTOM: {
+		y = 1;
+		if (player.pieces[1][0]->collider->enabled) x--;
+		if (player.pieces[1][1]->collider->enabled) x++;
+		break;
+	}
+	default:
+		break;
+	}
+
+	if (x == 0) {
+		//Hace que el colisionador ocupe todo el ancho del jugador
+		rect.x = player.position.x;
+		rect.w = PIECE_SIZE * 2;
+	}
+	else {
+		// Pone el colisionador a la izquierda o la derecha
+		if (x > 0)
+			rect.x = player.position.x + (PIECE_SIZE * 2);
+		else
+			rect.x = player.position.x - PIECE_SIZE;
+	}
+
+	if (y == 0) {
+		//Hace que el colisionador ocupe todo el alto del jugador
+		rect.y = player.position.y + gravity;
+		rect.h = PIECE_SIZE * 2;
+	}
+	else {
+		// Pone el colisionador debajo (+1) o arriba (-1) del jugador
+		if (y > 0)
+			rect.y = player.position.y + (PIECE_SIZE)+gravity;
+		else
+			rect.y = player.position.y - PIECE_SIZE + gravity;
+	}
+
+	if (direction != PlayerCollisionCheck::DEBUG) {
+
+		for (size_t i = 0; i < MAX_PIECES; i++)
+		{
+			if (pieces[i] != nullptr && collisionTester->Intersects(pieces[i]->collider->rect)) {
+				return true;
+			}
+		}
+		if (direction != CENTER && (x != 0 || y != 0)) {
+			return WillCollide(PlayerCollisionCheck::CENTER);
+		}
+
+	}
+
 	return false;
 }
 
 void ModulePuzzlePiecesV3::PlacePieces()
 {
+	iPoint posTablero = WorldToLocal(playArea, player.position);
+	posTablero.y--;
+
+	for (size_t i = 0; i < 2; i++)
+	{
+		for (size_t j = 0; j < 2; j++)
+		{
+			if (!player.pieces[i][j]->isEmpty)
+				playArea.table[posTablero.y + i][posTablero.x + j] = player.pieces[i][j];
+			player.pieces[i][j] = nullptr;
+		}
+	}
+	playArea.debugPiecePosition();
 }
 
 bool ModulePuzzlePiecesV3::PieceCanDrop(PuzzlePiece* piece)
@@ -193,21 +288,21 @@ void ModulePuzzlePiecesV3::InitWalls()
 	// Columna izquierda
 	iPoint offset = playArea.position;
 	//offset.y += PIECE_SIZE;
-	for (size_t i = 0; i < PLAY_AREA_Y; i++)
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
-		PuzzlePiece* piece = playArea.table[0][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		PuzzlePiece* piece = playArea.table[i][0] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.y += PIECE_SIZE;
 	}
 
 	// Columna derecha
 	offset = playArea.position;
 	//offset.y += PIECE_SIZE;
-	offset.x += PIECE_SIZE * (PLAY_AREA_X - 1);
-	for (size_t i = 0; i < PLAY_AREA_Y; i++)
+	offset.x += PIECE_SIZE * (PLAY_AREA_W - 1);
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
-		PuzzlePiece* piece = playArea.table[PLAY_AREA_X - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_W - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.y += PIECE_SIZE;
 
 	}
@@ -215,11 +310,11 @@ void ModulePuzzlePiecesV3::InitWalls()
 
 	// Fondo
 	offset = playArea.position;
-	offset.y += PIECE_SIZE * (PLAY_AREA_Y);
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	offset.y += PIECE_SIZE * (PLAY_AREA_H);
+	for (size_t i = 0; i < PLAY_AREA_W; i++)
 	{
 		templateWall->position = offset;
-		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_Y - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		PuzzlePiece* piece = playArea.table[PLAY_AREA_H - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.x += PIECE_SIZE;
 	}
 
@@ -227,10 +322,10 @@ void ModulePuzzlePiecesV3::InitWalls()
 	// Fondo
 	offset = playArea.position;
 	offset.y += 0;
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	for (size_t i = 0; i < PLAY_AREA_W; i++)
 	{
 		templateWall->position = offset;
-		PuzzlePiece* piece = playArea.table[i][0] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		PuzzlePiece* piece = playArea.table[0][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.x += PIECE_SIZE;
 	}
 
@@ -249,6 +344,7 @@ void ModulePuzzlePiecesV3::InitPlayers()
 	newPieces[2] = AddPuzzlePiece(templateMan);
 	newPieces[3] = AddPuzzlePiece(*emptyPiece);
 	player.setPieces(newPieces);
+	player.locked = false;
 }
 
 void ModulePuzzlePiecesV3::InitMisc()
@@ -339,6 +435,7 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 			else {
 				player.locked = true;
 				PlacePieces();
+				player.position.create(64, 16);
 			}
 			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo
 		}
@@ -367,7 +464,6 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 		newPieces[3] = AddPuzzlePiece(*emptyPiece);
 		player.setPieces(newPieces);
 		*/
-		player.position.create(64, 16);
 	}
 }
 
@@ -376,6 +472,8 @@ iPoint ModulePuzzlePiecesV3::WorldToLocal(PlayArea& localArea, iPoint sCoordinat
 	iPoint nPoint;
 	nPoint.create(sCoordinates.x, sCoordinates.y);
 	nPoint -= localArea.position;
+	nPoint.x /= PIECE_SIZE;
+	nPoint.y /= PIECE_SIZE;
 
 	return nPoint;
 }
@@ -385,6 +483,8 @@ iPoint ModulePuzzlePiecesV3::AreaToWorld(PlayArea& localArea, iPoint lCoordinate
 	iPoint nPoint;
 	nPoint.create(lCoordinates.x, lCoordinates.y);
 	nPoint += localArea.position;
+	nPoint.x *= PIECE_SIZE;
+	nPoint.y *= PIECE_SIZE;
 
 	return nPoint;
 }
