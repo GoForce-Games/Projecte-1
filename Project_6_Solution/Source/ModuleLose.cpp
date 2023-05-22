@@ -15,7 +15,7 @@
 
 ModuleLose::ModuleLose(bool startEnabled) : Module(startEnabled)
 {
-	for (int fila = 0; fila < 25; fila++)
+	for (int fila = 0; fila < 24; fila++)
 	{
 		for (int columna = 0; columna < 5; columna++)
 		{
