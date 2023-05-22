@@ -13,17 +13,18 @@ using namespace std;
 
 Intro::Intro(bool startEnabled) : Module(startEnabled)
 {
-	// iterate the animation, that have 5 frames per row and 189 rows
-	for (int fila = 0; fila < 56; fila++) {
-		for (int columna = 0; columna < 5; columna++) {
+	//bucle para recorrer la spritesheet de la animacion frame por frame
+	for (int fila = 0; fila < 56; fila++) 
+	{
+		for (int columna = 0; columna < 5; columna++)
+		{
 			int frameX = columna * SCREEN_WIDTH;
 			int frameY = fila * SCREEN_HEIGHT;
 			IntroAnimation.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
 
-	IntroAnimation.speed = 0.05f;
-
+	IntroAnimation.speed = 0.1f;
 	IAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &IntroAnimation);
 }
  
@@ -47,16 +48,12 @@ bool Intro::Start()
 Update_Status Intro::Update()
 {
 	IntroAnimation.Update();
-	IntroAnimation.Update();
 
-	// TODO1: pasar al nivel1 cuando se pulse espacioo acabe animacion;
-	
 	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
 		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->sceneLevel_1, 90);
 	}
 	
-
 	return Update_Status::UPDATE_CONTINUE;
 }
 
@@ -74,7 +71,6 @@ bool Intro::CleanUp()
 		SDL_DestroyTexture(IntroTexture);
 		IntroTexture = nullptr;
 	}
-	
 
 	return true;
 }
