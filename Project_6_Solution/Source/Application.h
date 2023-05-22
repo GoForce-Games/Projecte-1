@@ -13,7 +13,6 @@ class ModuleAudio;
 class ModulePlayer;
 class ModulePresentation;
 class SceneLevel1;
-class SceneIntro;
 class ModuleParticles;
 class ModuleCollisions;
 class ModuleFadeToBlack;
@@ -22,8 +21,8 @@ class ModuleRender;
 class ModulePuzzlePiecesV3;
 class Puntuation;
 class Intro;
-class Intro2;
 class WinLose;
+class ModuleLose;
 
 class Application
 {
@@ -57,7 +56,7 @@ public:
 
 	ModulePlayer* player = nullptr;
 	ModulePresentation* presentation = nullptr;
-	SceneIntro* sceneIntro = nullptr;
+	Intro* intro = nullptr;
 
 	SceneLevel1* sceneLevel_1 = nullptr;
 
@@ -72,9 +71,8 @@ public:
 	ModulePuzzlePiecesV3* pieces = nullptr;
 	Puntuation* puntuation = nullptr;
 	WinLose* win_lose = nullptr;
+	ModuleLose* lose_screen = nullptr;
 
-	Intro* intro = nullptr;
-	Intro2* intro2 = nullptr;
 };
 
 // Global var made extern for Application ---

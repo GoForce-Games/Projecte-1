@@ -6,12 +6,27 @@
 #include "ModuleInput.h"
 #include "ModuleFadeToBlack.h"
 #include <SDL/include/SDL_scancode.h>
+#include "SDL/include/SDL.h"
 #include <iostream>
+
 using namespace std;
 
 Intro::Intro(bool startEnabled) : Module(startEnabled)
-{}
+{
+	// iterate the animation, that have 5 frames per row and 189 rows
+	for (int fila = 0; fila < 56; fila++) {
+		for (int columna = 0; columna < 5; columna++) {
+			int frameX = columna * SCREEN_WIDTH;
+			int frameY = fila * SCREEN_HEIGHT;
+			IntroAnimation.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
+		}
+	}
 
+	IntroAnimation.speed = 0.05f;
+
+	IAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &IntroAnimation);
+}
+ 
 Intro::~Intro()
 {}
 
@@ -21,8 +36,8 @@ bool Intro::Start()
 
 	bool ret = true;
 
-	IntroBackground = App->textures->Load("Assets/Sprites/IntroBackground.png");
-	IntroTexture = App->textures->Load("Assets/Sprites/IntroScreen.png");
+	IntroTexture = App->textures->Load("Assets/Sprites/IntroAnimation.png");
+
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
 
@@ -31,17 +46,35 @@ bool Intro::Start()
 
 Update_Status Intro::Update()
 {
+	IntroAnimation.Update();
+	IntroAnimation.Update();
 
-	App->fade->FadeToBlack((Module*)this, (Module*)App->intro2, 0);
+	// TODO1: pasar al nivel1 cuando se pulse espacioo acabe animacion;
+	
+	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
+	{
+		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->sceneLevel_1, 90);
+	}
+	
 
 	return Update_Status::UPDATE_CONTINUE;
 }
 
 Update_Status Intro::PostUpdate()
 {
-	App->render->Blit(IntroBackground, 0, 0, NULL);
-	App->render->Blit(IntroTexture, 0, 0, NULL);
+	App->render->Blit(IntroTexture, 0, 0, &(IAnimationPath.GetCurrentAnimation()->GetCurrentFrame()), 1.0f);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
 
+bool Intro::CleanUp()
+{
+	if (IntroTexture != nullptr)
+	{
+		SDL_DestroyTexture(IntroTexture);
+		IntroTexture = nullptr;
+	}
+	
+
+	return true;
+}

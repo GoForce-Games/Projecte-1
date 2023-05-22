@@ -78,13 +78,13 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="GameConstants.h" />
-    <ClInclude Include="Intro2.h" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCollisions.h" />
     <ClInclude Include="ModulePuzzlePieces.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="ModuleLose.h" />
     <ClInclude Include="ModulePuzzlePiecesV3.h" />
     <ClInclude Include="ModuleFadeToBlack.h" />
     <ClInclude Include="ModuleFonts.h" />
@@ -118,7 +118,6 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="Intro2.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Intro.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
@@ -126,6 +125,7 @@
     <ClCompile Include="ModulePuzzlePieces.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="ModuleLose.cpp" />
     <ClCompile Include="ModulePuzzlePiecesV3.cpp" />
     <ClCompile Include="ModuleFadeToBlack.cpp" />
     <ClCompile Include="ModuleFonts.cpp" />

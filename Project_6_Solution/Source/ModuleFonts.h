@@ -50,6 +50,7 @@ public:
 
 	int scoreFont;
 	int textFont;
+	int scoreFont2;
 
 private:
 	// An array to keep track and store all loaded fonts

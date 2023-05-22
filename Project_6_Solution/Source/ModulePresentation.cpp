@@ -32,8 +32,8 @@ bool ModulePresentation::Start() {
 	return ret;
 }
 Update_Status ModulePresentation::Update() {
-
-	if (App->input->keys[SDL_Scancode::SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
+	GamePad& pad = App->input->pads[0];
+	if (App->input->keys[SDL_Scancode::SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN || pad.a )
 	{
 		App->fade->FadeToBlack(this, (Module*)App->intro, 90);
 	}

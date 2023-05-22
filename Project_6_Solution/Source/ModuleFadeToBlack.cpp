@@ -36,7 +36,7 @@ Update_Status ModuleFadeToBlack::Update()
 		{
 			// TODO 1: Enable / disable the modules received when FadeToBlacks() gets called
 			moduleToDisable->Disable();
-			moduleToEnable->Enable();
+ 			moduleToEnable->Enable();
 
 			currentStep = Fade_Step::FROM_BLACK;
 		}

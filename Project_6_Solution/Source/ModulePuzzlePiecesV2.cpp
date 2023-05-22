@@ -159,7 +159,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 
 		// Godmode: activa/desactiva gravedad
-		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == Key_State::KEY_DOWN) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == Key_State::KEY_DOWN || pad.a < 0.0f) {
 			gravity = (gravity == 0) ? GRAVITY : 0;
 		}
 
@@ -167,7 +167,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 		// Rotacion
 
-		if ((keys[SDL_Scancode::SDL_SCANCODE_P] == Key_State::KEY_DOWN) || pad.a){
+		if ((keys[SDL_Scancode::SDL_SCANCODE_P] == Key_State::KEY_DOWN) || pad.a < 0.0f){
 			player.Rotate();
 			App->audio->PlayFx(rotateFX);
 		}
@@ -177,19 +177,19 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 
 		// Acelera la caída
-		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN || pad.a < 0.0f) {
 			dropDelay = MIN_DROP_DELAY;
 		}
-		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT;
+		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT || pad.b < 0.0f;
 
 
 		//El primer frame en el que intentas moverte a un lado es instantaneo
-		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN) moveDelay = 0;
-		else if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN)	moveDelay = 0;
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN || pad.a < 0.0f) moveDelay = 0;
+		else if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN || pad.a < 0.0f)	moveDelay = 0;
 
 
 		// Mueve a la izquierda
-		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT || pad.b < 0.0f && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE || pad.x < 0.0f) {
 
 			if (!WillCollide(PlayerCollisionCheck::LEFT)) {
 
