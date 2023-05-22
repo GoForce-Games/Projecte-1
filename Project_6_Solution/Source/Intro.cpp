@@ -6,6 +6,7 @@
 #include "ModuleInput.h"
 #include "ModuleFadeToBlack.h"
 #include <SDL/include/SDL_scancode.h>
+#include "SDL/include/SDL.h"
 #include <iostream>
 
 using namespace std;
@@ -52,7 +53,7 @@ Update_Status Intro::Update()
 	
 	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
-		App->fade->FadeToBlack((Module*)App->sceneIntro, (Module*)App->sceneLevel_1, 90);
+		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->sceneLevel_1, 90);
 	}
 	
 
@@ -68,8 +69,12 @@ Update_Status Intro::PostUpdate()
 
 bool Intro::CleanUp()
 {
-	// TODO Remove All Memory Leaks
-	App->sceneIntro->Disable();
+	if (IntroTexture != nullptr)
+	{
+		SDL_DestroyTexture(IntroTexture);
+		IntroTexture = nullptr;
+	}
+	
 
 	return true;
 }

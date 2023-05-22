@@ -68,14 +68,14 @@ Update_Status WinLose::Update()
 		gameFinish = false;
 		currentAnimation = &LoseAnimation;
 		App->audio->PlayMusic("Assets/Music/Lose.ogg", 1.0f);
-		App->fade->FadeToBlack((Module*)this, (Module*)App->lose_screen, 0);
+		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->lose_screen, 0);
 	}
 	if (gameFinish && App->puntuation->score >= 1000)
 	{
 		gameFinish = false;
 		/*currentAnimation = &WinAnimation;*/
 		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
-		App->fade->FadeToBlack((Module*)this, (Module*)App->intro, 0);
+		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->intro, 0);
 	}
 	
 
@@ -100,7 +100,6 @@ bool WinLose::CleanUp()
 		SDL_DestroyTexture(WinLoseTexture);
 		WinLoseTexture = nullptr;
 	}
-
 	/*if (LoseTexture != nullptr)
 	{
 		SDL_DestroyTexture(LoseTexture);

@@ -47,7 +47,6 @@ bool SceneLevel1::Start()
 	App->pieces->Enable();
 	App->puntuation->Enable();
 	App->win_lose->Enable();
-	App->intro->Enable();
 	//App->lose_screen->Enable();
 
 	return ret;
@@ -60,7 +59,7 @@ bool SceneLevel1::CleanUp()
 	App->pieces->Disable();
 	App->puntuation->Disable();
 	App->win_lose->Disable();
-	//App->intro->Disable();
+	/*App->intro->Disable();*/
 	//App->intro2->Disable();
 	//App->lose_screen->Disable();
 
