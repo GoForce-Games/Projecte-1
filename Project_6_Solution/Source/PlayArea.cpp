@@ -30,8 +30,10 @@ void PlayArea::Init(PuzzlePiece* fillWith)
 	{
 		for (uint j = 0; j < PLAY_AREA_W; j++)
 		{
-			if (table[i][j] == nullptr)
+			if (table[i][j] == nullptr) {
 				table[i][j] = manager->AddPuzzlePiece(*fillWith, fillWith->collider->type);
+				table[i][j]->collider->name = "filler";
+			}
 		}
 	}
 }

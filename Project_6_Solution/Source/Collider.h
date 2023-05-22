@@ -3,6 +3,8 @@
 
 #include "SDL/include/SDL_Rect.h"
 
+#include <string>
+
 #define MAX_LISTENERS 5
 
 class Module;
@@ -32,12 +34,14 @@ struct Collider
 	void AddListener(Module* listener);
 
 	//Variables
+	std::string name;
 	SDL_Rect rect;
 	bool pendingToDelete = false;
 	Type type;
 	Module* listeners[MAX_LISTENERS] = { nullptr };
 
 	bool enabled = true;
+
 };
 
 

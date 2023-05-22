@@ -90,7 +90,7 @@ void ModulePuzzlePiecesV3::OnCollision(Collider* c1, Collider* c2)
 
 bool ModulePuzzlePiecesV3::CleanUp()
 {
-	RemovePuzzlePiece(&templateMan);
+	RemovePuzzlePiece(templateMan);
 	playArea.CleanUp();
 	App->collisions->CleanUp();
 
@@ -117,7 +117,7 @@ PuzzlePiece* ModulePuzzlePiecesV3::AddPuzzlePiece(const PuzzlePiece& piece, Coll
 		if (pieces[i] == nullptr) {
 			//Crea nueva pieza con una caja de colision copiada de la plantilla
 			PuzzlePiece* newPiece = new PuzzlePiece(piece);
-			newPiece->collider = App->collisions->AddCollider(templateMan.collider->rect, type);
+			newPiece->collider = App->collisions->AddCollider(templateMan->collider->rect, type);
 			if (newPiece->collider != nullptr) //TODO solucionar problema de colliders
 				newPiece->collider->SetPos(newPiece->position.x, newPiece->position.y);
 			return pieces[i] = newPiece;
@@ -128,6 +128,20 @@ PuzzlePiece* ModulePuzzlePiecesV3::AddPuzzlePiece(const PuzzlePiece& piece, Coll
 
 void ModulePuzzlePiecesV3::RemovePuzzlePiece(PuzzlePiece* piece)
 {
+	if (piece == nullptr) return;
+
+	piece->name = "To be deleted"; // Para debug
+
+	for (size_t i = 0; i < MAX_PIECES; i++)
+	{
+		if (pieces[i] == piece) {
+			piece->collider->pendingToDelete = true;
+			delete piece;
+			pieces[i] = nullptr;
+			break;
+		}
+
+	}
 }
 
 bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
@@ -265,15 +279,17 @@ void ModulePuzzlePiecesV3::InitAnims()
 
 void ModulePuzzlePiecesV3::InitTemplates()
 {
-	templateMan.collider = App->collisions->AddCollider({ -64,-64,16,16 }, Collider::Type::NONE);
-	templateMan.position.create(-64, -64);
-	templateMan.texture = textureBomberman;
-	templateMan.SetAnimation(&animDefault);
-	templateMan.moving = false;
-	templateMan.type = PieceType::WHITE;
+	templateMan = new PuzzlePiece();
+
+	templateMan->collider = App->collisions->AddCollider({ -64,-64,16,16 }, Collider::Type::NONE);
+	templateMan->position.create(-64, -64);
+	templateMan->texture = textureBomberman;
+	templateMan->SetAnimation(&animDefault);
+	templateMan->moving = false;
+	templateMan->type = PieceType::WHITE;
 
 
-	emptyPiece = AddPuzzlePiece(templateMan, Collider::Type::NONE);
+	emptyPiece = AddPuzzlePiece(*templateMan, Collider::Type::NONE);
 	emptyPiece->currentAnimation = &animNone;
 	emptyPiece->isEmpty = true;
 	emptyPiece->type = PieceType::NONE;
@@ -292,17 +308,18 @@ void ModulePuzzlePiecesV3::InitWalls()
 	{
 		templateWall->position = offset;
 		PuzzlePiece* piece = playArea.table[i][0] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		piece->collider->name = "WALL";
 		offset.y += PIECE_SIZE;
 	}
 
 	// Columna derecha
 	offset = playArea.position;
-	//offset.y += PIECE_SIZE;
 	offset.x += PIECE_SIZE * (PLAY_AREA_W - 1);
 	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
 		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_W - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		piece->collider->name = "WALL";
 		offset.y += PIECE_SIZE;
 
 	}
@@ -315,17 +332,18 @@ void ModulePuzzlePiecesV3::InitWalls()
 	{
 		templateWall->position = offset;
 		PuzzlePiece* piece = playArea.table[PLAY_AREA_H - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		piece->collider->name = "WALL";
 		offset.x += PIECE_SIZE;
 	}
 
-	//Techo (por ciertas razones relacionadas con la deteccion de grupos)
-	// Fondo
+	// Techo (por ciertas razones relacionadas con la deteccion de grupos)
 	offset = playArea.position;
-	offset.y += 0;
-	for (size_t i = 0; i < PLAY_AREA_W; i++)
+	offset.x += PIECE_SIZE;
+	for (size_t i = 1; i < PLAY_AREA_W-1; i++)
 	{
 		templateWall->position = offset;
 		PuzzlePiece* piece = playArea.table[0][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		piece->collider->name = "WALL";
 		offset.x += PIECE_SIZE;
 	}
 
@@ -339,9 +357,9 @@ void ModulePuzzlePiecesV3::InitPlayers()
 	player.position.create(64, 16);
 
 	PuzzlePiece* newPieces[4];
-	newPieces[0] = AddPuzzlePiece(templateMan);
-	newPieces[1] = AddPuzzlePiece(templateMan);
-	newPieces[2] = AddPuzzlePiece(templateMan);
+	newPieces[0] = AddPuzzlePiece(*templateMan);
+	newPieces[1] = AddPuzzlePiece(*templateMan);
+	newPieces[2] = AddPuzzlePiece(*templateMan);
 	newPieces[3] = AddPuzzlePiece(*emptyPiece);
 	player.setPieces(newPieces);
 	player.locked = false;
