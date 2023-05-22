@@ -18,7 +18,7 @@ class ModuleCollisions;
 class ModuleFadeToBlack;
 class ModuleFonts;
 class ModuleRender;
-class ModulePuzzlePiecesV2;
+class ModulePuzzlePiecesV3;
 class Puntuation;
 class Intro;
 class WinLose;
@@ -68,7 +68,7 @@ public:
 
 	ModuleRender* render = nullptr;
 
-	ModulePuzzlePiecesV2* pieces = nullptr;
+	ModulePuzzlePiecesV3* pieces = nullptr;
 	Puntuation* puntuation = nullptr;
 	WinLose* win_lose = nullptr;
 	ModuleLose* lose_screen = nullptr;

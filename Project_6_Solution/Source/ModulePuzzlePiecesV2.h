@@ -4,6 +4,7 @@
 #include <queue>
 #include <stack>
 
+#include "GameConstants.h"
 #include "Animation.h"
 #include "p2Point.h"
 #include "PuzzlePiece.h"
@@ -25,15 +26,6 @@ struct SDL_Texture;
 #define GRAVITY 4
 
 #define EXPLODE_COUNTDOWN 100
-
-enum PlayerCollisionCheck {
-	CENTER,
-	LEFT,
-	RIGHT,
-	TOP,
-	BOTTOM,
-	DEBUG
-};
 
 class ModulePuzzlePiecesV2 :
 	public Module
