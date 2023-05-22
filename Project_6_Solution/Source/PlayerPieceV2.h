@@ -2,7 +2,7 @@
 #include "PuzzlePiece.h"
 
 class Path;
-class GamePad;
+struct GamePad;
 
 class PlayerPieceV2
 {

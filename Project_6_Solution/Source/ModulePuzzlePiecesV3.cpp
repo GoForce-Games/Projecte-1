@@ -239,8 +239,14 @@ void ModulePuzzlePiecesV3::PlacePieces()
 	{
 		for (size_t j = 0; j < 2; j++)
 		{
-			if (!player.pieces[i][j]->isEmpty)
-				playArea.table[posTablero.y + i][posTablero.x + j] = player.pieces[i][j];
+			if (!player.pieces[i][j]->isEmpty) {
+				if (playArea.table[posTablero.y + i][posTablero.x + j]->isEmpty) {
+					RemovePuzzlePiece(playArea.table[posTablero.y + i][posTablero.x + j]);
+					playArea.table[posTablero.y + i][posTablero.x + j] = player.pieces[i][j];
+				}
+				else
+					LOG("TRIED TO REPLACE EXISTING PIECE AT COORDINATES (x:%i, y:%i)\n", posTablero.x + j, posTablero.y + i);
+			}
 			player.pieces[i][j] = nullptr;
 		}
 	}
@@ -307,6 +313,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
+		RemovePuzzlePiece(playArea.table[i][0]);
 		PuzzlePiece* piece = playArea.table[i][0] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		piece->collider->name = "WALL";
 		offset.y += PIECE_SIZE;
@@ -318,6 +325,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
+		RemovePuzzlePiece(playArea.table[i][PLAY_AREA_W - 1]);
 		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_W - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		piece->collider->name = "WALL";
 		offset.y += PIECE_SIZE;
@@ -331,6 +339,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 	for (size_t i = 0; i < PLAY_AREA_W; i++)
 	{
 		templateWall->position = offset;
+		RemovePuzzlePiece(playArea.table[PLAY_AREA_H - 1][i]);
 		PuzzlePiece* piece = playArea.table[PLAY_AREA_H - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		piece->collider->name = "WALL";
 		offset.x += PIECE_SIZE;
@@ -339,9 +348,10 @@ void ModulePuzzlePiecesV3::InitWalls()
 	// Techo (por ciertas razones relacionadas con la deteccion de grupos)
 	offset = playArea.position;
 	offset.x += PIECE_SIZE;
-	for (size_t i = 1; i < PLAY_AREA_W-1; i++)
+	for (size_t i = 1; i < PLAY_AREA_W - 1; i++)
 	{
 		templateWall->position = offset;
+		RemovePuzzlePiece(playArea.table[0][i]);
 		PuzzlePiece* piece = playArea.table[0][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		piece->collider->name = "WALL";
 		offset.x += PIECE_SIZE;
