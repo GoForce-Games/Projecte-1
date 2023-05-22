@@ -26,5 +26,4 @@ public:
 
 	Path IAnimationPath;
 };
-
 #endif
