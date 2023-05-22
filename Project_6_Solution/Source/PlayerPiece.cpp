@@ -17,10 +17,10 @@ PlayerPiece::PlayerPiece()
 	piecePaths[1][0] = new Path();
 	piecePaths[1][1] = new Path();
 
-	piecePaths[0][0]->name = "TopLeft";
-	piecePaths[0][1]->name = "TopRight";
-	piecePaths[1][0]->name = "BotLeft";
-	piecePaths[1][1]->name = "BotRight";
+	piecePaths[0][0]->name = "1";
+	piecePaths[0][1]->name = "2";
+	piecePaths[1][0]->name = "3";
+	piecePaths[1][1]->name = "4";
 
 	
 
@@ -30,6 +30,7 @@ PlayerPiece::PlayerPiece()
 	piecePaths[1][0]->PushBack({ 0,0 }, 1);
 	piecePaths[1][1]->PushBack({ 0,0 }, 1);
 
+	// Rotacion de piezas
 	piecePaths[0][0]->PushBack({ 4,0 }, 3);
 	piecePaths[0][1]->PushBack({ 0,4 }, 3);
 	piecePaths[1][0]->PushBack({ 0,-4 }, 3);

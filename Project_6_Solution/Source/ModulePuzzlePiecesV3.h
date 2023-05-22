@@ -89,7 +89,7 @@ public:
 	// Avoid enabling twice
 	bool isInitialized = false;
 
-	PuzzlePiece templateMan;
+	PuzzlePiece* templateMan = nullptr;
 
 	//Pieza vacía, sin nada asignado
 	PuzzlePiece* emptyPiece = nullptr;
