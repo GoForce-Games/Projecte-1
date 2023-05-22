@@ -14,7 +14,19 @@
 
 
 ModuleLose::ModuleLose(bool startEnabled) : Module(startEnabled)
-{}
+{
+	for (int fila = 0; fila < 25; fila++)
+	{
+		for (int columna = 0; columna < 5; columna++)
+		{
+			int frameX = columna * SCREEN_WIDTH;
+			int frameY = fila * SCREEN_HEIGHT;
+			GameOverAnim.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
+		}
+	}
+	GameOverAnim.speed = 0.1f;
+	GameOverPath.PushBack({ 0.0f, 0.0f }, 200, &GameOverAnim);
+}
 
 ModuleLose::~ModuleLose()
 {}
@@ -32,6 +44,7 @@ bool ModuleLose::Start() {
 }
 Update_Status ModuleLose::Update() 
 {
+	GameOverAnim.Update();
 	GamePad& pad = App->input->pads[0];
 	if (App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN || pad.a)
 	{
@@ -41,7 +54,7 @@ Update_Status ModuleLose::Update()
 }
 Update_Status ModuleLose::PostUpdate()
 {
-	App->render->Blit(LoseTexture, 0, 0, NULL);
+	App->render->Blit(LoseTexture, 0, 0, &(GameOverPath.GetCurrentAnimation()->GetCurrentFrame()), 1.0f);
 	return Update_Status::UPDATE_CONTINUE;
 }
 bool ModuleLose::CleanUp() 
@@ -51,5 +64,6 @@ bool ModuleLose::CleanUp()
 		SDL_DestroyTexture(LoseTexture);
 		LoseTexture = nullptr;
 	}
+
 	return true;
 }
