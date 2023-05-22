@@ -37,6 +37,7 @@ bool Intro::Start()
 	bool ret = true;
 
 	IntroTexture = App->textures->Load("Assets/Sprites/IntroAnimation.png");
+	App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);
 
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
