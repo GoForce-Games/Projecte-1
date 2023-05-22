@@ -3,7 +3,7 @@
 #include "Path.h"
 
 #include "Application.h"
-#include "ModulePuzzlePiecesV2.h"
+#include "ModulePuzzlePiecesV3.h"
 
 PlayerPiece::PlayerPiece()
 {
