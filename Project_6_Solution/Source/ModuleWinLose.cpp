@@ -22,7 +22,8 @@ WinLose::WinLose(bool startEnabled) : Module(startEnabled)
 			WinAnimation.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	WinAnimation.speed = 0.02f;
+	WinAnimation.speed = 0.08f;
+	WinAnimation.pingpong;
 	WAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &WinAnimation);
 	
 	for (int fila = 0; fila <= 1; fila++) {
@@ -33,7 +34,8 @@ WinLose::WinLose(bool startEnabled) : Module(startEnabled)
 			LoseAnimation.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	LoseAnimation.speed = 0.01f;
+	LoseAnimation.speed = 0.06f;
+	LoseAnimation.pingpong;
 	LAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &LoseAnimation);
 
 }
@@ -62,6 +64,9 @@ bool WinLose::Start()
 
 Update_Status WinLose::Update()
 {
+	AAnimationPath.Update();
+	AAnimationPath.Update();
+	AAnimationPath.Update();
 
 	if (App->input->keys[SDL_SCANCODE_F3] == KEY_DOWN)
 	{
@@ -69,19 +74,19 @@ Update_Status WinLose::Update()
 	}
 	if (gameFinish && App->puntuation->score < 1000)
 	{
-		AAnimationPath = LAnimationPath;
 		ActiveTexture = LoseTexture;
+		AAnimationPath = LAnimationPath;
 		gameFinish = false;
 		App->audio->PlayMusic("Assets/Music/Lose.ogg", 1.0f);
-		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->lose_screen, 90);
+		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->lose_screen, 600);
 	}
 	if (gameFinish && App->puntuation->score >= 1000)
 	{
-		AAnimationPath = WAnimationPath;
 		ActiveTexture = WinTexture;
+		AAnimationPath = WAnimationPath;
 		gameFinish = false;
 		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
-		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->intro, 90);
+		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->intro, 300);
 	}
 	
 	return Update_Status::UPDATE_CONTINUE;
@@ -91,8 +96,9 @@ Update_Status WinLose::PostUpdate()
 {
 	if (ActiveTexture != nullptr)
 	{
-		AAnimationPath.Update();
 		App->render->Blit(ActiveTexture, 0, 0, &(AAnimationPath.GetCurrentAnimation()->GetCurrentFrame()), 1.0f);
+		AAnimationPath.Update();
+		AAnimationPath.GetCurrentAnimation()->Update();
 	}
 
 	return Update_Status::UPDATE_CONTINUE;

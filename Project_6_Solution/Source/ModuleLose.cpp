@@ -46,10 +46,9 @@ Update_Status ModuleLose::Update()
 {
 	GameOverAnim.Update();
 	GamePad& pad = App->input->pads[0];
-	if (App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN || pad.a)
-	{
-		App->fade->FadeToBlack((Module*)App->lose_screen, (Module*)App->intro, 90);
-	}
+	
+	App->fade->FadeToBlack((Module*)App->lose_screen, (Module*)App->intro, 350);
+	
 	return Update_Status::UPDATE_CONTINUE;
 }
 Update_Status ModuleLose::PostUpdate()
