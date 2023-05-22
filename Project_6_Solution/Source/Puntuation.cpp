@@ -32,7 +32,7 @@ bool Puntuation::Start()
 	score = 000;
 	numeracion = 0;
 	scoreFont = &(App->fonts->scoreFont);
-	textFont = &(App->fonts->scoreFont2);
+	textFont = &(App->fonts->textFont);
 	
 	
 
@@ -48,8 +48,8 @@ Update_Status Puntuation::Update()
 
 Update_Status Puntuation::PostUpdate()
 {
-	sprintf_s(scoreText, MAX_SCORE_LENGTH, "%d", score);
-	App->fonts->BlitText(50, 16, *textFont, scoreText);
+	sprintf_s(scoreText, MAX_SCORE_LENGTH, "%7d", score);
+	App->fonts->BlitText(0, 16, *textFont, scoreText);
 	return Update_Status::UPDATE_CONTINUE;
 }
 
