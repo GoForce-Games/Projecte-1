@@ -24,7 +24,7 @@ Intro::Intro(bool startEnabled) : Module(startEnabled)
 		}
 	}
 
-	IntroAnimation.speed = 0.1f;
+	IntroAnimation.speed = 0.2f;
 	IAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &IntroAnimation);
 }
  

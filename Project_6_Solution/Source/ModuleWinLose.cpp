@@ -22,7 +22,7 @@ WinLose::WinLose(bool startEnabled) : Module(startEnabled)
 			WinAnimation.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	WinAnimation.speed = 0.10f;
+	WinAnimation.speed = 0.4f;
 	WAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &WinAnimation);
 	
 	for (int fila = 0; fila <= 6; fila++) {
@@ -33,7 +33,7 @@ WinLose::WinLose(bool startEnabled) : Module(startEnabled)
 			LoseAnimation.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	LoseAnimation.speed = 0.05f;
+	LoseAnimation.speed = 0.2f;
 	
 	LAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &LoseAnimation);
 
