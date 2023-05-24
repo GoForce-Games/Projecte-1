@@ -135,8 +135,10 @@ void ModulePuzzlePiecesV3::RemovePuzzlePiece(PuzzlePiece* piece)
 	for (size_t i = 0; i < MAX_PIECES; i++)
 	{
 		if (pieces[i] == piece) {
-			if (piece->collider != nullptr)
+			if (piece->collider != nullptr) {
 				piece->collider->pendingToDelete = true;
+				piece->collider = nullptr;
+			}
 			delete piece;
 			pieces[i] = nullptr;
 			break;
