@@ -452,7 +452,7 @@ void ModulePuzzlePiecesV2::PlacePieces() {
 			player.pieces[i][j] = nullptr;
 		}
 	}
-	playArea.debugPiecePosition();
+	//playArea.debugPiecePosition();
 }
 
 bool ModulePuzzlePiecesV2::PieceCanDrop(PuzzlePiece* piece)

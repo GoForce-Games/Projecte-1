@@ -114,7 +114,7 @@ public:
 	PuzzlePiece* pieces[MAX_PIECES];
 
 	// Piezas pregeneradas para añadir a la zona de juego
-	std::queue<PuzzlePiece*> pieceQueue;
+	std::stack<PuzzlePiece*> pieceQueue;
 
 	// Pointer to active animation.
 	// This will be switched randomly between the different animations based on random delays

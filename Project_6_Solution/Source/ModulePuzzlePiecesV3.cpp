@@ -108,6 +108,12 @@ bool ModulePuzzlePiecesV3::CleanUp()
 
 std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<PuzzlePiece*>& stack, uint amount)
 {
+	for (size_t i = 0; i < amount; i++)
+	{
+		PuzzlePiece* newPiece = AddPuzzlePiece(*templateMan, Collider::Type::PUZZLE_PIECE);
+		newPiece->type = (PieceType)((rand() % 4) + 1);
+		stack.push(newPiece);
+	}
 	return stack;
 }
 
@@ -253,7 +259,7 @@ void ModulePuzzlePiecesV3::PlacePieces()
 			player.pieces[i][j] = nullptr;
 		}
 	}
-	playArea.debugPiecePosition();
+	//playArea.debugPiecePosition();
 }
 
 bool ModulePuzzlePiecesV3::PieceCanDrop(PuzzlePiece* piece)
@@ -482,19 +488,26 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 	if (player.locked) {
 		playArea.DropPieces();
 		playArea.checkGroupedPieces();
+
+		if (pieceQueue.size() < 3)
+			GeneratePuzzlePieces(pieceQueue, 12);
+
+
 		/*
 		std::stack<PuzzlePiece*> s;
 		GeneratePuzzlePieces(s, 3);
+		*/
 		PuzzlePiece* newPieces[4];
-		newPieces[0] = s.top();
-		s.pop();
-		newPieces[1] = s.top();
-		s.pop();
-		newPieces[2] = s.top();
-		s.pop();
+		newPieces[0] = pieceQueue.top();
+		pieceQueue.pop();
+		newPieces[1] = pieceQueue.top();
+		pieceQueue.pop();
+		newPieces[2] = pieceQueue.top();
+		pieceQueue.pop();
 		newPieces[3] = AddPuzzlePiece(*emptyPiece);
 		player.setPieces(newPieces);
-		*/
+
+		player.locked = false;
 	}
 }
 

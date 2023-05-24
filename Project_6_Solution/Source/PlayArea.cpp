@@ -236,8 +236,8 @@ void PlayArea::debugPiecePosition() {
 
 void PlayArea::DropPieces()
 {
-	OutputDebugString("Haciendo caer a las piezas...\n");
-	debugPiecePosition();
+	//OutputDebugString("Haciendo caer a las piezas...\n");
+	//debugPiecePosition();
 	for (size_t i = 1; i < PLAY_AREA_H - 2; i++)
 	{
 		for (size_t j = 1; j < PLAY_AREA_W - 0; j++)
@@ -257,8 +257,8 @@ void PlayArea::DropPieces()
 
 		}
 	}
-	OutputDebugString("Resultado:\n");
-	debugPiecePosition();
+	//OutputDebugString("Resultado:\n");
+	//debugPiecePosition();
 	return;
 }
 
