@@ -24,7 +24,7 @@ ModulePresentation::ModulePresentation(bool startEnabled) : Module(startEnabled)
 		}
 	}
 
-	presentationAnimation.speed = 0.2f;
+	presentationAnimation.speed = 0.1f;
 	presentationAnimation.loop = false;
 	presentationPath.PushBack({ 0.0f, 0.0f }, 200, &presentationAnimation);
 }
@@ -51,7 +51,7 @@ Update_Status ModulePresentation::Update() {
 	presentationAnimation.Update();
 
 	GamePad& pad = App->input->pads[0];
-	if (presentationAnimation.HasFinished())
+	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
 		App->fade->FadeToBlack(this, (Module*)App->intro, 90);
 	}
