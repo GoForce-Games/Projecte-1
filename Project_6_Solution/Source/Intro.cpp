@@ -1,4 +1,5 @@
 #include "Intro.h"
+#include "IntroJuego.h"
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
@@ -14,7 +15,7 @@ using namespace std;
 Intro::Intro(bool startEnabled) : Module(startEnabled)
 {
 	//bucle para recorrer la spritesheet de la animacion frame por frame
-	for (int fila = 0; fila < 56; fila++) 
+	for (int fila = 0; fila < 16; fila++) 
 	{
 		for (int columna = 0; columna < 5; columna++)
 		{
@@ -25,6 +26,7 @@ Intro::Intro(bool startEnabled) : Module(startEnabled)
 	}
 
 	IntroAnimation.speed = 0.2f;
+	IntroAnimation.loop = false;
 	IAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &IntroAnimation);
 }
  
@@ -38,7 +40,7 @@ bool Intro::Start()
 	bool ret = true;
 
 	IntroTexture = App->textures->Load("Assets/Sprites/IntroAnimation.png");
-	App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);
+	App->audio->PlayMusic("Assets/Music/Neo-Geo Opening Theme.ogg", 1.0f);
 
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
@@ -50,9 +52,9 @@ Update_Status Intro::Update()
 {
 	IntroAnimation.Update();
 
-	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
+	if(IntroAnimation.HasFinished())
 	{
-		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->sceneLevel_1, 90);
+		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->introJuego, 0);
 	}
 	
 	return Update_Status::UPDATE_CONTINUE;

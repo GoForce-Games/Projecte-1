@@ -22,7 +22,7 @@ WinLose::WinLose(bool startEnabled) : Module(startEnabled)
 			WinAnimation.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	WinAnimation.speed = 0.4f;
+	WinAnimation.speed = 0.3f;
 	WAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &WinAnimation);
 	
 	for (int fila = 0; fila <= 6; fila++) {
@@ -84,7 +84,7 @@ Update_Status WinLose::Update()
 		AAnimationPath = WAnimationPath;
 		gameFinish = false;
 		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
-		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->intro, 400);
+		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->introJuego, 400);
 	}
 	
 	return Update_Status::UPDATE_CONTINUE;

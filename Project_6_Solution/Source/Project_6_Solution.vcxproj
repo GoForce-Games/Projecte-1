@@ -79,6 +79,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="Intro.h" />
+    <ClInclude Include="IntroJuego.h" />
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCollisions.h" />
     <ClInclude Include="ModulePuzzlePieces.h">
@@ -120,6 +121,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Intro.cpp" />
+    <ClCompile Include="IntroJuego.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCollisions.cpp" />
     <ClCompile Include="ModulePuzzlePieces.cpp">
