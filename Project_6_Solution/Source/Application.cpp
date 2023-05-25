@@ -46,8 +46,8 @@ Application::Application()
 
 	modules[11] = intro = new Intro(false);
 	modules[12] = introJuego = new IntroJuego(false);
-	modules[14] = module_continue = new Continue(false);
 	modules[13] = lose_screen = new ModuleLose(false);
+	modules[14] = module_continue = new Continue(false);
 
 	modules[15] = collisions = new ModuleCollisions(true);
 	modules[16] = fade = new ModuleFadeToBlack(true);
