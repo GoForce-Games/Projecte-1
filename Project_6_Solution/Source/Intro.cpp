@@ -52,7 +52,7 @@ Update_Status Intro::Update()
 {
 	IntroAnimation.Update();
 
-	if(IntroAnimation.HasFinished())
+	if(IntroAnimation.HasFinished() || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
 		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->introJuego, 0);
 	}

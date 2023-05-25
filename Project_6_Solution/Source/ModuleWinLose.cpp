@@ -76,7 +76,7 @@ Update_Status WinLose::Update()
 		AAnimationPath = LAnimationPath;
 		gameFinish = false;
 		App->audio->PlayMusic("Assets/Music/Lose.ogg", 1.0f);
-		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->lose_screen, 200);
+		App->fade->FadeToBlack((Module*)App->module_continue, (Module*)App->lose_screen, 200);
 	}
 	if (gameFinish && App->puntuation->score >= 1000)
 	{
