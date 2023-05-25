@@ -19,6 +19,7 @@
 #include "IntroJuego.h"
 #include "ModuleWinLose.h"
 #include "ModuleLose.h"
+#include "ModuleContinue.h"
 
 Application::Application()
 {
@@ -45,12 +46,13 @@ Application::Application()
 
 	modules[11] = intro = new Intro(false);
 	modules[12] = introJuego = new IntroJuego(false);
+	modules[14] = module_continue = new Continue(false);
 	modules[13] = lose_screen = new ModuleLose(false);
 
-	modules[14] = collisions = new ModuleCollisions(true);
-	modules[15] = fade = new ModuleFadeToBlack(true);
+	modules[15] = collisions = new ModuleCollisions(true);
+	modules[16] = fade = new ModuleFadeToBlack(true);
 
-	modules[16] = render = new ModuleRender();
+	modules[17] = render = new ModuleRender();
 }
 
 Application::~Application()
