@@ -37,6 +37,7 @@ public:
     // The scene sprite sheet loaded into an SDL_Texture
 
     SDL_Texture* ContinueTexture = nullptr;
-   
+    Animation ContinueAnim;
+    Path ContinuePath;
 
 }; 
