@@ -24,7 +24,7 @@ ModulePresentation::ModulePresentation(bool startEnabled) : Module(startEnabled)
 		}
 	}
 
-	presentationAnimation.speed = 0.1f;
+	presentationAnimation.speed = 0.2f;
 	presentationAnimation.loop = false;
 	presentationPath.PushBack({ 0.0f, 0.0f }, 200, &presentationAnimation);
 }
