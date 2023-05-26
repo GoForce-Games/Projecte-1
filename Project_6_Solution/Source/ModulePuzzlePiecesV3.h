@@ -126,8 +126,10 @@ public:
 
 	// Animaciones
 	Animation animNone;
-	Animation animDefault;
-	Animation animIdle1;
+	Animation animDefaultTest;
+	Animation animIdle[PieceType::MAX];
+
+
 
 	Collider* collider = nullptr;
 

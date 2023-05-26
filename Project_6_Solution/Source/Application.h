@@ -47,6 +47,9 @@ public:
 	bool CleanUp();
 
 public:
+	// Flag for cleanup
+	bool cleanUp = false;
+
 	// An array to store all modules
 	Module* modules[NUM_MODULES];
 

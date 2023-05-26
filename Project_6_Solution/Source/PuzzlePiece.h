@@ -22,7 +22,6 @@ enum PieceType {
 	PRIMED_BOMB,
 	WALL,
 
-
 	MAX
 };
 
@@ -44,6 +43,8 @@ public:
 	// Active piece update (player movement)
 	void Update();
 
+	void SetType(PieceType color);
+
 	void SetAnimation(Animation* newAnimation);
 
 public:
@@ -64,8 +65,8 @@ public:
 	Collider* collider = nullptr;
 
 	// The piece's current animation
-	Animation* currentAnimation = nullptr;
+	Animation currentAnimation;
 
 	SDL_Texture* texture = nullptr;
-
+	
 };
