@@ -55,6 +55,8 @@ bool WinLose::Start()
 	WinTexture = App->textures->Load("Assets/Sprites/SpritesWin.png");
 	LoseTexture = App->textures->Load("Assets/Sprites/SpritesLose.png");
 
+	LoseFX = App->audio->LoadFx("Assets/SFX/Lose.wav");
+
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
 
@@ -76,7 +78,7 @@ Update_Status WinLose::Update()
 		ActiveTexture = LoseTexture;
 		AAnimationPath = LAnimationPath;
 		gameFinish = false;
-		App->audio->PlayMusic("Assets/Music/Lose.ogg", 1.0f);
+		App->audio->PlayFx(LoseFX);
 		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->module_continue, 200);
 		
 	}

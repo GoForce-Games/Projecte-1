@@ -49,4 +49,6 @@ public:
     Path WAnimationPath;
     Path LAnimationPath;
 
+    uint LoseFX;
+
 };
