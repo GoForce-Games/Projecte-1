@@ -5,6 +5,6 @@ bomberman negro = paleta 21
 bomberman rojo = paleta 22
 bomberman azul = paleta 23
 bomberman verde = paleta 24
-bomberman cosmico (?) = 27 (no esta en el juego realmente, simplemente la paleta me parecio curiosa
+bomberman cosmico (?) = 27 (no esta en el juego realmente, simplemente la paleta me parecio curiosa)
 fuego de explosiones = 26
 bombas normales = 27
