@@ -111,7 +111,7 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<
 	for (size_t i = 0; i < amount; i++)
 	{
 		PuzzlePiece* newPiece = AddPuzzlePiece(*templateMan, Collider::Type::PUZZLE_PIECE);
-		newPiece->type = (PieceType)((rand() % 4) + 1);
+		newPiece->type = (PieceType)((rand() % 4) + 1); // TODO CAMBIAR ESTO 
 		stack.push(newPiece);
 	}
 	return stack;
