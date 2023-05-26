@@ -30,8 +30,11 @@ bool SceneLevel1::Start()
 	bool ret = true;
 
 	bgTexture = App->textures->Load("Assets/Sprites/BattleArena.png");
+	background = App->textures->Load("Assets/Sprites/BattleArenaBackground.png");
+	background2 = App->textures->Load("Assets/Sprites/BattleArenaBackground.png");
 	App->audio->PlayMusic("Assets/stage1.ogg", 1.0f);
-
+	/*background.PushBack({ 126,48,128,160 });
+	background2.PushBack({ 176,16,32,32 });*/
 	LOG("Loading number assets");
 
 	
@@ -80,6 +83,6 @@ Update_Status SceneLevel1::PostUpdate()
 {
 	// Draw everything --------------------------------------
 	App->render->Blit(bgTexture, 0, 0, NULL);
-
+	App->render->Blit(background, 10, 10, NULL);
 	return Update_Status::UPDATE_CONTINUE;
 }
