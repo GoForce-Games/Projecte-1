@@ -89,7 +89,7 @@ public:
 	// Avoid enabling twice
 	bool isInitialized = false;
 
-	PuzzlePiece templateMan;
+	PuzzlePiece* templateMan = nullptr;
 
 	//Pieza vacía, sin nada asignado
 	PuzzlePiece* emptyPiece = nullptr;
@@ -114,7 +114,7 @@ public:
 	PuzzlePiece* pieces[MAX_PIECES];
 
 	// Piezas pregeneradas para añadir a la zona de juego
-	std::queue<PuzzlePiece*> pieceQueue;
+	std::stack<PuzzlePiece*> pieceQueue;
 
 	// Pointer to active animation.
 	// This will be switched randomly between the different animations based on random delays

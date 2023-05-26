@@ -12,12 +12,14 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleFonts.h"
 #include "ModuleRender.h"
-#include "ModulePuzzlePiecesV2.h"
+#include "ModulePuzzlePiecesV3.h"
 #include "Puntuation.h"
 #include "ModulePresentation.h"
 #include "Intro.h"
+#include "IntroJuego.h"
 #include "ModuleWinLose.h"
 #include "ModuleLose.h"
+#include "ModuleContinue.h"
 
 Application::Application()
 {
@@ -39,16 +41,18 @@ Application::Application()
 	modules[8] = win_lose = new WinLose(false);
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
-	modules[9] = pieces = new ModulePuzzlePiecesV2(false);
+	modules[9] = pieces = new ModulePuzzlePiecesV3(false);
 	modules[10] = particles = new ModuleParticles(true);
 
 	modules[11] = intro = new Intro(false);
-	modules[12] = lose_screen = new ModuleLose(false);
+	modules[12] = introJuego = new IntroJuego(false);
+	modules[13] = lose_screen = new ModuleLose(false);
+	modules[14] = module_continue = new Continue(false);
 
-	modules[13] = collisions = new ModuleCollisions(true);
-	modules[14] = fade = new ModuleFadeToBlack(true);
+	modules[15] = collisions = new ModuleCollisions(true);
+	modules[16] = fade = new ModuleFadeToBlack(true);
 
-	modules[15] = render = new ModuleRender();
+	modules[17] = render = new ModuleRender();
 }
 
 Application::~Application()

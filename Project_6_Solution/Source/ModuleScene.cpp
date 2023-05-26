@@ -5,7 +5,7 @@
 #include "ModuleRender.h"
 #include "ModuleAudio.h"
 #include "ModuleCollisions.h"
-#include "ModulePuzzlePieces.h"
+#include "ModulePuzzlePiecesV3.h"
 #include "Puntuation.h"
 #include "ModuleWinLose.h"
 #include "ModuleFadeToBlack.h"

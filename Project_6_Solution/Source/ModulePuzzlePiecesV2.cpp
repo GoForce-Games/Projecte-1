@@ -79,7 +79,7 @@ bool ModulePuzzlePiecesV2::Start()
 	// Columna izquierda
 	iPoint offset = playArea.position;
 	//offset.y += PIECE_SIZE;
-	for (size_t i = 0; i < PLAY_AREA_Y; i++)
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
 		PuzzlePiece* piece = playArea.table[0][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
@@ -89,11 +89,11 @@ bool ModulePuzzlePiecesV2::Start()
 	// Columna derecha
 	offset = playArea.position;
 	//offset.y += PIECE_SIZE;
-	offset.x += PIECE_SIZE * (PLAY_AREA_X - 1);
-	for (size_t i = 0; i < PLAY_AREA_Y; i++)
+	offset.x += PIECE_SIZE * (PLAY_AREA_W - 1);
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
-		PuzzlePiece* piece = playArea.table[PLAY_AREA_X - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		PuzzlePiece* piece = playArea.table[PLAY_AREA_W - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.y += PIECE_SIZE;
 
 	}
@@ -101,11 +101,11 @@ bool ModulePuzzlePiecesV2::Start()
 
 	// Fondo
 	offset = playArea.position;
-	offset.y += PIECE_SIZE * (PLAY_AREA_Y);
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	offset.y += PIECE_SIZE * (PLAY_AREA_H);
+	for (size_t i = 0; i < PLAY_AREA_W; i++)
 	{
 		templateWall->position = offset;
-		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_Y - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_H - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.x += PIECE_SIZE;
 	}
 
@@ -113,7 +113,7 @@ bool ModulePuzzlePiecesV2::Start()
 	// Fondo
 	offset = playArea.position;
 	offset.y += 0;
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	for (size_t i = 0; i < PLAY_AREA_W; i++)
 	{
 		templateWall->position = offset;
 		PuzzlePiece* piece = playArea.table[i][0] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
@@ -452,7 +452,7 @@ void ModulePuzzlePiecesV2::PlacePieces() {
 			player.pieces[i][j] = nullptr;
 		}
 	}
-	playArea.debugPiecePosition();
+	//playArea.debugPiecePosition();
 }
 
 bool ModulePuzzlePiecesV2::PieceCanDrop(PuzzlePiece* piece)

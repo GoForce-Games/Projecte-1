@@ -2,7 +2,7 @@
 #include "PuzzlePiece.h"
 
 class Path;
-class GamePad;
+struct GamePad;
 
 class PlayerPieceV2
 {
@@ -43,6 +43,7 @@ public:
 	Path* piecePaths[2][2];
 
 	bool rotating = false;
+	bool locked = false;
 
 };
 
