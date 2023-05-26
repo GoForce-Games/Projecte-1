@@ -40,4 +40,5 @@ public:
     Animation ContinueAnim;
     Path ContinuePath;
 
+    uint ContinueFX;
 }; 

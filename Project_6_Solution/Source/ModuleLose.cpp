@@ -47,7 +47,7 @@ Update_Status ModuleLose::Update()
 	GameOverAnim.Update();
 	GamePad& pad = App->input->pads[0];
 	
-	App->fade->FadeToBlack((Module*)App->lose_screen, (Module*)App->introJuego, 200);
+	App->fade->FadeToBlack((Module*)App->lose_screen, (Module*)App->introJuego, 350);
 	
 	return Update_Status::UPDATE_CONTINUE;
 }
@@ -60,7 +60,7 @@ bool ModuleLose::CleanUp()
 {
 	if (LoseTexture != nullptr)
 	{
-		SDL_DestroyTexture(LoseTexture);
+		App->textures->Unload(LoseTexture);
 		LoseTexture = nullptr;
 	}
 

@@ -79,6 +79,7 @@ Update_Status WinLose::Update()
 		AAnimationPath = LAnimationPath;
 		gameFinish = false;
 		App->audio->PlayFx(LoseFX);
+		App->audio->PlayMusic(NULL, NULL);
 		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->module_continue, 200);
 		
 	}
@@ -111,17 +112,17 @@ bool WinLose::CleanUp()
 {
 	if (WinTexture != nullptr)
 	{
-		SDL_DestroyTexture(WinTexture);
+		App->textures->Unload(WinTexture);
 		WinTexture = nullptr;
 	}
 	if (LoseTexture != nullptr)
 	{
-		SDL_DestroyTexture(LoseTexture);
+		App->textures->Unload(LoseTexture);
 		LoseTexture = nullptr;
 	}
 	if (ActiveTexture != nullptr)
 	{
-		SDL_DestroyTexture(ActiveTexture);
+		App->textures->Unload(ActiveTexture);
 		ActiveTexture = nullptr;
 	}
 	return true;
