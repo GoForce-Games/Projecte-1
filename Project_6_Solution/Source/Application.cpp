@@ -108,6 +108,8 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
+	cleanUp = true;
+
 	for (int i = NUM_MODULES - 1; i >= 0 && ret; --i)
 		if (modules[i]->IsEnabled())
 			ret = modules[i]->CleanUp();

@@ -10,6 +10,17 @@
 
 #define GROUP_MIN_COUNT 3
 
+enum PlayAreaState {
+	INIT,
+	GAME_START,
+	PIECES_PLACED,
+	NEW_PIECES,
+	PAUSE,
+
+	GAME_END
+
+};
+
 class PlayArea
 {
 public:

@@ -1,3 +1,4 @@
+#pragma once
 #include "ModulePuzzlePiecesV3.h"
 
 #include "Application.h"
@@ -76,7 +77,7 @@ Update_Status ModulePuzzlePiecesV3::PostUpdate()
 	{
 		PuzzlePiece* p = pieces[i];
 		if (p == nullptr) continue;
-		SDL_Rect& currFrame = p->currentAnimation->GetCurrentFrame();
+		SDL_Rect& currFrame = p->currentAnimation.GetCurrentFrame();
 		iPoint& pos = p->position;
 		SDL_Texture* texture = p->texture;
 		App->render->Blit(texture, pos.x, pos.y, &currFrame);
@@ -141,7 +142,7 @@ void ModulePuzzlePiecesV3::RemovePuzzlePiece(PuzzlePiece* piece)
 	for (size_t i = 0; i < MAX_PIECES; i++)
 	{
 		if (pieces[i] == piece) {
-			if (piece->collider != nullptr) {
+			if (!App->cleanUp && piece->collider != nullptr) {
 				piece->collider->pendingToDelete = true;
 				piece->collider = nullptr;
 			}
@@ -281,15 +282,71 @@ void ModulePuzzlePiecesV3::LoadTextures()
 void ModulePuzzlePiecesV3::InitAnims()
 {
 	// Animacion temporal, sacado de la demo de R-type que hicimos en clase
-	animDefault.PushBack({ 0, 0, 16, 16 });
-	animDefault.PushBack({ 16, 0, 16, 16 });
-	animDefault.PushBack({ 32, 0, 16, 16 });
-	animDefault.PushBack({ 48, 0, 16, 16 });
-	animDefault.speed = 0.08f;
+	animDefaultTest.PushBack({ 0, 0, 16, 16 });
+	animDefaultTest.PushBack({ 16, 0, 16, 16 });
+	animDefaultTest.PushBack({ 32, 0, 16, 16 });
+	animDefaultTest.PushBack({ 48, 0, 16, 16 });
+	animDefaultTest.speed = 0.08f;
 
-	animNone.PushBack({ 0,0,0,0 });
+	animNone.PushBack({ 0,0,1,1 });
 	animNone.loop = false;
 	animNone.speed = 1.0f;
+
+	animIdle[PieceType::NONE] = animNone;
+
+	//Animaciones por tipo de pieza
+	iPoint pixelCoords;
+
+	// Animacion bomberman /Negro
+	pixelCoords.create(0, 0);
+	for (size_t i = 0; i < 13; i++)
+	{
+		animIdle[PieceType::BLACK].PushBack({pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE});
+		pixelCoords.x += PIECE_SIZE;
+	}
+
+	// Animacion bomberman Blanco
+	pixelCoords.x = 0;
+	pixelCoords.y += PIECE_SIZE;
+	for (size_t i = 0; i < 9; i++)
+	{
+		animIdle[PieceType::WHITE].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
+		pixelCoords.x += PIECE_SIZE;
+	}
+
+	// Animacion bomberman Rojo
+	pixelCoords.x = 0;
+	pixelCoords.y += PIECE_SIZE;
+	for (size_t i = 0; i < 9; i++)
+	{
+		animIdle[PieceType::RED].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
+		pixelCoords.x += PIECE_SIZE;
+	}
+
+	// Animacion bomberman Azul
+	pixelCoords.x = 0;
+	pixelCoords.y += PIECE_SIZE;
+	for (size_t i = 0; i < 3; i++)
+	{
+		animIdle[PieceType::BLUE].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
+		pixelCoords.x += PIECE_SIZE;
+	}
+
+	// Animacion bomberman Verde
+	pixelCoords.x = 0;
+	pixelCoords.y += PIECE_SIZE;
+	for (size_t i = 0; i < 2 ; i++)
+	{
+		animIdle[PieceType::GREEN].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
+		pixelCoords.x += PIECE_SIZE;
+	}
+
+	//Desactiva bucle para las piezas
+	for (size_t i = 0; i < PieceType::MAX; i++)
+	{
+		animIdle[i].loop = false;
+	}
+
 }
 
 void ModulePuzzlePiecesV3::InitTemplates()
@@ -299,13 +356,13 @@ void ModulePuzzlePiecesV3::InitTemplates()
 	templateMan->collider = App->collisions->AddCollider({ -64,-64,16,16 }, Collider::Type::NONE);
 	templateMan->position.create(-64, -64);
 	templateMan->texture = textureBomberman;
-	templateMan->SetAnimation(&animDefault);
+	templateMan->SetAnimation(&animDefaultTest);
 	templateMan->moving = false;
 	templateMan->type = PieceType::WHITE;
 
 
 	emptyPiece = AddPuzzlePiece(*templateMan, Collider::Type::NONE);
-	emptyPiece->currentAnimation = &animNone;
+	emptyPiece->currentAnimation = animIdle[PieceType::NONE];
 	emptyPiece->isEmpty = true;
 	emptyPiece->type = PieceType::NONE;
 }
@@ -526,9 +583,9 @@ iPoint ModulePuzzlePiecesV3::AreaToWorld(PlayArea& localArea, iPoint lCoordinate
 {
 	iPoint nPoint;
 	nPoint.create(lCoordinates.x, lCoordinates.y);
-	nPoint += localArea.position;
 	nPoint.x *= PIECE_SIZE;
 	nPoint.y *= PIECE_SIZE;
+	nPoint += localArea.position;
 
 	return nPoint;
 }
