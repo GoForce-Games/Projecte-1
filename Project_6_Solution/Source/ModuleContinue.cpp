@@ -53,11 +53,11 @@ bool Continue::Start()
 Update_Status Continue::Update()
 {
 	ContinueAnim.Update();
-	if (ContinueAnim.HasFinished())
-	{
+	//if (ContinueAnim.HasFinished())
+	
 		App->fade->FadeToBlack((Module*)App->module_continue, (Module*)App->lose_screen, 0);
 
-	}
+	
 
 	return Update_Status::UPDATE_CONTINUE;
 }
