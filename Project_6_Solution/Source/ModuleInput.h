@@ -8,11 +8,8 @@
 #define MAX_KEYS 256
 #define MAX_PADS 4
 
-
-
 struct _SDL_GameController;
 struct _SDL_Haptic;
-
 
 enum Key_State
 {
@@ -21,20 +18,13 @@ enum Key_State
 	KEY_REPEAT,
 	KEY_UP
 };
-enum Pad_State
-{
-	PAD_IDLE,
-	PAD_DOWN,
-	PAD_REPEAT,
-	PAD_UP
-};
 
 struct GamePad
 {
 	//Input data
 	bool start, back, guide;
-	Pad_State x, y, a, b, l1, r1, l3, r3;
-	Pad_State up, down, left, right;
+	bool x, y, a, b, l1, r1, l3, r3;
+	bool up, down, left, right;
 	float l2, r2;
 	float l_x, l_y, r_x, r_y, l_dz, r_dz;
 
@@ -88,9 +78,7 @@ public:
 	Key_State keys[MAX_KEYS] = { KEY_IDLE };
 
 	// An array to fill in all detected gamepads
-	GamePad pads[MAX_PADS] = { PAD_IDLE };
-
-	
+	GamePad pads[MAX_PADS];
 };
 
 #endif // __ModuleInput_H__

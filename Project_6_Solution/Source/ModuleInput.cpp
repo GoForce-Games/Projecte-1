@@ -2,8 +2,8 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "Puntuation.h"
-
 #include "SDL/include/SDL.h"
+
 
 ModuleInput::ModuleInput(bool startEnabled) : Module(startEnabled)
 {
@@ -24,7 +24,7 @@ bool ModuleInput::Init()
 	bool ret = true;
 	SDL_Init(0);
 
-	if(SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
+	if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 	{
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
@@ -57,47 +57,40 @@ Update_Status ModuleInput::PreUpdate()
 		else
 			keys[i] = (keys[i] == KEY_REPEAT || keys[i] == KEY_DOWN) ? KEY_UP : KEY_IDLE;
 	}
-	/*const Uint8* pad = SDL_GameControllerGetButton( , SDL_CONTROLLER_BUTTON_A);
-	for (int i = 0; i < MAX_PADS; ++i) {
-		if (pad[i])
-			pads[i] = (pads[i] == PAD_IDLE) ? PAD_DOWN : PAD_REPEAT;
-		else
-			pads[i] = (pads[i] == PAD_REPEAT || pads[i] == PAD_DOWN) ? PAD_UP : PAD_IDLE;
-	}*/
+
 	//Read new SDL events
 	SDL_Event event;
 	while (SDL_PollEvent(&event) != 0)
 	{
 		switch (event.type)
 		{
-			case(SDL_CONTROLLERDEVICEADDED):
-			{
-				HandleDeviceConnection(event.cdevice.which);
-				break;
-			}
-			case(SDL_CONTROLLERDEVICEREMOVED):
-			{
-				HandleDeviceRemoval(event.cdevice.which);
-				break;
-			}
-			case(SDL_QUIT):
-			{
-				return Update_Status::UPDATE_STOP;
-				break;
-			}
+		case(SDL_CONTROLLERDEVICEADDED):
+		{
+			HandleDeviceConnection(event.cdevice.which);
+			break;
+		}
+		case(SDL_CONTROLLERDEVICEREMOVED):
+		{
+			HandleDeviceRemoval(event.cdevice.which);
+			break;
+		}
+		case(SDL_QUIT):
+		{
+			return Update_Status::UPDATE_STOP;
+			break;
+		}
 		}
 	}
-	//HACER QUE LA TECLA ESCAPE CIERRE EL PROGRAMA
+
 	if (keys[SDL_SCANCODE_ESCAPE] == KEY_DOWN)
 	{
 		return Update_Status::UPDATE_STOP;
 	}
 
-	if (App->input->keys[SDL_SCANCODE_F2] == KEY_DOWN)
+	if (App->input->keys[SDL_SCANCODE_F2] == KEY_DOWN )
 	{
 		App->puntuation->score = App->puntuation->score + 100;
 	}
-
 
 	UpdateGamepadsInput();
 
@@ -175,18 +168,18 @@ void ModuleInput::UpdateGamepadsInput()
 
 		if (pad.enabled == true)
 		{
-			pad.a == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_A) == 1;
-			pad.b == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_B) == 1;
-			pad.x == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_X) == 1;
-			pad.y == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_Y) == 1;
-			pad.l1 == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) == 1;
-			pad.r1 == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) == 1;
-			pad.l3 == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_LEFTSTICK) == 1;
-			pad.r3 == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_RIGHTSTICK) == 1;
-			pad.up == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_DPAD_UP) == 1;
-			pad.down == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) == 1;
-			pad.left == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) == 1;
-			pad.right == SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == 1;
+			pad.a = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_A) == 1;
+			pad.b = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_B) == 1;
+			pad.x = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_X) == 1;
+			pad.y = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_Y) == 1;
+			pad.l1 = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) == 1;
+			pad.r1 = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) == 1;
+			pad.l3 = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_LEFTSTICK) == 1;
+			pad.r3 = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_RIGHTSTICK) == 1;
+			pad.up = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_DPAD_UP) == 1;
+			pad.down = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) == 1;
+			pad.left = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) == 1;
+			pad.right = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == 1;
 
 			pad.start = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_START) == 1;
 			pad.guide = SDL_GameControllerGetButton(pad.controller, SDL_CONTROLLER_BUTTON_GUIDE) == 1;
