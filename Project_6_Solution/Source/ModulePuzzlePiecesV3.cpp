@@ -5,9 +5,10 @@
 #include "ModuleCollisions.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
+#include "ModuleInput.h"
 
 #include "../External_Libraries/SDL/include/SDL.h"
-#include "ModuleInput.h"
+#include <algorithm>
 
 ModulePuzzlePiecesV3::ModulePuzzlePiecesV3(bool startEnabled) : Module(startEnabled)
 {
@@ -242,24 +243,108 @@ bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
 	return false;
 }
 
-bool ModulePuzzlePiecesV3::WillCollideLeft(PlayArea* area, PlayerPieceV2* player)
+bool ModulePuzzlePiecesV3::CheckOutOfBounds(PlayArea* area, PlayerPieceV2* player)
+{
+	iPoint playerPos = player->position;
+	iPoint gridPos = WorldToLocal(*area, playerPos);
+	return (gridPos.x <= 0 || gridPos.x >= PLAY_AREA_W || gridPos.y <= 0 || gridPos.y >= PLAY_AREA_H);
+}
+
+bool ModulePuzzlePiecesV3::CanGoLeft(PlayArea* area, PlayerPieceV2* player)
 {
 	// TODO finish this
 	iPoint playerPos = player->position;
 	iPoint gridPos = WorldToLocal(*area, playerPos);
-	if (player->pieces) {} // Check through grid, ignore collision for this one
+	if (CheckOutOfBounds(area, player)) {
+		LOG("Can't move left, player is out of bounds: x=%i, y=%i", gridPos.x, gridPos.y);
+		return false;
+	}
+	if (gridPos.x < 2) // Tiene pared a la izquierda
+		return false;
+	int offsetTop = (player->pieces[0][0]->isEmpty) ? 0 : 1;
+	int offsetBot = (player->pieces[1][0]->isEmpty) ? 0 : 1;
+	PuzzlePiece* leftTop = area->table[gridPos.y][gridPos.x - offsetTop];
+	PuzzlePiece* leftBot = area->table[gridPos.y + 1][gridPos.x - offsetBot];
 
-	return false;
+	//Check top piece
+	if (!player->pieces[0][0]->isEmpty || !player->pieces[0][1]->isEmpty) {
+		if (leftTop->type != PieceType::NONE) {
+			return false;
+		}
+	}
+	//Check bottom piece
+	if (!player->pieces[1][0]->isEmpty || !player->pieces[1][1]->isEmpty) {
+		if (leftBot->type != PieceType::NONE) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
-bool ModulePuzzlePiecesV3::WillCollideRight(PlayArea* area, PlayerPieceV2* player)
+bool ModulePuzzlePiecesV3::CanGoRight(PlayArea* area, PlayerPieceV2* player)
 {
-	return false;
+	iPoint playerPos = player->position;
+	iPoint gridPos = WorldToLocal(*area, playerPos);
+	if (CheckOutOfBounds(area, player)) {
+		LOG("Can't move right, player is out of bounds: x=%i, y=%i", gridPos.x, gridPos.y);
+		return false;
+	}
+	if (gridPos.x > PLAY_AREA_W-4) // Tiene pared a la derecha
+		return false;
+	int offsetTop = (player->pieces[0][1]->isEmpty) ? 1 : 2;
+	int offsetBot = (player->pieces[1][1]->isEmpty) ? 1 : 2;
+	PuzzlePiece* rightTop = area->table[gridPos.y][gridPos.x + offsetTop];
+	PuzzlePiece* rightBot = area->table[gridPos.y + 1][gridPos.x + offsetBot];
+
+	//Check top piece
+	if (!player->pieces[0][1]->isEmpty || !player->pieces[0][0]->isEmpty) {
+		if (rightTop->type != PieceType::NONE) {
+			return false;
+		}
+	}
+	//Check bottom piece
+	if (!player->pieces[1][1]->isEmpty || !player->pieces[1][0]->isEmpty) {
+		if (rightBot->type != PieceType::NONE) {
+			return false;
+		}
+	}
+	return true;
 }
 
-bool ModulePuzzlePiecesV3::WillCollideDown(PlayArea* area, PlayerPieceV2* player)
+bool ModulePuzzlePiecesV3::CanGoDown(PlayArea* area, PlayerPieceV2* player)
 {
-	return false;
+	iPoint playerPos = player->position;
+	//Ya esta dentro de una casilla, no compruebes hasta que vaya a pasar a la siguiente
+	if ((playerPos.y+gravity) % PIECE_SIZE != 0) return true;
+
+
+	iPoint gridPos = WorldToLocal(*area, playerPos);
+	if (CheckOutOfBounds(area, player)) {
+		LOG("Can't move down, player is out of bounds: x=%i, y=%i", gridPos.x, gridPos.y);
+		return false;
+	}
+
+	int offsetLeft = (player->pieces[1][0]->isEmpty) ? 1 : 2;
+	int offsetRight = (player->pieces[1][1]->isEmpty) ? 1 : 2;
+	PuzzlePiece* botLeft = area->table[gridPos.y + offsetLeft][gridPos.x];
+	PuzzlePiece* botRight = area->table[gridPos.y + offsetRight][gridPos.x+1];
+
+	// Check left piece
+	if (!player->pieces[1][0]->isEmpty) {
+		if (botLeft->type != PieceType::NONE) {
+			return false;
+		}
+	}
+
+	// Check right piece (if active piece is bomb this has to be skipped)
+	if (!player->pieces[1][1]->isEmpty || !player->pieces[0][1]->isEmpty) {
+		if (botLeft->type != PieceType::NONE) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void ModulePuzzlePiecesV3::PlacePieces()
@@ -302,7 +387,7 @@ void ModulePuzzlePiecesV3::LoadTextures()
 
 void ModulePuzzlePiecesV3::InitAnims()
 {
-	//TODO: Arreglar animaciones
+	//TODO: Arreglar animaciones. Podeis cambiar el como se crean las animaciones si quereis para tener un poco mas de flexibilidad
 
 	// Animacion temporal, sacado de la demo de R-type que hicimos en clase
 	animDefaultTest.PushBack({ 0, 0, 16, 16 });
@@ -509,7 +594,9 @@ void ModulePuzzlePiecesV3::ProcessInput()
 		// Mueve a la izquierda
 		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE) {
 
-			if (!WillCollide(PlayerCollisionCheck::LEFT)) {
+			if (CanGoLeft(&playArea, &player)){
+
+			//if (!WillCollide(PlayerCollisionCheck::LEFT)) { //function being deprecated
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -523,8 +610,8 @@ void ModulePuzzlePiecesV3::ProcessInput()
 
 		// Mueve a la derecha
 		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_IDLE) {
-
-			if (!WillCollide(PlayerCollisionCheck::RIGHT)) {
+			if (CanGoRight(&playArea, &player)) {
+			//if (!WillCollide(PlayerCollisionCheck::RIGHT)) {
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -544,11 +631,13 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 		//Aplica gravedad
 
 		if (dropDelay == 0) {
-			if (!WillCollide(PlayerCollisionCheck::BOTTOM)) {
+			if (CanGoDown(&playArea,&player)){
+			//if (!WillCollide(PlayerCollisionCheck::BOTTOM)) {
 				dropDelay = fastFall ? MIN_DROP_DELAY : MAX_DROP_DELAY;
 				player.position.y += gravity;
 			}
 			else {
+				player.position.y += gravity; //Sin esto las piezas se colocan una celda mas arriba (necesita hacer un ciclo mas de caida antes de fijar las piezas)
 				player.locked = true;
 				PlacePieces();
 				player.position.create(64, 16);
@@ -565,6 +654,7 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 {
 	// No se aplica logica cuando hay una pieza en juego
 	if (player.locked) {
+		//Hay que hacer que este estado dure hasta que esten todas las piezas en su sitio
 		playArea.DropPieces();
 		playArea.checkGroupedPieces();
 
@@ -572,6 +662,7 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 			GeneratePuzzlePieces(pieceQueue, 12);
 
 
+		//A partir de aqui solo cuando ya se haya procesado todo el tablero y se pueda sacar una pieza nueva
 		/*
 		std::stack<PuzzlePiece*> s;
 		GeneratePuzzlePieces(s, 3);

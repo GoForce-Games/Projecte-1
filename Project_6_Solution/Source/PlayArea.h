@@ -52,7 +52,7 @@ public:
 
 	iPoint position;
 
-	//Array bidimensional de punteros a pieza
+	//Array bidimensional de punteros a pieza, recorrer con las coordenadas invertidas (table[coord_y][coord_x])
 	PuzzlePiece* table[PLAY_AREA_H][PLAY_AREA_W];
 
 	Collider* collisionTester = nullptr;

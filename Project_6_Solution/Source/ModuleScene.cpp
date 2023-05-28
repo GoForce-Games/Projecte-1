@@ -82,7 +82,7 @@ Update_Status SceneLevel1::Update()
 Update_Status SceneLevel1::PostUpdate()
 {
 	// Draw everything --------------------------------------
-	//App->render->Blit(background, 16, 16, &backgroundRect);
+	App->render->Blit(background, 16, 16, &backgroundRect);
 	App->render->Blit(bgTexture, 0, 0, NULL);
 	return Update_Status::UPDATE_CONTINUE;
 }
