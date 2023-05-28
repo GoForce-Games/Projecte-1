@@ -72,7 +72,7 @@ bool Application::Init()
 	bool ret = true;
 
 	for (int i = 0; i < NUM_MODULES && ret; ++i)
-		if (modules[i]->IsEnabled())
+		//if (modules[i]->IsEnabled())
 			ret = modules[i]->Init();
 
 

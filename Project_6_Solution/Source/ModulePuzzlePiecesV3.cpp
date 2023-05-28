@@ -25,8 +25,6 @@ ModulePuzzlePiecesV3::ModulePuzzlePiecesV3(bool startEnabled) : Module(startEnab
 	{
 		walls[i] = nullptr;
 	}
-
-	InitAnims();
 }
 
 ModulePuzzlePiecesV3::~ModulePuzzlePiecesV3()
@@ -44,6 +42,9 @@ bool ModulePuzzlePiecesV3::Init()
 	{
 		walls[i] = nullptr;
 	}
+
+	InitAnims();
+
 	return true;
 }
 
@@ -75,7 +76,7 @@ Update_Status ModulePuzzlePiecesV3::PostUpdate()
 	for (size_t i = 0; i < MAX_PIECES; i++)
 	{
 		PuzzlePiece* p = pieces[i];
-		if (p == nullptr) continue;
+		if (p == nullptr || p->type == PieceType::NONE || p->type == PieceType::WALL) continue;
 		SDL_Rect& currFrame = p->currentAnimation.GetCurrentFrame();
 		iPoint& pos = p->position;
 		SDL_Texture* texture = p->texture;
@@ -111,7 +112,8 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<
 	for (size_t i = 0; i < amount; i++)
 	{
 		PuzzlePiece* newPiece = AddPuzzlePiece(*templateMan, Collider::Type::PUZZLE_PIECE);
-		newPiece->type = (PieceType)((rand() % 4) + 1); // TODO CAMBIAR ESTO 
+		PieceType type = (PieceType)((rand() % 4) + 1); // TODO CAMBIAR ESTO 
+		newPiece->SetType(type);
 		stack.push(newPiece);
 	}
 	return stack;
@@ -126,6 +128,7 @@ PuzzlePiece* ModulePuzzlePiecesV3::AddPuzzlePiece(const PuzzlePiece& piece, Coll
 			newPiece->collider = App->collisions->AddCollider(templateMan->collider->rect, type);
 			if (newPiece->collider != nullptr)
 				newPiece->collider->SetPos(newPiece->position.x, newPiece->position.y);
+			newPiece->SetType(piece.type);
 			return pieces[i] = newPiece;
 		}
 	}
@@ -239,6 +242,26 @@ bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
 	return false;
 }
 
+bool ModulePuzzlePiecesV3::WillCollideLeft(PlayArea* area, PlayerPieceV2* player)
+{
+	// TODO finish this
+	iPoint playerPos = player->position;
+	iPoint gridPos = WorldToLocal(*area, playerPos);
+	if (player->pieces) {} // Check through grid, ignore collision for this one
+
+	return false;
+}
+
+bool ModulePuzzlePiecesV3::WillCollideRight(PlayArea* area, PlayerPieceV2* player)
+{
+	return false;
+}
+
+bool ModulePuzzlePiecesV3::WillCollideDown(PlayArea* area, PlayerPieceV2* player)
+{
+	return false;
+}
+
 void ModulePuzzlePiecesV3::PlacePieces()
 {
 	iPoint posTablero = WorldToLocal(playArea, player.position);
@@ -279,6 +302,8 @@ void ModulePuzzlePiecesV3::LoadTextures()
 
 void ModulePuzzlePiecesV3::InitAnims()
 {
+	//TODO: Arreglar animaciones
+
 	// Animacion temporal, sacado de la demo de R-type que hicimos en clase
 	animDefaultTest.PushBack({ 0, 0, 16, 16 });
 	animDefaultTest.PushBack({ 16, 0, 16, 16 });
@@ -287,8 +312,6 @@ void ModulePuzzlePiecesV3::InitAnims()
 	animDefaultTest.speed = 0.08f;
 
 	animNone.PushBack({ 0,0,1,1 });
-	animNone.loop = false;
-	animNone.speed = 1.0f;
 
 	animIdle[PieceType::NONE] = animNone;
 
@@ -343,6 +366,7 @@ void ModulePuzzlePiecesV3::InitAnims()
 	for (size_t i = 0; i < PieceType::MAX; i++)
 	{
 		animIdle[i].loop = false;
+		animIdle[i].speed = 0.08f;
 	}
 
 }

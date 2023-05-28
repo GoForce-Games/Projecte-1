@@ -54,20 +54,6 @@ bool PlayArea::Update()
 	return true;
 }
 
-/*
-void PlayArea::NewPieceSet(PlayerPiece* player)
-{
-	PuzzlePiece newPiece;
-	newPiece.moving = true;
-	PuzzlePiece** pieceArray = new PuzzlePiece*[3];
-	for (uint i = 0; i < 3; i++)
-	{
-		pieceArray[i] = new PuzzlePiece(newPiece);
-	}
-	player->setPieces(pieceArray);
-}
-*/
-
 void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type) {
 	// Si la pieza ya esta en el grupo no hace falta añadirla (no deberia pasar nunca, esto es para evitar recursiones infinitas)
 	for (iPoint p : group)

@@ -48,9 +48,19 @@ public:
 	//Comprueba la colisión en eje cardinal según la dirección proporcionada (si solo una de las coordenadas es 1/-1 comprueba todo el lado)
 	bool WillCollide(PlayerCollisionCheck direction);
 
+	// Check if player can move left
+	bool WillCollideLeft(PlayArea* area, PlayerPieceV2* player);
+
+	// Check if player can move right
+	bool WillCollideRight(PlayArea* area, PlayerPieceV2* player);
+
+	// Check if gravity can pull down on player
+	bool WillCollideDown(PlayArea* area, PlayerPieceV2* player);
+
 	//Saca las piezas del jugador y las coloca en el tablero donde les toca
 	void PlacePieces();
 
+	//Unused
 	bool PieceCanDrop(PuzzlePiece* piece);
 
 private: // Helper functions

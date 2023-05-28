@@ -39,6 +39,9 @@ public:
 
 	// The sprites
 	SDL_Texture* spritesTexture = nullptr;
+
+
+	SDL_Rect backgroundRect;
 };
 
 #endif
