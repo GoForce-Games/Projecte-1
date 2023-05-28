@@ -26,11 +26,15 @@ public:
 	// Actualiza el estado de las piezas
 	bool Update();
 
+	void refreshColliderState();
+
 	// Añade piezas nuevas
 	void setPieces(PuzzlePiece* newPieces[4]);
 
 public:
 	GamePad* gamepad = nullptr;
+
+	Collider* colliders[4][4] = { nullptr };
 
 	PuzzlePiece* pieces[2][2] =
 	{ {nullptr, nullptr},

@@ -71,6 +71,18 @@ bool PlayerPieceV2::CleanUp()
 				pieces[i][j] = nullptr; // La limpieza de piezas la hace el modulo principal
 		}
 	}
+
+	for (size_t i = 0; i < 4; i++)
+	{
+		for (size_t j = 0; j < 4; j++)
+		{
+			if (colliders[i][j] != nullptr) {
+				colliders[i][j]->pendingToDelete = true;
+				colliders[i][j] = nullptr;
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -141,6 +153,20 @@ bool PlayerPieceV2::Update()
 	}
 
 	return true;
+}
+
+void PlayerPieceV2::refreshColliderState()
+{
+	//Compara con el array de piezas para activar o desactivar colisiones
+	for (size_t i = 0; i < 2; i++)
+	{
+		for (size_t j = 0; j < 2; j++)
+		{
+			if (colliders[1+i][1+j] != nullptr) {
+
+			}
+		}
+	}
 }
 
 void PlayerPieceV2::setPieces(PuzzlePiece* newPieces[4])

@@ -61,7 +61,7 @@ public:
 
 	void RemovePuzzlePiece(PuzzlePiece* piece);
 
-	//Comprueba la colisión en eje cardinal según la dirección proporcionada (si solo una de las coordenadas es 1/-1 comprueba todo el lado)
+	//Comprueba la colisión en eje cardinal según la dirección proporcionada (si solo una de las coordenadas es 1/-1 comprueba el lado completo)
 	bool WillCollide(PlayerCollisionCheck direction);
 
 	//Saca las piezas del jugador y las coloca en el tablero donde les toca

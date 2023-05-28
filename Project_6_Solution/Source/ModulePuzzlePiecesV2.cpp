@@ -38,7 +38,6 @@ bool ModulePuzzlePiecesV2::Start()
 		walls[i] = nullptr;
 	}
 
-	// TODO textura para probar, hay que recortar el spritesheet
 	textureBomberman = App->textures->Load("Assets/testerman.png");
 	if (textureBomberman == nullptr) return false;
 
@@ -311,7 +310,6 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV2::GeneratePuzzlePieces(std::stack<
 		PuzzlePiece* newPiece = AddPuzzlePiece(templateMan);
 		newPiece->type = (PieceType)(2 + (rand() % 3));
 		stack.push(newPiece);
-		//TODO asignar animaciones individuales
 	}
 
 
@@ -325,7 +323,7 @@ PuzzlePiece* ModulePuzzlePiecesV2::AddPuzzlePiece(const PuzzlePiece& piece, Coll
 			//Crea nueva pieza con una caja de colision copiada de la plantilla
 			PuzzlePiece* newPiece = new PuzzlePiece(piece);
 			newPiece->collider = App->collisions->AddCollider(templateMan.collider->rect, type);
-			if (newPiece->collider != nullptr) //TODO solucionar problema de colliders
+			if (newPiece->collider != nullptr) 
 				newPiece->collider->SetPos(newPiece->position.x, newPiece->position.y);
 			return pieces[i] = newPiece;
 		}
@@ -395,7 +393,7 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	}
 
 	if (x == 0) {
-		//Hace que el colisionador ocupe todo el ancho del jugador
+		//Hace que el colisionador ocupe completamente el ancho del jugador
 		rect.x = player.position.x;
 		rect.w = PIECE_SIZE * 2;
 	}
@@ -408,7 +406,7 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	}
 
 	if (y == 0) {
-		//Hace que el colisionador ocupe todo el alto del jugador
+		//Hace que el colisionador ocupe completamente el alto del jugador
 		rect.y = player.position.y + gravity;
 		rect.h = PIECE_SIZE * 2;
 	}

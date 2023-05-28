@@ -28,7 +28,6 @@ bool ModulePuzzlePieces::Start()
 {
 	if (DEBUG_V2) return debug->Start();
 
-	// TODO textura para probar, hay que recortar el spritesheet
 	textureBomberman = App->textures->Load("Assets/testerman.png");
 	if (textureBomberman == nullptr) return false;
 

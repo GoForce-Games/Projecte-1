@@ -51,8 +51,6 @@ public:
 	Animation upAnim;
 	Animation downAnim;
 
-	// TODO 3: Add a collider to the player
-
 	// The player's collider
 	Collider* collider = nullptr;
 
