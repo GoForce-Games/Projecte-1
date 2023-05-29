@@ -290,7 +290,7 @@ bool ModulePuzzlePiecesV3::CanGoRight(PlayArea* area, PlayerPieceV2* player)
 		LOG("Can't move right, player is out of bounds: x=%i, y=%i", gridPos.x, gridPos.y);
 		return false;
 	}
-	if (gridPos.x > PLAY_AREA_W-4) // Tiene pared a la derecha
+	if (gridPos.x > PLAY_AREA_W - 4) // Tiene pared a la derecha
 		return false;
 	int offsetTop = (player->pieces[0][1]->isEmpty) ? 1 : 2;
 	int offsetBot = (player->pieces[1][1]->isEmpty) ? 1 : 2;
@@ -316,7 +316,7 @@ bool ModulePuzzlePiecesV3::CanGoDown(PlayArea* area, PlayerPieceV2* player)
 {
 	iPoint playerPos = player->position;
 	//Ya esta dentro de una casilla, no compruebes hasta que vaya a pasar a la siguiente
-	if ((playerPos.y+gravity) % PIECE_SIZE != 0) return true;
+	if ((playerPos.y + gravity) % PIECE_SIZE != 0) return true;
 
 
 	iPoint gridPos = WorldToLocal(*area, playerPos);
@@ -328,7 +328,7 @@ bool ModulePuzzlePiecesV3::CanGoDown(PlayArea* area, PlayerPieceV2* player)
 	int offsetLeft = (player->pieces[1][0]->isEmpty) ? 1 : 2;
 	int offsetRight = (player->pieces[1][1]->isEmpty) ? 1 : 2;
 	PuzzlePiece* botLeft = area->table[gridPos.y + offsetLeft][gridPos.x];
-	PuzzlePiece* botRight = area->table[gridPos.y + offsetRight][gridPos.x+1];
+	PuzzlePiece* botRight = area->table[gridPos.y + offsetRight][gridPos.x + 1];
 
 	// Check left piece
 	if (!player->pieces[1][0]->isEmpty) {
@@ -407,7 +407,7 @@ void ModulePuzzlePiecesV3::InitAnims()
 	pixelCoords.create(0, 0);
 	for (size_t i = 0; i < 13; i++)
 	{
-		animIdle[PieceType::BLACK].PushBack({pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE});
+		animIdle[PieceType::BLACK].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
 	}
 
@@ -441,7 +441,7 @@ void ModulePuzzlePiecesV3::InitAnims()
 	// Animacion bomberman Verde
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
-	for (size_t i = 0; i < 2 ; i++)
+	for (size_t i = 0; i < 2; i++)
 	{
 		animIdle[PieceType::GREEN].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
@@ -495,6 +495,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 	// Columna derecha
 	offset = playArea.position;
 	offset.x += PIECE_SIZE * (PLAY_AREA_W - 1);
+	//offset.y += PIECE_SIZE;
 	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
@@ -520,8 +521,8 @@ void ModulePuzzlePiecesV3::InitWalls()
 
 	// Techo (por ciertas razones relacionadas con la deteccion de grupos)
 	offset = playArea.position;
-	offset.x += PIECE_SIZE;
-	for (size_t i = 1; i < PLAY_AREA_W - 1; i++)
+	//offset.x += PIECE_SIZE;
+	for (size_t i = 0; i < PLAY_AREA_W - 1; i++)
 	{
 		templateWall->position = offset;
 		RemovePuzzlePiece(playArea.table[0][i]);
@@ -531,6 +532,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 	}
 
 	delete templateWall;
+
 }
 
 void ModulePuzzlePiecesV3::InitPlayers()
@@ -594,9 +596,9 @@ void ModulePuzzlePiecesV3::ProcessInput()
 		// Mueve a la izquierda
 		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE) {
 
-			if (CanGoLeft(&playArea, &player)){
+			if (CanGoLeft(&playArea, &player)) {
 
-			//if (!WillCollide(PlayerCollisionCheck::LEFT)) { //function being deprecated
+				//if (!WillCollide(PlayerCollisionCheck::LEFT)) { //function being deprecated
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -611,7 +613,7 @@ void ModulePuzzlePiecesV3::ProcessInput()
 		// Mueve a la derecha
 		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_IDLE) {
 			if (CanGoRight(&playArea, &player)) {
-			//if (!WillCollide(PlayerCollisionCheck::RIGHT)) {
+				//if (!WillCollide(PlayerCollisionCheck::RIGHT)) {
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -631,8 +633,8 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 		//Aplica gravedad
 
 		if (dropDelay == 0) {
-			if (CanGoDown(&playArea,&player)){
-			//if (!WillCollide(PlayerCollisionCheck::BOTTOM)) {
+			if (CanGoDown(&playArea, &player)) {
+				//if (!WillCollide(PlayerCollisionCheck::BOTTOM)) {
 				dropDelay = fastFall ? MIN_DROP_DELAY : MAX_DROP_DELAY;
 				player.position.y += gravity;
 			}

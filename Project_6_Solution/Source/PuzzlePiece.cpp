@@ -28,7 +28,7 @@ PuzzlePiece::PuzzlePiece() : position()
 PuzzlePiece::PuzzlePiece(const PuzzlePiece& p)
 {
 	moving = p.moving;
-	position.create(p.position.x,p.position.y);
+	position.create(p.position.x, p.position.y);
 	collider = nullptr;
 	currentAnimation = p.currentAnimation;
 	texture = p.texture;
@@ -58,5 +58,6 @@ void PuzzlePiece::SetType(PieceType newType)
 // Borra la copia de la animación actual y asigna una nueva
 // Esto permite que las piezas se animen por separado, aunque seguro que hay mejores formas de hacerlo
 void PuzzlePiece::SetAnimation(Animation* newAnimation) {
-	currentAnimation = *newAnimation;
+	if (newAnimation != nullptr)
+		currentAnimation = *newAnimation;
 }
