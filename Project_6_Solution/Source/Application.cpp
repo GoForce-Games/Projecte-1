@@ -38,11 +38,12 @@ Application::Application()
 
 	modules[6] = sceneLevel_1 = new SceneLevel1(false);
 	modules[7] = puntuation = new Puntuation(false);
-	modules[8] = win_lose = new WinLose(false);
+	
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
-	modules[9] = pieces = new ModulePuzzlePiecesV3(false);
-	modules[10] = particles = new ModuleParticles(true);
+	modules[8] = pieces = new ModulePuzzlePiecesV3(false);
+	modules[9] = particles = new ModuleParticles(true);
+	modules[10] = win_lose = new WinLose(false);
 
 	modules[11] = intro = new Intro(false);
 	modules[12] = introJuego = new IntroJuego(false);
