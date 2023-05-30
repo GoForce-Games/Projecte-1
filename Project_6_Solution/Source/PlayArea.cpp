@@ -25,6 +25,7 @@ PlayArea::~PlayArea()
 void PlayArea::Init(PuzzlePiece* fillWith)
 {
 	ModulePuzzlePiecesV3* manager = App->pieces;
+	state = PlayAreaState::INIT;
 
 	for (uint i = 0; i < PLAY_AREA_H; i++)
 	{
@@ -40,6 +41,7 @@ void PlayArea::Init(PuzzlePiece* fillWith)
 
 bool PlayArea::Update()
 {
+	if (player != nullptr) player->Update();
 	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		for (size_t j = 0; j < PLAY_AREA_W; j++)
@@ -54,71 +56,17 @@ bool PlayArea::Update()
 	return true;
 }
 
-void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type) {
-	// Si la pieza ya esta en el grupo no hace falta añadirla (no deberia pasar nunca, esto es para evitar recursiones infinitas)
-	for (iPoint p : group)
-	{
-		if (p == table[currPos.x][currPos.y]->position) {
-			return;
-		}
-	}
-	group.push_back(table[currPos.x][currPos.y]->position);
-	bool existsInGroup = false;
-	for (int i = -1; i < 2; i += 2)
-	{
-		//Si no es del mismo tipo salta esta iteracion
-		if (table[currPos.x + i][currPos.y]->type != type) continue;
+void PlayArea::RecursePieces(std::deque<PuzzlePiece*>& deq, iPoint currPos, const PieceType& type, const CheckDirection& dir) {
 
-		//Busca si ya se encuentra en el grupo
-		for (iPoint p : group)
-		{
-			if (p == table[currPos.x + i][currPos.y]->position) {
-				existsInGroup = true;
-				break;
-			}
-		}
-
-		//Si ya ha sido añadido salta a la siguiente iteracion
-		if (existsInGroup) {
-			existsInGroup = false;
-			continue;
-		}
-		else { //Si aun no ha sido añadido, lo añade y sigue buscando recursivamente
-			currPos.x += i;
-			RecurseGroups(group, currPos, type);
-		}
-	}
-
-	for (int i = -1; i < 2; i += 2)
-	{
-		//Si no es del mismo tipo salta esta iteracion
-		if (table[currPos.x][currPos.y + i]->type != type) continue;
-
-		//Busca si ya se encuentra en el grupo
-		for (iPoint p : group)
-		{
-			if (p == table[currPos.x][currPos.y + i]->position) {
-				existsInGroup = true;
-				break;
-			}
-		}
-
-		//Si ya ha sido añadido salta a la siguiente iteracion
-		if (existsInGroup) {
-			existsInGroup = false;
-			continue;
-		}
-		else { //Si aun no ha sido añadido, lo añade y sigue buscando recursivamente
-			currPos.y += i;
-			RecurseGroups(group, currPos, type);
-		}
-	}
-}
-
-void PlayArea::RecursePieces(std::deque<PuzzlePiece*>& group, PuzzlePiece* currPiece) {
-
-
-
+	if (dir == CheckDirection::HORIZONTAL)
+		currPos.x++;
+	else
+		currPos.y++;
+	//TODO terminar esto
+	PuzzlePiece* piece = table[currPos.y][currPos.x];
+	if (piece == nullptr || piece->type != type) return;
+	deq.push_back(piece);
+	RecursePieces(deq, currPos, type, dir);
 
 	return;
 }
@@ -135,20 +83,42 @@ void PlayArea::checkGroupedPieces()
 		for (size_t j = 0; j < PLAY_AREA_W; j++)
 		{
 			p = table[i][j];
-			if (p->type != PieceType::NONE && p->type != PieceType::WALL) {
+			if (p->type == PieceType::BLACK || p->type == PieceType::WHITE || p->type == PieceType::RED || p->type == PieceType::BLUE || p->type == PieceType::GREEN) {
 				std::deque<PuzzlePiece*> deq;
 				iPoint pos;
-				pos.create(i,j);
+				pos.create(j, i);
 				LOG("%s %s\n", "Empieza la busqueda de piezas", (PuzzlePiece::enumLookup[p->type]));
-				RecursePieces(deq, p);
+				RecursePieces(deq, pos, p->type, CheckDirection::HORIZONTAL);
+				deq.push_back(p);
 				if (deq.size() >= GROUP_MIN_COUNT) {
-					for (PuzzlePiece* n : deq)
+					for (PuzzlePiece* n; deq.size()>0;)
 					{
+						n = deq.back();
 						piecesToRemove.push_back(n);
+						deq.pop_back();
+					}
+				}
+				else {
+					for (;deq.size()>0;deq.pop_back()) {} //Vacia el grupo
+				}
+				RecursePieces(deq, pos, p->type, CheckDirection::VERTICAL);
+				deq.push_back(p);
+				if (deq.size() >= GROUP_MIN_COUNT) {
+					for (PuzzlePiece* n; deq.size() > 0;)
+					{
+						n = deq.back();
+						piecesToRemove.push_back(n);
+						deq.pop_back();
 					}
 				}
 			}
+		}
+	}
 
+	for (PuzzlePiece* p : piecesToRemove)
+	{
+		if (!p->pendingToDelete) {
+			p->pendingToDelete = true;
 		}
 	}
 
@@ -235,23 +205,28 @@ void PlayArea::DropPieces()
 {
 	//OutputDebugString("Haciendo caer a las piezas...\n");
 	//debugPiecePosition();
-	for (size_t i = 1; i < PLAY_AREA_H - 2; i++)
-	{
-		for (size_t j = 1; j < PLAY_AREA_W - 0; j++)
+	bool finishedDropping = false;
+	while (!finishedDropping) {
+		finishedDropping = true;
+		for (size_t i = 1; i < PLAY_AREA_H - 2; i++)
 		{
-			if (table[i][j] != nullptr)
-				if (PieceCanDrop(table[i][j], table[i+1][j])) {
-					PuzzlePiece* aux = table[i][j];
-					table[i][j] = table[i + 1][j];
-					table[i + 1][j] = aux;
+			for (size_t j = 1; j < PLAY_AREA_W - 0; j++)
+			{
+				if (table[i][j] != nullptr)
+					if (PieceCanDrop(table[i][j], table[i + 1][j])) {
+						finishedDropping = false;
+						PuzzlePiece* aux = table[i][j];
+						table[i][j] = table[i + 1][j];
+						table[i + 1][j] = aux;
 
-					//Actualiza la posicion de las piezas
-					//table[j][i]->position.y += PIECE_SIZE;
-					//table[j][i + 1]->position.y -= PIECE_SIZE;
+						//Actualiza la posicion de las piezas
+						//table[j][i]->position.y += PIECE_SIZE;
+						//table[j][i + 1]->position.y -= PIECE_SIZE;
 
 
-				}
+					}
 
+			}
 		}
 	}
 	//OutputDebugString("Resultado:\n");

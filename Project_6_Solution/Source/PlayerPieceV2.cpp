@@ -72,17 +72,6 @@ bool PlayerPieceV2::CleanUp()
 		}
 	}
 
-	for (size_t i = 0; i < 4; i++)
-	{
-		for (size_t j = 0; j < 4; j++)
-		{
-			if (colliders[i][j] != nullptr) {
-				colliders[i][j]->pendingToDelete = true;
-				colliders[i][j] = nullptr;
-			}
-		}
-	}
-
 	return true;
 }
 
@@ -110,6 +99,7 @@ bool PlayerPieceV2::Rotate()
 
 bool PlayerPieceV2::Update()
 {
+	//Rotación
 	for (size_t i = 0; i < 2; i++)
 	{
 		for (size_t j = 0; j < 2; j++)
@@ -123,7 +113,7 @@ bool PlayerPieceV2::Update()
 	}
 
 	if (rotating) {
-		// Gira en el sentido del reloj por defecto (hara falta reimplementar para poder cambiar la direccion) (TODO)
+		// Gira en el sentido del reloj por defecto
 		for (size_t i = 0; i < 2; i++)
 		{
 			for (size_t j = 0; j < 2; j++)
@@ -155,20 +145,6 @@ bool PlayerPieceV2::Update()
 	return true;
 }
 
-void PlayerPieceV2::refreshColliderState()
-{
-	//Compara con el array de piezas para activar o desactivar colisiones
-	for (size_t i = 0; i < 2; i++)
-	{
-		for (size_t j = 0; j < 2; j++)
-		{
-			if (colliders[1+i][1+j] != nullptr) {
-
-			}
-		}
-	}
-}
-
 void PlayerPieceV2::setPieces(PuzzlePiece* newPieces[4])
 {
 	for (uint i = 0; i < 4; i++)
@@ -185,6 +161,4 @@ void PlayerPieceV2::setPieces(PuzzlePiece* newPieces[4])
 	pieces[0][1]->name = "TopRight";
 	pieces[1][0]->name = "BotLeft";
 	pieces[1][1]->name = "BotRight";
-
-	App->pieces->playArea.watched = pieces[1][0]; // TODO eliminar variable debug
 }

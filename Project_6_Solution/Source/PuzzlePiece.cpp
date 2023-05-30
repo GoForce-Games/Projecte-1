@@ -16,7 +16,6 @@ const char* PuzzlePiece::enumLookup[] = {
 	"PRIMED_BOMB",
 	"WALL",
 
-
 	"MAX"
 };
 

@@ -21,6 +21,11 @@ enum PlayAreaState {
 
 };
 
+enum CheckDirection {
+	HORIZONTAL,
+	VERTICAL,
+};
+
 class PlayArea
 {
 public:
@@ -30,11 +35,10 @@ public:
 
 	void Init(PuzzlePiece* fillWith = nullptr);
 
+	//Update player and table pieces
 	bool Update();
 
-	void RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type);
-
-	void RecursePieces(std::deque<PuzzlePiece*>& group, PuzzlePiece* currPiece);
+	void RecursePieces(std::deque<PuzzlePiece*>& group, iPoint currPos, const PieceType& type, const CheckDirection& dir);
 
 	void checkGroupedPieces();
 
@@ -50,9 +54,11 @@ public:
 
 
 public:
-	PuzzlePiece* watched = nullptr;
+	PlayAreaState state;
 
 	iPoint position;
+
+	PlayerPieceV2* player = nullptr;
 
 	//Array bidimensional de punteros a pieza, recorrer con las coordenadas invertidas (table[coord_y][coord_x])
 	PuzzlePiece* table[PLAY_AREA_H][PLAY_AREA_W];

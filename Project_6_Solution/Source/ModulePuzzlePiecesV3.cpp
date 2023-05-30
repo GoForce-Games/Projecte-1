@@ -52,6 +52,7 @@ bool ModulePuzzlePiecesV3::Init()
 
 bool ModulePuzzlePiecesV3::Start()
 {
+	//TODO cambiar playArea y player a variables dinamicas para mayor flexibilidad si se pone multijugador (debe contener el jugador en la variable dedicada)
 	EnableDependencies();
 	LoadTextures();
 	InitTemplates();
@@ -417,50 +418,61 @@ void ModulePuzzlePiecesV3::InitAnims()
 
 	//Animaciones por tipo de pieza
 	iPoint pixelCoords;
+	SDL_Rect firstFrame;
 
 	// Animacion bomberman /Negro
 	pixelCoords.create(0, 0);
+	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
 	for (size_t i = 0; i < 13; i++)
 	{
 		animIdle[PieceType::BLACK].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
 	}
+	animIdle[PieceType::BLACK].PushBack(firstFrame);
 
 	// Animacion bomberman Blanco
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
+	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
 	for (size_t i = 0; i < 9; i++)
 	{
 		animIdle[PieceType::WHITE].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
 	}
+	animIdle[PieceType::WHITE].PushBack(firstFrame);
 
 	// Animacion bomberman Rojo
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
+	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
 	for (size_t i = 0; i < 9; i++)
 	{
 		animIdle[PieceType::RED].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
 	}
+	animIdle[PieceType::RED].PushBack(firstFrame);
 
 	// Animacion bomberman Azul
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
+	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
 	for (size_t i = 0; i < 3; i++)
 	{
 		animIdle[PieceType::BLUE].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
 	}
+	animIdle[PieceType::BLUE].PushBack(firstFrame);
 
 	// Animacion bomberman Verde
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
+	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
 	for (size_t i = 0; i < 2; i++)
 	{
 		animIdle[PieceType::GREEN].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
 	}
+	animIdle[PieceType::GREEN].PushBack(firstFrame);
 
 	//Desactiva bucle para las piezas
 	for (size_t i = 0; i < PieceType::MAX; i++)
@@ -662,7 +674,7 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 				PlacePieces();
 				player.position.create(64, 16);
 			}
-			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo
+			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo (Actualizacion: ya no debería ocurrir, pero esto se queda por visualización de colisiones)
 		}
 		else {
 			dropDelay--;

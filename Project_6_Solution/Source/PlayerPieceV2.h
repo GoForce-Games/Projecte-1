@@ -23,7 +23,7 @@ public:
 	// Rota piezas
 	bool Rotate();
 
-	// Actualiza el estado de las piezas
+	// Actualiza el estado de las piezas (posición y animación
 	bool Update();
 
 	void refreshColliderState();
@@ -33,8 +33,6 @@ public:
 
 public:
 	GamePad* gamepad = nullptr;
-
-	Collider* colliders[4][4] = { nullptr };
 
 	PuzzlePiece* pieces[2][2] =
 	{ {nullptr, nullptr},
