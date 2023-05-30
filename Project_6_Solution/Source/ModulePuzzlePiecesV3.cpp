@@ -586,7 +586,7 @@ void ModulePuzzlePiecesV3::ProcessInput()
 		// Acelera la caída
 		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN) {
 			dropDelay = MIN_DROP_DELAY;
-			App->puntuation->score = App->puntuation->score + 1;
+			App->puntuation->score = App->puntuation->score + 1; // Suma 1 al marcador cuando le haces que caiga las PuzzlePieces
 		}
 		
 		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT;
@@ -645,7 +645,7 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 			else {
 				player.position.y += gravity; //Sin esto las piezas se colocan una celda mas arriba (necesita hacer un ciclo mas de caida antes de fijar las piezas)
 				player.locked = true;
-				App->puntuation->score = App->puntuation->score + 8;
+				App->puntuation->score = App->puntuation->score + 8; // Suma 8 puntos en el marcador al colocar la pieza
 				PlacePieces();
 				player.position.create(64, 16);
 			}
