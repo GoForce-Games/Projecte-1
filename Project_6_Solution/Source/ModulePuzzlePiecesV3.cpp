@@ -266,6 +266,8 @@ bool ModulePuzzlePiecesV3::CanGoLeft(PlayArea* area, PlayerPieceV2* player)
 	PuzzlePiece* leftTop = area->table[gridPos.y][gridPos.x - offsetTop];
 	PuzzlePiece* leftBot = area->table[gridPos.y + 1][gridPos.x - offsetBot];
 
+	return leftTop->type == PieceType::NONE && leftBot->type == PieceType::NONE;
+	/*
 	//Check top piece
 	if (!player->pieces[0][0]->isEmpty || !player->pieces[0][1]->isEmpty) {
 		if (leftTop->type != PieceType::NONE) {
@@ -280,6 +282,7 @@ bool ModulePuzzlePiecesV3::CanGoLeft(PlayArea* area, PlayerPieceV2* player)
 	}
 
 	return true;
+	*/
 }
 
 bool ModulePuzzlePiecesV3::CanGoRight(PlayArea* area, PlayerPieceV2* player)
@@ -297,6 +300,9 @@ bool ModulePuzzlePiecesV3::CanGoRight(PlayArea* area, PlayerPieceV2* player)
 	PuzzlePiece* rightTop = area->table[gridPos.y][gridPos.x + offsetTop];
 	PuzzlePiece* rightBot = area->table[gridPos.y + 1][gridPos.x + offsetBot];
 
+	return rightTop->type == PieceType::NONE && rightBot->type == PieceType::NONE;
+
+	/*
 	//Check top piece
 	if (!player->pieces[0][1]->isEmpty || !player->pieces[0][0]->isEmpty) {
 		if (rightTop->type != PieceType::NONE) {
@@ -310,13 +316,14 @@ bool ModulePuzzlePiecesV3::CanGoRight(PlayArea* area, PlayerPieceV2* player)
 		}
 	}
 	return true;
+	*/
 }
 
 bool ModulePuzzlePiecesV3::CanGoDown(PlayArea* area, PlayerPieceV2* player)
 {
 	iPoint playerPos = player->position;
 	//Ya esta dentro de una casilla, no compruebes hasta que vaya a pasar a la siguiente
-	if ((playerPos.y + gravity) % PIECE_SIZE != 0) return true;
+	if ((playerPos.y + PIECE_SIZE + gravity) % PIECE_SIZE != 0) return true;
 
 
 	iPoint gridPos = WorldToLocal(*area, playerPos);
@@ -330,6 +337,9 @@ bool ModulePuzzlePiecesV3::CanGoDown(PlayArea* area, PlayerPieceV2* player)
 	PuzzlePiece* botLeft = area->table[gridPos.y + offsetLeft][gridPos.x];
 	PuzzlePiece* botRight = area->table[gridPos.y + offsetRight][gridPos.x + 1];
 
+
+	return botLeft->type == PieceType::NONE && botRight->type == PieceType::NONE;
+	/*
 	// Check left piece
 	if (!player->pieces[1][0]->isEmpty) {
 		if (botLeft->type != PieceType::NONE) {
@@ -345,6 +355,7 @@ bool ModulePuzzlePiecesV3::CanGoDown(PlayArea* area, PlayerPieceV2* player)
 	}
 
 	return true;
+	*/
 }
 
 void ModulePuzzlePiecesV3::PlacePieces()
@@ -361,8 +372,10 @@ void ModulePuzzlePiecesV3::PlacePieces()
 					RemovePuzzlePiece(playArea.table[posTablero.y + i][posTablero.x + j]);
 					playArea.table[posTablero.y + i][posTablero.x + j] = player.pieces[i][j];
 				}
-				else
+				else { //TODO: este puede ser un buen sitio para asignar la variable responsable de la condicion de fin de partida, ya que en un principio solo se intentara sobreescribir piezas si ya se ha llegado arriba del todo en la zona de juego
+					//Si las coordenadas del jugador son las iniciales entonces fin de juego (?)
 					LOG("TRIED TO REPLACE EXISTING PIECE AT COORDINATES (x:%i, y:%i)\n", posTablero.x + j, posTablero.y + i);
+				}
 			}
 			player.pieces[i][j] = nullptr;
 		}

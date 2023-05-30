@@ -32,7 +32,9 @@ public:
 
 	bool Update();
 
-	void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type);
+	void RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type);
+
+	void RecursePieces(std::deque<PuzzlePiece*>& group, PuzzlePiece* currPiece);
 
 	void checkGroupedPieces();
 
@@ -40,7 +42,7 @@ public:
 
 	bool CleanUp();
 
-	void PlayArea::debugPiecePosition();
+	void debugPiecePosition();
 
 	void DropPieces();
 

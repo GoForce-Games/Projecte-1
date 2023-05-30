@@ -91,6 +91,8 @@ private: // Helper functions
 
 	void ApplyLogic();
 
+public:
+
 	// Coordinate-related helper methods
 
 	iPoint WorldToLocal(PlayArea& localArea, iPoint sCoordinates);

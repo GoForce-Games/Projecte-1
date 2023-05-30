@@ -115,26 +115,37 @@ void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceTyp
 	}
 }
 
+void PlayArea::RecursePieces(std::deque<PuzzlePiece*>& group, PuzzlePiece* currPiece) {
+
+
+
+
+	return;
+}
+
 void PlayArea::checkGroupedPieces()
 {
 	// Posiciones de las piezas a quitar
-	std::deque<std::deque<iPoint>> groupsToRemove;
+	std::deque<PuzzlePiece*> piecesToRemove;
 
 	PuzzlePiece* p = nullptr;
 
-	for (size_t i = 0; i < PLAY_AREA_W; i++)
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
-		for (size_t j = 0; j < PLAY_AREA_H; j++)
+		for (size_t j = 0; j < PLAY_AREA_W; j++)
 		{
 			p = table[i][j];
 			if (p->type != PieceType::NONE && p->type != PieceType::WALL) {
-				std::deque<iPoint> deq;
+				std::deque<PuzzlePiece*> deq;
 				iPoint pos;
 				pos.create(i,j);
 				LOG("%s %s\n", "Empieza la busqueda de piezas", (PuzzlePiece::enumLookup[p->type]));
-				RecurseGroups(deq, pos, p->type);
+				RecursePieces(deq, p);
 				if (deq.size() >= GROUP_MIN_COUNT) {
-					groupsToRemove.push_back(deq);
+					for (PuzzlePiece* n : deq)
+					{
+						piecesToRemove.push_back(n);
+					}
 				}
 			}
 
