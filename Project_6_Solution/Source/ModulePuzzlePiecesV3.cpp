@@ -6,6 +6,7 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleInput.h"
+#include "Puntuation.h"
 
 #include "../External_Libraries/SDL/include/SDL.h"
 #include <algorithm>
@@ -222,6 +223,7 @@ bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
 		// Pone el colisionador debajo (+1) o arriba (-1) del jugador
 		if (y > 0)
 			rect.y = player.position.y + (PIECE_SIZE)+gravity;
+
 		else
 			rect.y = player.position.y - PIECE_SIZE + gravity;
 	}
@@ -597,7 +599,9 @@ void ModulePuzzlePiecesV3::ProcessInput()
 		// Acelera la caída
 		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN) {
 			dropDelay = MIN_DROP_DELAY;
+			App->puntuation->score = App->puntuation->score + 1; // Suma 1 al marcador cuando le haces que caiga las PuzzlePieces
 		}
+		
 		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT;
 
 
@@ -654,6 +658,7 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 			else {
 				player.position.y += gravity; //Sin esto las piezas se colocan una celda mas arriba (necesita hacer un ciclo mas de caida antes de fijar las piezas)
 				player.locked = true;
+				App->puntuation->score = App->puntuation->score + 8; // Suma 8 puntos en el marcador al colocar la pieza
 				PlacePieces();
 				player.position.create(64, 16);
 			}

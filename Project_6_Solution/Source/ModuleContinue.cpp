@@ -22,8 +22,7 @@ Continue::Continue(bool startEnabled) : Module(startEnabled)
 			ContinueAnim.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	ContinueAnim.speed = 0.022f;
-	/*ContinueAnim.loop = false;*/
+	ContinueAnim.speed = 0.027f;
 	ContinuePath.PushBack({ 0.0f, 0.0f }, 200, &ContinueAnim);
 	
 }
@@ -46,16 +45,15 @@ bool Continue::Start()
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
 
+	App->audio->PlayFx(ContinueFX, 9);
+
 	return ret;
 
 }
 
 Update_Status Continue::Update()
 {
-	//if (ContinueAnim.HasFinished())
-	
-	App->audio->PlayFx(ContinueFX, 1);
-	App->fade->FadeToBlack((Module*)App->module_continue, (Module*)App->lose_screen, 230);
+	App->fade->FadeToBlack((Module*)App->module_continue, (Module*)App->lose_screen, 200);
 
 	
 

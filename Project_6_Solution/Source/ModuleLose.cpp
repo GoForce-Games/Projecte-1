@@ -24,8 +24,8 @@ ModuleLose::ModuleLose(bool startEnabled) : Module(startEnabled)
 			GameOverAnim.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	GameOverAnim.speed = 0.25f;
-	GameOverPath.PushBack({ 0.0f, 0.0f }, 200, &GameOverAnim);
+	GameOverAnim.speed = 0.11f;
+	GameOverPath.PushBack({ 0.0f, 0.0f }, 90000000, &GameOverAnim);
 }
 
 ModuleLose::~ModuleLose()
@@ -47,7 +47,7 @@ Update_Status ModuleLose::Update()
 	GameOverAnim.Update();
 	GamePad& pad = App->input->pads[0];
 	
-	App->fade->FadeToBlack((Module*)App->lose_screen, (Module*)App->introJuego, 350);
+	App->fade->FadeToBlack((Module*)App->lose_screen, (Module*)App->introJuego, 30);
 	
 	return Update_Status::UPDATE_CONTINUE;
 }
