@@ -100,6 +100,7 @@ public:
 	iPoint AreaToWorld(PlayArea& localArea, iPoint lCoordinates);
 
 public:
+
 	// Avoid enabling twice
 	bool isInitialized = false;
 

@@ -58,6 +58,8 @@ public:
 	// Variable para indicar si la pieza está siendo movida por el jugador o no
 	bool moving = false;
 
+	bool pendingToDelete = false;
+
 	// Position of the puzzle piece on the screen
 	iPoint position;
 
