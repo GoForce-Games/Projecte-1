@@ -13,7 +13,11 @@
 enum PlayAreaState {
 	INIT,
 	GAME_START,
+	GAME_LOOP,
 	PIECES_PLACED,
+	CHECK_GROUPS,
+	DELETE_GROUPS,
+	DETONATE_BOMBS,
 	NEW_PIECES,
 	PAUSE,
 
@@ -40,7 +44,7 @@ public:
 
 	void RecursePieces(std::deque<PuzzlePiece*>& group, iPoint currPos, const PieceType& type, const CheckDirection& dir);
 
-	void checkGroupedPieces();
+	bool checkGroupedPieces();
 
 	void explodeBombs();
 
@@ -62,6 +66,9 @@ public:
 
 	//Array bidimensional de punteros a pieza, recorrer con las coordenadas invertidas (table[coord_y][coord_x])
 	PuzzlePiece* table[PLAY_AREA_H][PLAY_AREA_W];
+
+	// Posiciones de las piezas a quitar
+	std::deque<PuzzlePiece*> piecesToRemove;
 
 	Collider* collisionTester = nullptr;
 };

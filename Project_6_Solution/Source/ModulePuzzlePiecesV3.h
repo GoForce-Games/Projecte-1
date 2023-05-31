@@ -91,6 +91,8 @@ private: // Helper functions
 
 	void ApplyLogic();
 
+	void RemoveGroups();
+
 public:
 
 	// Coordinate-related helper methods

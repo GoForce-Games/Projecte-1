@@ -37,6 +37,8 @@ void PlayArea::Init(PuzzlePiece* fillWith)
 			}
 		}
 	}
+
+	state = PlayAreaState::INIT;
 }
 
 bool PlayArea::Update()
@@ -71,12 +73,13 @@ void PlayArea::RecursePieces(std::deque<PuzzlePiece*>& deq, iPoint currPos, cons
 	return;
 }
 
-void PlayArea::checkGroupedPieces()
+bool PlayArea::checkGroupedPieces()
 {
-	// Posiciones de las piezas a quitar
-	std::deque<PuzzlePiece*> piecesToRemove;
 
 	PuzzlePiece* p = nullptr;
+
+	// Empty deque before calculating
+	while (piecesToRemove.size() > 0) piecesToRemove.pop_back();
 
 	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
@@ -122,6 +125,7 @@ void PlayArea::checkGroupedPieces()
 		}
 	}
 
+	return piecesToRemove.size() > 0;
 }
 
 

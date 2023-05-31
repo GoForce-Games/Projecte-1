@@ -56,7 +56,6 @@ bool ModulePuzzlePiecesV3::Start()
 	EnableDependencies();
 	LoadTextures();
 	InitTemplates();
-	playArea.Init(emptyPiece);
 	InitWalls();
 	InitPlayers();
 	InitMisc();
@@ -66,11 +65,59 @@ bool ModulePuzzlePiecesV3::Start()
 
 Update_Status ModulePuzzlePiecesV3::Update()
 {
+	switch (playArea.state)
+	{
+	case PlayAreaState::INIT: {
+		if (true) { // TODO cambiar esta condicion por final de animacion de inicio
+			playArea.state = PlayAreaState::GAME_START;
+		}
+		return Update_Status::UPDATE_CONTINUE;
+	}
+	case PlayAreaState::GAME_START: {
+		LOG("Game started");
+		playArea.state = PlayAreaState::GAME_LOOP;
+		// No hay break para que también se ejecute el game loop en este frame
+	}
+	case PlayAreaState::GAME_LOOP: {
+		//Este caso debe encontrarse despues de GAME_START
+		ProcessInput();
+		ApplyPhysics();
+		break;
+	}
+	case PlayAreaState::PIECES_PLACED: {
+
+		ApplyLogic(); // TODO logic devuelve estado de juego (?)
+		break;
+	}
+	case PlayAreaState::CHECK_GROUPS: {
+
+		break;
+	}
+	case PlayAreaState::DELETE_GROUPS: {
+		RemoveGroups();
+		break;
+	}
+	case PlayAreaState::DETONATE_BOMBS: {
+
+		break;
+	}
+	case PlayAreaState::NEW_PIECES: {
+
+		break;
+	}
+	case PlayAreaState::PAUSE: {
+		return Update_Status::UPDATE_CONTINUE;
+	}
+	case PlayAreaState::GAME_END: {
+		RemoveGroups();
+		break;
+	}
+	default:
+		break;
+	}
 	player.Update();
 	playArea.Update();
-	ProcessInput();
-	ApplyPhysics();
-	ApplyLogic(); // TODO logic devuelve estado de juego (?)
+	
 	return Update_Status::UPDATE_CONTINUE;
 }
 
@@ -564,17 +611,27 @@ void ModulePuzzlePiecesV3::InitWalls()
 
 void ModulePuzzlePiecesV3::InitPlayers()
 {
+	playArea.player = &player;
 	player.gamepad = &(App->input->pads[0]);
 
 	player.position.create(64, 16);
 
+	if (pieceQueue.size() < 3)
+		GeneratePuzzlePieces(pieceQueue, 12);
+
 	PuzzlePiece* newPieces[4];
-	newPieces[0] = AddPuzzlePiece(*templateMan);
-	newPieces[1] = AddPuzzlePiece(*templateMan);
-	newPieces[2] = AddPuzzlePiece(*templateMan);
+	newPieces[0] = pieceQueue.top();
+	pieceQueue.pop();
+	newPieces[1] = pieceQueue.top();
+	pieceQueue.pop();
+	newPieces[2] = pieceQueue.top();
+	pieceQueue.pop();
 	newPieces[3] = AddPuzzlePiece(*emptyPiece);
 	player.setPieces(newPieces);
 	player.locked = false;
+
+	playArea.Init(emptyPiece);
+	playArea.player = &player;
 }
 
 void ModulePuzzlePiecesV3::InitMisc()
@@ -672,7 +729,9 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 				player.locked = true;
 				App->puntuation->score = App->puntuation->score + 8; // Suma 8 puntos en el marcador al colocar la pieza
 				PlacePieces();
-				player.position.create(64, 16);
+				playArea.state = PlayAreaState::PIECES_PLACED;
+				player.position.create(64, 16); // Reset de posicion
+				player.position += playArea.position; // Posicion relativa a zona de juego
 			}
 			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo (Actualizacion: ya no debería ocurrir, pero esto se queda por visualización de colisiones)
 		}
@@ -688,17 +747,17 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 	if (player.locked) {
 		//Hay que hacer que este estado dure hasta que esten todas las piezas en su sitio
 		playArea.DropPieces();
-		playArea.checkGroupedPieces();
+		if (playArea.checkGroupedPieces()) {
+			playArea.state = PlayAreaState::DELETE_GROUPS;
+			return;
+		}
 
 		if (pieceQueue.size() < 3)
 			GeneratePuzzlePieces(pieceQueue, 12);
 
 
 		//A partir de aqui solo cuando ya se haya procesado todo el tablero y se pueda sacar una pieza nueva
-		/*
-		std::stack<PuzzlePiece*> s;
-		GeneratePuzzlePieces(s, 3);
-		*/
+		
 		PuzzlePiece* newPieces[4];
 		newPieces[0] = pieceQueue.top();
 		pieceQueue.pop();
@@ -710,7 +769,22 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 		player.setPieces(newPieces);
 
 		player.locked = false;
+		playArea.state = PlayAreaState::GAME_LOOP;
 	}
+}
+
+void ModulePuzzlePiecesV3::RemoveGroups()
+{
+	while (playArea.piecesToRemove.size() > 0) {
+		PuzzlePiece* p = playArea.piecesToRemove.back();
+		*p = *emptyPiece; // Copia parámetros de casilla vacía
+
+		playArea.piecesToRemove.pop_back();
+	}
+
+	playArea.DropPieces(); // Aplica gravedad para que no haya piezas flotantes
+
+	playArea.state = PlayAreaState::PIECES_PLACED; // Vuelve a comprobar si hay más grupos que eliminar (cadena)
 }
 
 iPoint ModulePuzzlePiecesV3::WorldToLocal(PlayArea& localArea, iPoint sCoordinates)
