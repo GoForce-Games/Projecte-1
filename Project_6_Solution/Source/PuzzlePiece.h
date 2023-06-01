@@ -63,9 +63,6 @@ public:
 	// Position of the puzzle piece on the screen
 	iPoint position;
 
-	//This piece's collider;
-	Collider* collider = nullptr;
-
 	// The piece's current animation
 	Animation currentAnimation;
 

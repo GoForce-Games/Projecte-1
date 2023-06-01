@@ -110,7 +110,6 @@ Update_Status ModulePuzzlePiecesV3::Update()
 		return Update_Status::UPDATE_CONTINUE;
 	}
 	case PlayAreaState::GAME_END: {
-		RemoveGroups();
 		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->win_lose, 90);
 		playArea.state = NEW_GAME;
 		break;
@@ -182,9 +181,11 @@ PuzzlePiece* ModulePuzzlePiecesV3::AddPuzzlePiece(const PuzzlePiece& piece, Coll
 		if (pieces[i] == nullptr) {
 			//Crea nueva pieza con una caja de colision copiada de la plantilla
 			PuzzlePiece* newPiece = new PuzzlePiece(piece);
+			/*
 			newPiece->collider = App->collisions->AddCollider(templateMan->collider->rect, type);
 			if (newPiece->collider != nullptr)
 				newPiece->collider->SetPos(newPiece->position.x, newPiece->position.y);
+			*/
 			newPiece->SetType(piece.type);
 			return pieces[i] = newPiece;
 		}
@@ -201,10 +202,6 @@ void ModulePuzzlePiecesV3::RemovePuzzlePiece(PuzzlePiece* piece)
 	for (size_t i = 0; i < MAX_PIECES; i++)
 	{
 		if (pieces[i] == piece) {
-			if (!App->cleanUp && piece->collider != nullptr) {
-				piece->collider->pendingToDelete = true;
-				piece->collider = nullptr;
-			}
 			delete piece;
 			pieces[i] = nullptr;
 			break;
@@ -213,7 +210,7 @@ void ModulePuzzlePiecesV3::RemovePuzzlePiece(PuzzlePiece* piece)
 	}
 }
 
-bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
+/*bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
 {
 	// TODO usar el modulo de colisiones existente si puede ser
 	SDL_Rect& rect = collisionTester->rect;
@@ -298,7 +295,7 @@ bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
 	}
 
 	return false;
-}
+}*/
 
 bool ModulePuzzlePiecesV3::CheckOutOfBounds(PlayArea* area, PlayerPieceV2* player)
 {
@@ -432,7 +429,8 @@ void ModulePuzzlePiecesV3::PlacePieces()
 				else { //TODO: este puede ser un buen sitio para asignar la variable responsable de la condicion de fin de partida, ya que en un principio solo se intentara sobreescribir piezas si ya se ha llegado arriba del todo en la zona de juego
 					//Si las coordenadas del jugador son las iniciales entonces fin de juego (?)
 					playArea.state = PlayAreaState::GAME_END;
-
+					RemovePuzzlePiece(playArea.table[posTablero.y + i][posTablero.x + j]);
+					playArea.table[posTablero.y + i][posTablero.x + j] = player.pieces[i][j];
 					
 					LOG("TRIED TO REPLACE EXISTING PIECE AT COORDINATES (x:%i, y:%i)\n", posTablero.x + j, posTablero.y + i);
 				}
@@ -545,7 +543,7 @@ void ModulePuzzlePiecesV3::InitTemplates()
 {
 	templateMan = new PuzzlePiece();
 
-	templateMan->collider = App->collisions->AddCollider({ -64,-64,16,16 }, Collider::Type::NONE);
+	//templateMan->collider = App->collisions->AddCollider({ -64,-64,16,16 }, Collider::Type::NONE);
 	templateMan->position.create(-64, -64);
 	templateMan->texture = textureBomberman;
 	templateMan->SetAnimation(&animDefaultTest);
@@ -573,7 +571,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 		templateWall->position = offset;
 		RemovePuzzlePiece(playArea.table[i][0]);
 		PuzzlePiece* piece = playArea.table[i][0] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
-		piece->collider->name = "WALL";
+		//piece->collider->name = "WALL";
 		offset.y += PIECE_SIZE;
 	}
 
@@ -586,7 +584,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 		templateWall->position = offset;
 		RemovePuzzlePiece(playArea.table[i][PLAY_AREA_W - 1]);
 		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_W - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
-		piece->collider->name = "WALL";
+		//piece->collider->name = "WALL";
 		offset.y += PIECE_SIZE;
 
 	}
@@ -600,7 +598,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 		templateWall->position = offset;
 		RemovePuzzlePiece(playArea.table[PLAY_AREA_H - 1][i]);
 		PuzzlePiece* piece = playArea.table[PLAY_AREA_H - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
-		piece->collider->name = "WALL";
+		//piece->collider->name = "WALL";
 		offset.x += PIECE_SIZE;
 	}
 
@@ -612,7 +610,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 		templateWall->position = offset;
 		RemovePuzzlePiece(playArea.table[0][i]);
 		PuzzlePiece* piece = playArea.table[0][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
-		piece->collider->name = "WALL";
+		//piece->collider->name = "WALL";
 		offset.x += PIECE_SIZE;
 	}
 
@@ -739,12 +737,12 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 				player.position.y += gravity; //Sin esto las piezas se colocan una celda mas arriba (necesita hacer un ciclo mas de caida antes de fijar las piezas)
 				player.locked = true;
 				App->puntuation->score = App->puntuation->score + 8; // Suma 8 puntos en el marcador al colocar la pieza
-				PlacePieces();
 				playArea.state = PlayAreaState::PIECES_PLACED;
+				PlacePieces();
 				player.position.create(64, 16); // Reset de posicion
 				player.position += playArea.position; // Posicion relativa a zona de juego
 			}
-			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo (Actualizacion: ya no debería ocurrir, pero esto se queda por visualización de colisiones)
+			//WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo (Actualizacion: ya no debería ocurrir, pero esto se queda por visualización de colisiones)
 		}
 		else {
 			dropDelay--;
@@ -756,7 +754,6 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 {
 	// No se aplica logica cuando hay una pieza en juego
 	if (player.locked) {
-		//Hay que hacer que este estado dure hasta que esten todas las piezas en su sitio
 		playArea.DropPieces();
 		if (playArea.checkGroupedPieces()) {
 			playArea.state = PlayAreaState::DELETE_GROUPS;
