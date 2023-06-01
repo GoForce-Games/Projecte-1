@@ -7,6 +7,7 @@
 #include "ModuleRender.h"
 #include "ModuleInput.h"
 #include "Puntuation.h"
+#include "ModuleFadeToBlack.h"
 
 #include "../External_Libraries/SDL/include/SDL.h"
 #include <algorithm>
@@ -110,6 +111,12 @@ Update_Status ModulePuzzlePiecesV3::Update()
 	}
 	case PlayAreaState::GAME_END: {
 		RemoveGroups();
+		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->win_lose, 90);
+		playArea.state = NEW_GAME;
+		break;
+	}
+	case PlayAreaState::NEW_GAME:	{
+			
 		break;
 	}
 	default:
@@ -424,12 +431,16 @@ void ModulePuzzlePiecesV3::PlacePieces()
 				}
 				else { //TODO: este puede ser un buen sitio para asignar la variable responsable de la condicion de fin de partida, ya que en un principio solo se intentara sobreescribir piezas si ya se ha llegado arriba del todo en la zona de juego
 					//Si las coordenadas del jugador son las iniciales entonces fin de juego (?)
+					playArea.state = PlayAreaState::GAME_END;
+
+					
 					LOG("TRIED TO REPLACE EXISTING PIECE AT COORDINATES (x:%i, y:%i)\n", posTablero.x + j, posTablero.y + i);
 				}
 			}
 			player.pieces[i][j] = nullptr;
 		}
 	}
+	
 	//playArea.debugPiecePosition();
 }
 
