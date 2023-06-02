@@ -114,8 +114,8 @@ Update_Status ModulePuzzlePiecesV3::Update()
 		playArea.state = NEW_GAME;
 		break;
 	}
-	case PlayAreaState::NEW_GAME:	{
-			
+	case PlayAreaState::NEW_GAME: {
+
 		break;
 	}
 	default:
@@ -123,7 +123,7 @@ Update_Status ModulePuzzlePiecesV3::Update()
 	}
 	player.Update();
 	playArea.Update();
-	
+
 	return Update_Status::UPDATE_CONTINUE;
 }
 
@@ -431,14 +431,14 @@ void ModulePuzzlePiecesV3::PlacePieces()
 					playArea.state = PlayAreaState::GAME_END;
 					RemovePuzzlePiece(playArea.table[posTablero.y + i][posTablero.x + j]);
 					playArea.table[posTablero.y + i][posTablero.x + j] = player.pieces[i][j];
-					
+
 					LOG("TRIED TO REPLACE EXISTING PIECE AT COORDINATES (x:%i, y:%i)\n", posTablero.x + j, posTablero.y + i);
 				}
 			}
 			player.pieces[i][j] = nullptr;
 		}
 	}
-	
+
 	//playArea.debugPiecePosition();
 }
 
@@ -657,7 +657,7 @@ void ModulePuzzlePiecesV3::InitMisc()
 void ModulePuzzlePiecesV3::ProcessInput()
 {
 	if (!player.locked) {
-		GamePad& pad = *(player.gamepad);
+		PlayerInput& pad = *(player.gamepad);
 
 		//Lee input
 
@@ -672,27 +672,27 @@ void ModulePuzzlePiecesV3::ProcessInput()
 
 		// Rotacion
 
-		if ((keys[SDL_Scancode::SDL_SCANCODE_P] == Key_State::KEY_DOWN) || pad.a) {
+		if (pad.rotatePiece == Key_State::KEY_DOWN) {
 			player.Rotate();
 		}
 
 
 
 		// Acelera la caída
-		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN) {
+		if (pad.fastFall == Key_State::KEY_DOWN) {
 			dropDelay = MIN_DROP_DELAY;
 		}
-		
-		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT;
+
+		fastFall = pad.fastFall == Key_State::KEY_REPEAT;
 
 
 		//El primer frame en el que intentas moverte a un lado es instantaneo
-		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN) moveDelay = 0;
-		else if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN)	moveDelay = 0;
+		if (pad.moveRight == Key_State::KEY_DOWN) moveDelay = 0;
+		else if (pad.moveLeft == Key_State::KEY_DOWN) moveDelay = 0;
 
 
 		// Mueve a la izquierda
-		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE) {
+		if (pad.moveLeft == Key_State::KEY_REPEAT && pad.moveRight == Key_State::KEY_IDLE) {
 
 			if (CanGoLeft(&playArea, &player)) {
 
@@ -709,7 +709,7 @@ void ModulePuzzlePiecesV3::ProcessInput()
 		}
 
 		// Mueve a la derecha
-		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_IDLE) {
+		if (pad.moveRight == Key_State::KEY_REPEAT && pad.moveLeft == Key_State::KEY_IDLE) {
 			if (CanGoRight(&playArea, &player)) {
 				//if (!WillCollide(PlayerCollisionCheck::RIGHT)) {
 
@@ -768,7 +768,7 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 
 
 		//A partir de aqui solo cuando ya se haya procesado todo el tablero y se pueda sacar una pieza nueva
-		
+
 		PuzzlePiece* newPieces[4];
 		newPieces[0] = pieceQueue.top();
 		pieceQueue.pop();

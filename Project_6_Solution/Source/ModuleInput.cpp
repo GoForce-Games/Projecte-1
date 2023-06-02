@@ -246,3 +246,56 @@ const char* ModuleInput::GetControllerName(int id) const
 
 	return "unplugged";
 }
+
+PlayerInput::PlayerInput()
+{}
+
+PlayerInput::~PlayerInput()
+{}
+void PlayerInput::StoreInput(const Key_State keyboard[MAX_KEYS], const GamePad& gamepad)
+{
+	if (keyboard[KeyboardSetup::FastFall] != Key_State::KEY_IDLE)
+		fastFall = keyboard[KeyboardSetup::FastFall];
+	else {
+		if (gamepad.down)
+			fastFall = (fastFall == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			fastFall = (fastFall == KEY_REPEAT || fastFall == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+
+	if (keyboard[KeyboardSetup::MoveLeft] != Key_State::KEY_IDLE)
+		moveLeft = keyboard[KeyboardSetup::MoveLeft];
+	else {
+		if (gamepad.left)
+			moveLeft = (moveLeft == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			moveLeft = (moveLeft == KEY_REPEAT || moveLeft == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+
+	if (keyboard[KeyboardSetup::MoveRight] != Key_State::KEY_IDLE)
+		moveRight = keyboard[KeyboardSetup::MoveRight];
+	else {
+		if (gamepad.right)
+			moveRight = (moveRight == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			moveRight = (moveRight == KEY_REPEAT || moveRight == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+
+	if (keyboard[KeyboardSetup::Pause] != Key_State::KEY_IDLE)
+		pause = keyboard[KeyboardSetup::Pause];
+	else {
+		if (gamepad.x)
+			pause = (pause == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			pause = (pause == KEY_REPEAT || pause == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+
+	if (keyboard[KeyboardSetup::RotatePiece] != Key_State::KEY_IDLE)
+		rotatePiece = keyboard[KeyboardSetup::RotatePiece];
+	else {
+		if (gamepad.a)
+			rotatePiece = (rotatePiece == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			rotatePiece = (rotatePiece == KEY_REPEAT || rotatePiece == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+}
