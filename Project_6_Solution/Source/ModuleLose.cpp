@@ -25,7 +25,7 @@ ModuleLose::ModuleLose(bool startEnabled) : Module(startEnabled)
 		}
 	}
 	GameOverAnim.speed = 0.11f;
-	GameOverPath.PushBack({ 0.0f, 0.0f }, 90000000, &GameOverAnim);
+	GameOverPath.PushBack({ 0.0f, 0.0f }, 200, &GameOverAnim);
 }
 
 ModuleLose::~ModuleLose()
@@ -54,6 +54,7 @@ Update_Status ModuleLose::Update()
 Update_Status ModuleLose::PostUpdate()
 {
 	App->render->Blit(LoseTexture, 0, 0, &(GameOverPath.GetCurrentAnimation()->GetCurrentFrame()), 1.0f);
+	GameOverPath.GetCurrentAnimation()->Update();
 	return Update_Status::UPDATE_CONTINUE;
 }
 bool ModuleLose::CleanUp() 
@@ -62,6 +63,8 @@ bool ModuleLose::CleanUp()
 	{
 		App->textures->Unload(LoseTexture);
 		LoseTexture = nullptr;
+		GameOverAnim.Reset();
+		GameOverPath.Reset();
 	}
 
 	return true;

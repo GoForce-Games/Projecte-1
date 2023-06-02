@@ -25,7 +25,7 @@ IntroJuego::IntroJuego(bool startEnabled) : Module(startEnabled)
 		}
 	}
 
-	IntroJuegoAnimation.speed = 0.16f;
+	IntroJuegoAnimation.speed = 0.135f;
 	IntroJuegoAnimation.loop = false;
 	IAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &IntroJuegoAnimation);
 }
@@ -40,7 +40,7 @@ bool IntroJuego::Start()
 	bool ret = true;
 
 	IntroJuegoTexture = App->textures->Load("Assets/Sprites/IntroAnimation.png");
-	App->audio->PlayMusic("Assets/Music/Title-bomb.ogg", 1.0f);
+	App->audio->PlayMusic("Assets/Music/Title_2.ogg", 1.0f);
 
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
@@ -52,7 +52,7 @@ Update_Status IntroJuego::Update()
 {
 	IntroJuegoAnimation.Update();
 
-	if (IntroJuegoAnimation.HasFinished())
+	if (IntroJuegoAnimation.HasFinished() || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
 		App->fade->FadeToBlack((Module*)App->introJuego, (Module*)App->sceneLevel_1, 0);
 	}
