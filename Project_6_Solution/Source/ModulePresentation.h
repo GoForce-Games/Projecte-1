@@ -24,7 +24,11 @@ public:
 
 	bool CleanUp();
 		
+<<<<<<< Updated upstream
 	int *textFont = nullptr;
+=======
+	int textFont;
+>>>>>>> Stashed changes
 
 public:
 	

@@ -39,12 +39,19 @@ bool ModulePresentation::Start() {
 
 	bool ret = true;
 	textFont = App->puntuation->textFont;
+<<<<<<< Updated upstream
 	PresentationTexture = App->textures->Load("Assets/Sprites/longintro.png");
 	App->audio->PlayMusic("Assets/Music/Presentation.ogg", 1.0f);
 
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
 
+=======
+	App->render->Blit(bgTexture, 0, 0, NULL);
+	App->fonts->BlitText(0, 0, textFont, "Produced by GoForce Game");
+	App->fonts->BlitText(0, 0, textFont, "Members");
+	App->fonts->BlitText(0, 0, textFont, "Rogue");
+>>>>>>> Stashed changes
 	return ret;
 }
 Update_Status ModulePresentation::Update() {
@@ -63,6 +70,7 @@ Update_Status ModulePresentation::Update() {
 }
 Update_Status ModulePresentation::PostUpdate()
 {
+<<<<<<< Updated upstream
 	App->render->Blit(PresentationTexture, 0, 0, &(presentationPath.GetCurrentAnimation()->GetCurrentFrame()), 1.0f);
 	return Update_Status::UPDATE_CONTINUE;
 }
@@ -72,6 +80,13 @@ bool ModulePresentation::CleanUp() {
 		SDL_DestroyTexture(PresentationTexture);
 		PresentationTexture = nullptr;
 	}
+=======
+	
+	
+	return Update_Status::UPDATE_CONTINUE;
+}
+bool ModulePresentation::CleanUp() {
+>>>>>>> Stashed changes
 	
 	return true;
 }
