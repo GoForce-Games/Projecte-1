@@ -2,7 +2,7 @@
 #include "PuzzlePiece.h"
 
 class Path;
-struct GamePad;
+class PlayerInput;
 
 class PlayerPieceV2
 {
@@ -32,7 +32,7 @@ public:
 	void setPieces(PuzzlePiece* newPieces[4]);
 
 public:
-	GamePad* gamepad = nullptr;
+	PlayerInput* gamepad = nullptr;
 
 	PuzzlePiece* pieces[2][2] =
 	{ {nullptr, nullptr},
