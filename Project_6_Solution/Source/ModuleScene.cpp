@@ -11,6 +11,7 @@
 #include "ModuleFadeToBlack.h"
 #include "Intro.h"
 #include "ModuleLose.h"
+#include "ModuleContinue.h"
 
 SceneLevel1::SceneLevel1(bool startEnabled) : Module(startEnabled)
 {

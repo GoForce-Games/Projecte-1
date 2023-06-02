@@ -21,7 +21,8 @@ enum PlayAreaState {
 	NEW_PIECES,
 	PAUSE,
 
-	GAME_END
+	GAME_END,
+	NEW_GAME
 
 };
 

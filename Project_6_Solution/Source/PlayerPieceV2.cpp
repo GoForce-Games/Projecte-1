@@ -78,9 +78,11 @@ bool PlayerPieceV2::CleanUp()
 bool PlayerPieceV2::Rotate()
 {
 	//Si rotar hace que se solape con otra pieza no continues
+	/*
 	if (rotating || App->pieces->WillCollide(PlayerCollisionCheck::CENTER)) {
 		return false;
 	}
+	*/
 
 	//Rota las piezas
 	rotating = true;

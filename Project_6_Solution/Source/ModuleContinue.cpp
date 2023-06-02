@@ -22,9 +22,9 @@ Continue::Continue(bool startEnabled) : Module(startEnabled)
 			ContinueAnim.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	ContinueAnim.speed = 0.027f;
+	ContinueAnim.speed = 0.012f;
 	ContinuePath.PushBack({ 0.0f, 0.0f }, 200, &ContinueAnim);
-	
+
 }
 
 Continue::~Continue()
@@ -47,15 +47,17 @@ bool Continue::Start()
 
 	App->audio->PlayFx(ContinueFX, 9);
 
+
 	return ret;
 
 }
 
 Update_Status Continue::Update()
 {
-	App->fade->FadeToBlack((Module*)App->module_continue, (Module*)App->lose_screen, 200);
+	ContinueAnim.Update();
+	ContinuePath.Update();
 
-	
+	App->fade->FadeToBlack((Module*)App->module_continue, (Module*)App->lose_screen, 200);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
@@ -75,6 +77,9 @@ bool Continue::CleanUp()
 	{
 		App->textures->Unload(ContinueTexture);
 		ContinueTexture = nullptr;
+		ContinueAnim.Reset();
+		ContinuePath.Reset();
 	}
+	
 	return true;
 }

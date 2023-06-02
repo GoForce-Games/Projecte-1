@@ -28,7 +28,6 @@ PuzzlePiece::PuzzlePiece(const PuzzlePiece& p)
 {
 	moving = p.moving;
 	position.create(p.position.x, p.position.y);
-	collider = nullptr;
 	currentAnimation = p.currentAnimation;
 	texture = p.texture;
 	isEmpty = p.isEmpty;
@@ -37,10 +36,6 @@ PuzzlePiece::PuzzlePiece(const PuzzlePiece& p)
 
 PuzzlePiece::~PuzzlePiece()
 {
-	if (!App->cleanUp && collider != nullptr) {
-		collider->pendingToDelete = true;
-	}
-	collider = nullptr;
 }
 
 void PuzzlePiece::Update()

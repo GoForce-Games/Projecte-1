@@ -8,6 +8,10 @@
 #include "SDL/include/SDL.h"
 #include "Globals.h"
 #include "ModuleFadeToBlack.h"
+#include "ModulePuzzlePiecesV3.h"
+#include "PuzzlePiece.h"
+
+
 #include <iostream>
 
 using namespace std;
@@ -22,8 +26,7 @@ WinLose::WinLose(bool startEnabled) : Module(startEnabled)
 			WinAnimation.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
 		}
 	}
-	WinAnimation.speed = 0.3f;
-	//WinAnimation.loop = false;
+	WinAnimation.speed = 0.25f;
 	WAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &WinAnimation);
 	
 	for (int fila = 0; fila <= 6; fila++) {
@@ -35,7 +38,6 @@ WinLose::WinLose(bool startEnabled) : Module(startEnabled)
 		}
 	}
 	LoseAnimation.speed = 0.2f;
-	/*LoseAnimation.loop = false;*/
 	LAnimationPath.PushBack({ 0.0f, 0.0f }, 200, &LoseAnimation);
 
 }
@@ -73,7 +75,7 @@ Update_Status WinLose::Update()
 	{
 		gameFinish = true;
 	}
-	if (gameFinish && App->puntuation->score < 1000)
+	if ((gameFinish && App->puntuation->score < 1000) || App->pieces->playArea.state == PlayAreaState::GAME_END)
 	{
 		ActiveTexture = LoseTexture;
 		AAnimationPath = LAnimationPath;
@@ -89,10 +91,8 @@ Update_Status WinLose::Update()
 		AAnimationPath = WAnimationPath;
 		gameFinish = false;
 		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
-		if (WinAnimation.HasFinished())
-		{
-			App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->introJuego, 400);
-		}
+		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->introJuego, 400);
+		
 	}
 	
 	return Update_Status::UPDATE_CONTINUE;
