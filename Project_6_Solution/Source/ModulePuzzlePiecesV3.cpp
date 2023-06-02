@@ -621,7 +621,7 @@ void ModulePuzzlePiecesV3::InitWalls()
 void ModulePuzzlePiecesV3::InitPlayers()
 {
 	playArea.player = &player;
-	player.gamepad = &(App->input->pads[0]);
+	player.gamepad = &(App->input->control[0]);
 
 	player.position.create(64, 16);
 

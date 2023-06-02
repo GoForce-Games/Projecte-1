@@ -94,6 +94,8 @@ Update_Status ModuleInput::PreUpdate()
 
 	UpdateGamepadsInput();
 
+	control[0].StoreInput(keys, pads[0]);
+
 	return Update_Status::UPDATE_CONTINUE;
 }
 

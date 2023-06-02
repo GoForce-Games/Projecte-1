@@ -51,7 +51,7 @@ Update_Status ModulePresentation::Update() {
 	presentationAnimation.Update();
 
 	GamePad& pad = App->input->pads[0];
-	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN || pad.start)
+	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN || pad.a)
 	{
 		App->fade->FadeToBlack(this, (Module*)App->intro, 90);
 	}
