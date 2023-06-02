@@ -51,6 +51,7 @@ bool Intro::Start()
 Update_Status Intro::Update()
 {
 	IntroAnimation.Update();
+	IAnimationPath.Update();
 
 	if(IntroAnimation.HasFinished() || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
@@ -73,6 +74,8 @@ bool Intro::CleanUp()
 	{
 		SDL_DestroyTexture(IntroTexture);
 		IntroTexture = nullptr;
+		IAnimationPath.Reset();
+		IntroAnimation.Reset();
 	}
 
 	return true;

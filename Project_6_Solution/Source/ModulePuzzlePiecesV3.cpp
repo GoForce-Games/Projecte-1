@@ -789,10 +789,24 @@ void ModulePuzzlePiecesV3::RemoveGroups()
 	while (playArea.piecesToRemove.size() > 0) {
 		PuzzlePiece* p = playArea.piecesToRemove.back();
 		*p = *emptyPiece; // Copia parámetros de casilla vacía
-
+		if (playArea.piecesToRemove.size() == 3)
+		{
+			App->puntuation->score += 50;
+		}
+		if (playArea.piecesToRemove.size() == 4)
+		{
+			App->puntuation->score += 75;
+		}
+		if (playArea.piecesToRemove.size() == 5)
+		{
+			App->puntuation->score += 150;
+		}
+		if (playArea.piecesToRemove.size() == 6)
+		{
+			App->puntuation->score += 300;
+		}
 		playArea.piecesToRemove.pop_back();
 	}
-
 	playArea.DropPieces(); // Aplica gravedad para que no haya piezas flotantes
 
 	playArea.state = PlayAreaState::PIECES_PLACED; // Vuelve a comprobar si hay más grupos que eliminar (cadena)
