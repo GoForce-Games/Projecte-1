@@ -46,7 +46,7 @@ public:
 	void RemovePuzzlePiece(PuzzlePiece* piece);
 
 	//Comprueba la colisión en eje cardinal según la dirección proporcionada (si solo una de las coordenadas es 1/-1 comprueba todo el lado)
-	bool WillCollide(PlayerCollisionCheck direction);
+	//bool WillCollide(PlayerCollisionCheck direction);
 
 	bool CheckOutOfBounds(PlayArea* area, PlayerPieceV2* player);
 
