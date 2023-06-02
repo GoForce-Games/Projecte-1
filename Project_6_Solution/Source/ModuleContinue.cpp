@@ -57,7 +57,7 @@ Update_Status Continue::Update()
 	ContinueAnim.Update();
 	ContinuePath.Update();
 
-	App->fade->FadeToBlack((Module*)App->module_continue, (Module*)App->lose_screen, 200);
+	App->fade->FadeToBlack((Module*)App->module_continue, (Module*)App->lose_screen, 230);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
