@@ -10,6 +10,7 @@
 #include "Globals.h"
 #include "ModuleFadeToBlack.h"
 #include <iostream>
+#include "ModulePuzzlePiecesV3.h"
 
 using namespace std;
 
@@ -37,6 +38,7 @@ ModuleEmpezar::~ModuleEmpezar()
 // Load assets
 bool ModuleEmpezar::Start()
 {
+    App->pieces->Disable();
     LOG("Loading background assets");
 
     bool ret = true;
@@ -58,10 +60,11 @@ Update_Status ModuleEmpezar::Update()
 {
     ReadyAnim.Update();
     ReadyPath.Update();
-   /* if (ReadyAnim.HasFinished()) {
-
-        
-    }*/
+   if (ReadyAnim.HasFinished()) 
+   {
+       App->pieces->Enable();
+   }
+   App->audio->PlayMusic(NULL, NULL);
    App->fade->FadeToBlack((Module*)App->moduleEmpezar, (Module*)App->sceneLevel_1, 500);
     return Update_Status::UPDATE_CONTINUE;
 }

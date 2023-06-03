@@ -70,10 +70,15 @@ Update_Status WinLose::Update()
 {
 	AAnimationPath.Update();
 	
+	
 
 	if (App->input->keys[SDL_SCANCODE_F3] == KEY_DOWN)
 	{
 		gameFinish = true;
+	}
+	if (gameFinish == true)
+	{
+		App->pieces->Disable();
 	}
 	if ((gameFinish && App->puntuation->score < 1000) || App->pieces->playArea.state == PlayAreaState::GAME_END)
 	{
@@ -92,6 +97,7 @@ Update_Status WinLose::Update()
 		gameFinish = false;
 		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
 		App->fade->FadeToBlack((Module*)App->win_lose, (Module*)App->introJuego, 400);
+
 		
 	}
 	

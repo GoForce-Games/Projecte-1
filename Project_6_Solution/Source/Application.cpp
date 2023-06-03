@@ -33,19 +33,19 @@ Application::Application()
 	modules[2] = textures = new ModuleTextures(true);
 	modules[3] = audio = new ModuleAudio(true);
 	modules[4] = fonts = new ModuleFonts(true);
-	modules[5] = presentation = new ModulePresentation(true);
+	modules[5] = sceneLevel_1 = new SceneLevel1(false);
+	modules[6] = presentation = new ModulePresentation(true);
 
 	//modules[i++] = sceneIntro = new SceneIntro(true); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)
 
-	modules[6] = sceneLevel_1 = new SceneLevel1(false);
-	modules[7] = puntuation = new Puntuation(false);
+	modules[7] = moduleEmpezar = new ModuleEmpezar(false);
+	modules[8] = puntuation = new Puntuation(false);
 	
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
-	modules[8] = pieces = new ModulePuzzlePiecesV3(false);
-	modules[9] = particles = new ModuleParticles(true);
+	modules[9] = pieces = new ModulePuzzlePiecesV3(false);
+	modules[10] = particles = new ModuleParticles(true);
 
-	modules[10] = moduleEmpezar = new ModuleEmpezar(false);
 	modules[11] = win_lose = new WinLose(false);
 
 	modules[12] = intro = new Intro(false);
