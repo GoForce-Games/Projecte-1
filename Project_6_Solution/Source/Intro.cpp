@@ -51,6 +51,7 @@ bool Intro::Start()
 Update_Status Intro::Update()
 {
 	IntroAnimation.Update();
+	
 
 	GamePad& pad = App->input->pads[0];
 
