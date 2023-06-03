@@ -51,14 +51,14 @@ bool Intro::Start()
 Update_Status Intro::Update()
 {
 	IntroAnimation.Update();
-<<<<<<< HEAD
+
 	GamePad& pad = App->input->pads[0];
 	if(IntroAnimation.HasFinished() || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN || pad.a)
-=======
+
 	IAnimationPath.Update();
 
 	if(IntroAnimation.HasFinished() || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
->>>>>>> d2409fa8fbf23ac76d540e99ddc118bdfdfd0f4d
+
 	{
 		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->introJuego, 90);
 	}
