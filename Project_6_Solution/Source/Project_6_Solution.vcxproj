@@ -77,7 +77,6 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Collider.h" />
-    <ClInclude Include="Debug\ModuleReadyGo.h" />
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="IntroJuego.h" />
@@ -106,6 +105,9 @@
     <ClInclude Include="PlayArea.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="PlayerInput.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="PlayerPieceV2.h" />
     <ClInclude Include="Puntuation.h" />
     <ClInclude Include="PuzzlePiece.h" />
@@ -113,7 +115,6 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="Debug\ModuleReadyGo.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Intro.cpp" />
     <ClCompile Include="IntroJuego.cpp" />
@@ -140,6 +141,9 @@
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PlayArea.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="PlayerInput.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="PlayerPieceV2.cpp" />
     <ClCompile Include="Puntuation.cpp" />
