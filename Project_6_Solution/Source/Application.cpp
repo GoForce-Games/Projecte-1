@@ -20,6 +20,7 @@
 #include "ModuleWinLose.h"
 #include "ModuleLose.h"
 #include "ModuleContinue.h"
+#include "ModuleEmpezar.h"
 
 Application::Application()
 {
@@ -43,17 +44,19 @@ Application::Application()
 	// Si esto peta al añadir un modulo quedais avisados
 	modules[8] = pieces = new ModulePuzzlePiecesV3(false);
 	modules[9] = particles = new ModuleParticles(true);
-	modules[10] = win_lose = new WinLose(false);
 
-	modules[11] = intro = new Intro(false);
-	modules[12] = introJuego = new IntroJuego(false);
-	modules[13] = lose_screen = new ModuleLose(false);
-	modules[14] = module_continue = new Continue(false);
+	modules[10] = moduleEmpezar = new ModuleEmpezar(false);
+	modules[11] = win_lose = new WinLose(false);
 
-	modules[15] = collisions = new ModuleCollisions(true);
-	modules[16] = fade = new ModuleFadeToBlack(true);
+	modules[12] = intro = new Intro(false);
+	modules[13] = introJuego = new IntroJuego(false);
+	modules[14] = lose_screen = new ModuleLose(false);
+	modules[15] = module_continue = new Continue(false);
 
-	modules[17] = render = new ModuleRender();
+	modules[16] = collisions = new ModuleCollisions(true);
+	modules[17] = fade = new ModuleFadeToBlack(true);
+
+	modules[18] = render = new ModuleRender();
 }
 
 Application::~Application()

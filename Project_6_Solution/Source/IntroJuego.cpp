@@ -54,7 +54,7 @@ Update_Status IntroJuego::Update()
 
 	if (IntroJuegoAnimation.HasFinished() || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
-		App->fade->FadeToBlack((Module*)App->introJuego, (Module*)App->sceneLevel_1, 0);
+		App->fade->FadeToBlack((Module*)App->introJuego, (Module*)App->moduleEmpezar, 0);
 	}
 
 	return Update_Status::UPDATE_CONTINUE;

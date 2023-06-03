@@ -8,6 +8,7 @@
 #include "SDL/include/SDL.h"
 #include "Globals.h"
 #include "ModuleFadeToBlack.h"
+#include "Application.cpp"
 #include <iostream>
 
 using namespace std;
@@ -67,6 +68,7 @@ Update_Status Continue::PostUpdate()
 	if (ContinueTexture != nullptr)
 	{
 		App->render->Blit(ContinueTexture, 0, 0, &(ContinuePath.GetCurrentAnimation()->GetCurrentFrame()), 1.0f);
+
 		ContinuePath.GetCurrentAnimation()->Update();
 	}
 	return Update_Status::UPDATE_CONTINUE;

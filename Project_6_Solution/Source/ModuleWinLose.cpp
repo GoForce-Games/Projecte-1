@@ -82,7 +82,7 @@ Update_Status WinLose::Update()
 		gameFinish = false;
 		App->audio->PlayFx(LoseFX);
 		App->audio->PlayMusic(NULL, NULL);
-		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->module_continue, 200);
+		App->fade->FadeToBlack((Module*)App->win_lose, (Module*)App->module_continue, 200);
 		
 	}
 	if (gameFinish && App->puntuation->score >= 1000)
@@ -91,7 +91,7 @@ Update_Status WinLose::Update()
 		AAnimationPath = WAnimationPath;
 		gameFinish = false;
 		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
-		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->introJuego, 400);
+		App->fade->FadeToBlack((Module*)App->win_lose, (Module*)App->introJuego, 400);
 		
 	}
 	
