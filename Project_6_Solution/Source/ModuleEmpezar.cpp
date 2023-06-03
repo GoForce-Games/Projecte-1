@@ -11,6 +11,7 @@
 #include "ModuleFadeToBlack.h"
 #include <iostream>
 #include "ModulePuzzlePiecesV3.h"
+#include "ModuleScene.h"
 
 using namespace std;
 
@@ -23,9 +24,9 @@ ModuleEmpezar::ModuleEmpezar(bool startEnabled) : Module(startEnabled)
             int frameY = fila * SCREEN_HEIGHT;
             ReadyAnim.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
         }
-    }
-    ReadyAnim.speed = 0.2f;
-    //ReadyAnim.loop = false;
+    }   
+    ReadyAnim.speed = 0.16f;
+    ReadyAnim.loop = false;
     ReadyPath.PushBack({ 0.0f, 0.0f }, 200, &ReadyAnim);
 
 }
@@ -38,6 +39,7 @@ ModuleEmpezar::~ModuleEmpezar()
 // Load assets
 bool ModuleEmpezar::Start()
 {
+    App->sceneLevel_1->Enable();
     App->pieces->Disable();
     LOG("Loading background assets");
 
@@ -45,13 +47,10 @@ bool ModuleEmpezar::Start()
 
     ReadyTexture = App->textures->Load("Assets/Sprites/ReadyGo.png");
     //ReadyFX = App->audio->LoadFx("Assets/SFX/continue.wav");
-
+    App->audio->PlayMusic(NULL, NULL);
     App->render->camera.x = 0;
     App->render->camera.y = 0;
-
-
-
-
+    
     return ret;
 
 }
@@ -63,9 +62,9 @@ Update_Status ModuleEmpezar::Update()
    if (ReadyAnim.HasFinished()) 
    {
        App->pieces->Enable();
+       App->fade->FadeToBlack((Module*)App->moduleEmpezar, (Module*)App->sceneLevel_1, 0);
+       App->audio->PlayMusic("Assets/stage1.ogg");
    }
-   App->audio->PlayMusic(NULL, NULL);
-   App->fade->FadeToBlack((Module*)App->moduleEmpezar, (Module*)App->sceneLevel_1, 500);
     return Update_Status::UPDATE_CONTINUE;
 }
 

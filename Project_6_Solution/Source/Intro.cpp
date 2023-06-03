@@ -53,11 +53,10 @@ Update_Status Intro::Update()
 	IntroAnimation.Update();
 
 	GamePad& pad = App->input->pads[0];
-	if(IntroAnimation.HasFinished() || App->input->control[0].rotatePiece == Key_State::KEY_DOWN )
 
 	IAnimationPath.Update();
 
-	if(IntroAnimation.HasFinished() || App->input->control[0].rotatePiece == Key_State::KEY_DOWN)
+	if(IntroAnimation.HasFinished() || App->input->control[0].rotatePiece == Key_State::KEY_DOWN || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 
 	{
 		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->introJuego, 90);

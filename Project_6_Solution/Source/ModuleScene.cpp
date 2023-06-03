@@ -12,6 +12,7 @@
 #include "Intro.h"
 #include "ModuleLose.h"
 #include "ModuleContinue.h"
+#include "ModuleEmpezar.h"
 
 SceneLevel1::SceneLevel1(bool startEnabled) : Module(startEnabled)
 {
@@ -35,6 +36,7 @@ bool SceneLevel1::Start()
 	background2 = App->textures->Load("Assets/Sprites/BattleArenaBackground.png"); // Roger: Por que cargar el mismo archivo dos veces?
 	App->audio->PlayMusic("Assets/stage1.ogg", 1.0f);
 	backgroundRect = { 0,16,128,192 };
+	App->puntuation->score = 0;
 	//background2.PushBack({ 176,16,32,32 });
 	LOG("Loading number assets");
 
@@ -63,6 +65,7 @@ bool SceneLevel1::CleanUp()
 	App->pieces->Disable();
 	App->puntuation->Disable();
 	App->win_lose->Disable();
+	App->moduleEmpezar->Disable();
 	/*App->intro->Disable();*/
 	//App->intro2->Disable();
 	//App->lose_screen->Disable();

@@ -793,18 +793,7 @@ void ModulePuzzlePiecesV3::RemoveGroups()
 		{
 			App->puntuation->score += 50;
 		}
-		if (playArea.piecesToRemove.size() == 4)
-		{
-			App->puntuation->score += 75;
-		}
-		if (playArea.piecesToRemove.size() == 5)
-		{
-			App->puntuation->score += 150;
-		}
-		if (playArea.piecesToRemove.size() == 6)
-		{
-			App->puntuation->score += 300;
-		}
+		
 		playArea.piecesToRemove.pop_back();
 	}
 	playArea.DropPieces(); // Aplica gravedad para que no haya piezas flotantes
