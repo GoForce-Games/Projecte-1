@@ -51,7 +51,8 @@ bool Intro::Start()
 Update_Status Intro::Update()
 {
 	IntroAnimation.Update();
-	
+	IAnimationPath.Update();
+
 
 	GamePad& pad = App->input->pads[0];
 
@@ -60,7 +61,7 @@ Update_Status Intro::Update()
 	if(IntroAnimation.HasFinished() || App->input->control[0].rotatePiece == Key_State::KEY_DOWN || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 
 	{
-		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->introJuego, 90);
+		App->fade->FadeToBlack((Module*)App->intro, (Module*)App->introJuego, 0);
 	}
 	
 	return Update_Status::UPDATE_CONTINUE;
