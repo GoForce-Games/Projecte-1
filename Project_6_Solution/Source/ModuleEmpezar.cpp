@@ -25,7 +25,7 @@ ModuleEmpezar::ModuleEmpezar(bool startEnabled) : Module(startEnabled)
             ReadyAnim.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
         }
     }   
-    ReadyAnim.speed = 0.16f;
+    ReadyAnim.speed = 0.1f;
     ReadyAnim.loop = false;
     ReadyPath.PushBack({ 0.0f, 0.0f }, 200, &ReadyAnim);
 
