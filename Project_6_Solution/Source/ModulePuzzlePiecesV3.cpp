@@ -9,6 +9,7 @@
 #include "ModuleInput.h"
 #include "Puntuation.h"
 #include "ModuleFadeToBlack.h"
+#include "ModuleAudio.h"
 
 #include "../External_Libraries/SDL/include/SDL.h"
 #include <algorithm>
@@ -63,6 +64,9 @@ bool ModulePuzzlePiecesV3::Start()
 	InitWalls();
 	InitPlayers();
 	InitMisc();
+	rotateFX = App->audio->LoadFx("Assets/SFX/rotate.wav");
+	lockedFX = App->audio->LoadFx("Assets/SFX/piecelocked.wav");
+	eliminaePiecesFX = App->audio->LoadFx("Assets/SFX/EliminatedPiezes.wav");
 
 	return true;
 }
@@ -691,7 +695,10 @@ void ModulePuzzlePiecesV3::ProcessInput()
 
 		if (pad.rotatePiece == Key_State::KEY_DOWN) {
 			if (CanRotate(&playArea, &player))
+			{
 				player.Rotate();
+				App->audio->PlayFx(lockedFX);
+			}
 		}
 
 
@@ -757,6 +764,7 @@ void ModulePuzzlePiecesV3::ApplyPhysics()
 			else {
 				player.position.y += gravity; //Sin esto las piezas se colocan una celda mas arriba (necesita hacer un ciclo mas de caida antes de fijar las piezas)
 				player.locked = true;
+				App->audio->PlayFx(lockedFX);
 				App->puntuation->score = App->puntuation->score + 9; // Suma 9 puntos en el marcador al colocar la pieza
 				playArea.state = PlayAreaState::PIECES_PLACED;
 				PlacePieces();
@@ -798,6 +806,7 @@ void ModulePuzzlePiecesV3::RemoveGroups()
 	}
 	playArea.DropPieces(); // Aplica gravedad para que no haya piezas flotantes
 
+	App->audio->PlayFx(eliminaePiecesFX);
 	
 }
 
