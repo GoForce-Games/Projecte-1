@@ -26,7 +26,7 @@ ModuleEmpezar::ModuleEmpezar(bool startEnabled) : Module(startEnabled)
             ReadyAnim.PushBack({ frameX, frameY, SCREEN_WIDTH, SCREEN_HEIGHT });
         }
     }   
-    ReadyAnim.speed = 0.1f;
+    ReadyAnim.speed = 0.16f;
     ReadyAnim.loop = false;
     ReadyPath.PushBack({ 0.0f, 0.0f }, 200, &ReadyAnim);
 
@@ -49,8 +49,9 @@ bool ModuleEmpezar::Start()
     bool ret = true;
 
     ReadyTexture = App->textures->Load("Assets/Sprites/ReadyGo.png");
+
     //ReadyFX = App->audio->LoadFx("Assets/SFX/continue.wav");
-    App->audio->PlayMusic(NULL, NULL);
+    App->audio->PlayMusic("Assets/Music/Ready_1.ogg", 1.0f);
     App->render->camera.x = 0;
     App->render->camera.y = 0;
     

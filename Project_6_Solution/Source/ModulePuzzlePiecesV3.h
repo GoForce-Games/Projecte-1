@@ -189,6 +189,10 @@ public:
 	// SFX id number
 	const uint explosionFX = 0;
 
+	uint rotateFX;
+	uint lockedFX;
+	uint eliminaePiecesFX;
+
 	bool cleanedUp = false;
 
 };
