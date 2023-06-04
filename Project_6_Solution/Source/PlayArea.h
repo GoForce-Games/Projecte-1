@@ -15,14 +15,14 @@ enum PlayAreaState {
 	GAME_START,
 	GAME_LOOP,
 	PIECES_PLACED,
-	CHECK_GROUPS,
+	ANIMATE_DELETION,
 	DELETE_GROUPS,
 	DETONATE_BOMBS,
 	NEW_PIECES,
 	PAUSE,
 
 	GAME_END,
-	NEW_GAME
+	BACK_TO_TITLE
 
 };
 
@@ -72,5 +72,7 @@ public:
 	std::deque<PuzzlePiece*> piecesToRemove;
 
 	Collider* collisionTester = nullptr;
+
+	uint explosionRange;
 };
 

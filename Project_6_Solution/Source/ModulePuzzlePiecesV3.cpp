@@ -3,6 +3,7 @@
 
 #include "Application.h"
 #include "ModuleCollisions.h"
+#include "ModuleParticles.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleInput.h"
@@ -54,9 +55,11 @@ bool ModulePuzzlePiecesV3::Init()
 bool ModulePuzzlePiecesV3::Start()
 {
 	//TODO cambiar playArea y player a variables dinamicas para mayor flexibilidad si se pone multijugador (debe contener el jugador en la variable dedicada)
+	InitPieceArray();
 	EnableDependencies();
 	LoadTextures();
 	InitTemplates();
+	InitPieceArray();
 	InitWalls();
 	InitPlayers();
 	InitMisc();
@@ -88,22 +91,39 @@ Update_Status ModulePuzzlePiecesV3::Update()
 	case PlayAreaState::PIECES_PLACED: {
 
 		ApplyLogic(); // TODO logic devuelve estado de juego (?)
+
+		if (playArea.piecesToRemove.size()>0)
+			playArea.state = PlayAreaState::DELETE_GROUPS;
+		else
+			playArea.state = PlayAreaState::NEW_PIECES;
+
 		break;
 	}
-	case PlayAreaState::CHECK_GROUPS: {
+	case PlayAreaState::DETONATE_BOMBS: {
+		DetonateBombs(playArea);
 
+		break;
+	}
+	case PlayAreaState::ANIMATE_DELETION: {
+		// No hace nada hasta que terminan las animaciones de eliminacion de piezas, entonces pasa a DELETE_GROUPS
+		if (playArea.piecesToRemove.size() > 0) {
+			if (playArea.piecesToRemove.back()->currentAnimation.HasFinished()) {
+				playArea.state = PlayAreaState::DELETE_GROUPS;
+			}
+		}
+		else {
+			playArea.state = PlayAreaState::DELETE_GROUPS;
+		}
 		break;
 	}
 	case PlayAreaState::DELETE_GROUPS: {
 		RemoveGroups();
-		break;
-	}
-	case PlayAreaState::DETONATE_BOMBS: {
-
+		playArea.state = PlayAreaState::PIECES_PLACED; // Vuelve a comprobar si hay más grupos que eliminar (cadena)
 		break;
 	}
 	case PlayAreaState::NEW_PIECES: {
-
+		AssignNewPieces(&player);
+		playArea.state = PlayAreaState::GAME_LOOP;
 		break;
 	}
 	case PlayAreaState::PAUSE: {
@@ -111,11 +131,11 @@ Update_Status ModulePuzzlePiecesV3::Update()
 	}
 	case PlayAreaState::GAME_END: {
 		App->fade->FadeToBlack((Module*)App->sceneLevel_1, (Module*)App->win_lose, 90);
-		playArea.state = NEW_GAME;
+		playArea.state = BACK_TO_TITLE;
 		break;
 	}
-	case PlayAreaState::NEW_GAME: {
-
+	case PlayAreaState::BACK_TO_TITLE: {
+		//No hace nada hasta que vuelve al titulo
 		break;
 	}
 	default:
@@ -158,8 +178,8 @@ bool ModulePuzzlePiecesV3::CleanUp()
 
 	App->textures->Unload(textureBomberman);
 	textureBomberman = nullptr;
-	App->textures->Unload(textureBomb);
-	textureBomb = nullptr;
+	App->textures->Unload(textureExplosion);
+	textureExplosion = nullptr;
 	return true;
 }
 
@@ -170,8 +190,8 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<
 		PuzzlePiece* newPiece = AddPuzzlePiece(*templateMan, Collider::Type::PUZZLE_PIECE);
 		PieceType type;
 		// Si no esta al principio de un set de 3, no puede spawnear una bomba
-		if (stack.size()%3 == 0) {
-			type = (PieceType)((rand() % 6) + 1); 
+		if (stack.size() % 3 == 0) {
+			type = (PieceType)((rand() % 6) + 1);
 		}
 		else {
 			type = (PieceType)((rand() % 5) + 1);
@@ -250,7 +270,7 @@ bool ModulePuzzlePiecesV3::CanGoLeft(PlayArea* area, PlayerPieceV2* player)
 	if (player->pieces[0][0]->type == PieceType::BOMB)
 		return leftTop->type == PieceType::NONE;
 	else
-	return leftTop->type == PieceType::NONE && leftBot->type == PieceType::NONE;
+		return leftTop->type == PieceType::NONE && leftBot->type == PieceType::NONE;
 	/*
 	//Check top piece
 	if (!player->pieces[0][0]->isEmpty || !player->pieces[0][1]->isEmpty) {
@@ -413,12 +433,13 @@ bool ModulePuzzlePiecesV3::PieceCanDrop(PuzzlePiece* piece)
 
 void ModulePuzzlePiecesV3::EnableDependencies()
 {
-	App->collisions->Enable();
+	//App->collisions->Enable();
 }
 
 void ModulePuzzlePiecesV3::LoadTextures()
 {
 	textureBomberman = App->textures->Load("Assets/Sprites/HeadsAndBombs.png");
+	textureExplosion = App->textures->Load("Assets/Sprites/ExplosionSprite.png");
 }
 
 void ModulePuzzlePiecesV3::InitAnims()
@@ -506,15 +527,33 @@ void ModulePuzzlePiecesV3::InitAnims()
 	animIdle[PieceType::BOMB].PushBack(firstFrame);
 	animIdle[PieceType::BOMB].pingpong = true;
 
+	// "Animacion" bomba encendida (solo tiene un frame)
 	animIdle[PieceType::PRIMED_BOMB].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 
 	//Desactiva bucle para las piezas
-	for (size_t i = 0; i < PieceType::MAX; i++)
+	for (size_t i = 0; i < PieceType::MAX_PIECE_TYPE; i++)
 	{
 		animIdle[i].loop = false;
 		animIdle[i].speed = 0.08f;
 	}
 
+
+	//Animacion de particulas de explosion
+	iPoint offset; offset.create(0, 0);
+	for (size_t i = 0; i < 3; i++)
+	{
+		//animExplosionEffect[ExplosionDir::TOP_TIP].PushBack({offset.x,offset.y,})
+	}
+
+}
+
+
+void ModulePuzzlePiecesV3::InitPieceArray()
+{
+	for (size_t i = 0; i < MAX_PIECES; i++)
+	{
+		pieces[i] = nullptr;
+	}
 }
 
 void ModulePuzzlePiecesV3::InitTemplates()
@@ -617,7 +656,7 @@ void ModulePuzzlePiecesV3::InitPlayers()
 	pieceQueue.pop();
 	newPieces[2] = pieceQueue.top();
 	pieceQueue.pop();
-	newPieces[3] = AddPuzzlePiece(*emptyPiece);
+	newPieces[3] = emptyPiece;
 	player.setPieces(newPieces);
 	player.locked = false;
 
@@ -738,28 +777,10 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 	if (player.locked) {
 		playArea.DropPieces();
 		if (playArea.checkGroupedPieces()) {
-			playArea.state = PlayAreaState::DELETE_GROUPS;
 			return;
 		}
 
-		if (pieceQueue.size() < 3)
-			GeneratePuzzlePieces(pieceQueue, 12);
-
-
-		//A partir de aqui solo cuando ya se haya procesado todo el tablero y se pueda sacar una pieza nueva
-
-		PuzzlePiece* newPieces[4];
-		newPieces[0] = pieceQueue.top();
-		pieceQueue.pop();
-		newPieces[1] = pieceQueue.top();
-		pieceQueue.pop();
-		newPieces[2] = pieceQueue.top();
-		pieceQueue.pop();
-		newPieces[3] = AddPuzzlePiece(*emptyPiece);
-		player.setPieces(newPieces);
-
-		player.locked = false;
-		playArea.state = PlayAreaState::GAME_LOOP;
+		
 	}
 }
 
@@ -777,7 +798,43 @@ void ModulePuzzlePiecesV3::RemoveGroups()
 	}
 	playArea.DropPieces(); // Aplica gravedad para que no haya piezas flotantes
 
-	playArea.state = PlayAreaState::PIECES_PLACED; // Vuelve a comprobar si hay más grupos que eliminar (cadena)
+	
+}
+
+void ModulePuzzlePiecesV3::AssignNewPieces(PlayerPieceV2* player)
+{
+	if (pieceQueue.size() < 3)
+		GeneratePuzzlePieces(pieceQueue, 12);
+
+
+	//A partir de aqui solo cuando ya se haya procesado todo el tablero y se pueda sacar una pieza nueva
+
+	PuzzlePiece* newPieces[4];
+	newPieces[0] = pieceQueue.top();
+	pieceQueue.pop();
+	newPieces[1] = pieceQueue.top();
+	pieceQueue.pop();
+	newPieces[2] = pieceQueue.top();
+	pieceQueue.pop();
+	newPieces[3] = AddPuzzlePiece(*emptyPiece);
+	player->setPieces(newPieces);
+
+	player->locked = false;
+}
+
+void ModulePuzzlePiecesV3::DetonateBombs(PlayArea& area)
+{
+	ModuleParticles* particles = App->particles;
+	int explosionRange = area.explosionRange;
+	for (PuzzlePiece* bomb: playArea.piecesToRemove)
+	{
+		iPoint coords = bomb->position;
+		for (size_t i = -explosionRange; i < explosionRange; i++)
+		{
+			//particles->AddParticle() // TODO Implementar animacion de explosion
+		}
+	}
+
 }
 
 iPoint ModulePuzzlePiecesV3::WorldToLocal(PlayArea& localArea, iPoint sCoordinates)
