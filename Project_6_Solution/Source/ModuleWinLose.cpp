@@ -7,6 +7,7 @@
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
 #include "Globals.h"
+#include "ModuleEmpezar.h"
 #include "ModuleFadeToBlack.h"
 #include "ModulePuzzlePiecesV3.h"
 #include "PuzzlePiece.h"
@@ -79,6 +80,8 @@ Update_Status WinLose::Update()
 	if (gameFinish == true)
 	{
 		App->pieces->Disable();
+		
+		
 	}
 	if ((gameFinish && App->puntuation->score < 1000) || App->pieces->playArea.state == PlayAreaState::GAME_END)
 	{
@@ -87,6 +90,7 @@ Update_Status WinLose::Update()
 		gameFinish = false;
 		App->audio->PlayFx(LoseFX);
 		App->audio->PlayMusic(NULL, NULL);
+		App->moduleEmpezar->Disable();
 		App->fade->FadeToBlack((Module*)App->win_lose, (Module*)App->module_continue, 200);
 		
 	}
@@ -96,6 +100,8 @@ Update_Status WinLose::Update()
 		AAnimationPath = WAnimationPath;
 		gameFinish = false;
 		App->audio->PlayMusic("Assets/Music/Win.ogg", 1.0f);
+		App->puntuation->Disable();
+		App->moduleEmpezar->Disable();
 		App->fade->FadeToBlack((Module*)App->win_lose, (Module*)App->introJuego, 400);
 
 		

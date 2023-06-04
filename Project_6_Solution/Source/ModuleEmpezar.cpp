@@ -8,6 +8,7 @@
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
 #include "Globals.h"
+#include "ModuleWinLose.h"
 #include "ModuleFadeToBlack.h"
 #include <iostream>
 #include "ModulePuzzlePiecesV3.h"
@@ -40,7 +41,9 @@ ModuleEmpezar::~ModuleEmpezar()
 bool ModuleEmpezar::Start()
 {
     App->sceneLevel_1->Enable();
+    App->puntuation->Enable();
     App->pieces->Disable();
+    App->win_lose->Enable();
     LOG("Loading background assets");
 
     bool ret = true;

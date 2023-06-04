@@ -5,6 +5,7 @@
 #include "ModuleAudio.h"
 #include "ModuleRender.h"
 #include "ModuleInput.h"
+#include "ModuleEmpezar.h"
 #include "ModuleFadeToBlack.h"
 #include <SDL/include/SDL_scancode.h>
 #include "SDL/include/SDL.h"
@@ -36,6 +37,7 @@ IntroJuego::~IntroJuego()
 bool IntroJuego::Start()
 {
 	LOG("Loading intro assets");
+	
 
 	bool ret = true;
 
@@ -53,8 +55,12 @@ Update_Status IntroJuego::Update()
 	IntroJuegoAnimation.Update();
 	IAnimationPath.Update();
 
+
 	if (IntroJuegoAnimation.HasFinished() || App->input->control[0].rotatePiece == Key_State::KEY_DOWN || App->input->keys[SDL_SCANCODE_SPACE] == Key_State::KEY_DOWN)
 	{
+		App->moduleEmpezar->Enable();
+		App->moduleEmpezar->ReadyAnim.Reset();
+		App->moduleEmpezar->ReadyPath.Reset();
 		App->fade->FadeToBlack((Module*)App->introJuego, (Module*)App->moduleEmpezar, 0);
 	}
 
