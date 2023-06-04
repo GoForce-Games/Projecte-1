@@ -168,8 +168,22 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<
 	for (size_t i = 0; i < amount; i++)
 	{
 		PuzzlePiece* newPiece = AddPuzzlePiece(*templateMan, Collider::Type::PUZZLE_PIECE);
-		PieceType type = (PieceType)((rand() % 5) + 1); // TODO CAMBIAR ESTO 
+		PieceType type;
+		// Si no esta al principio de un set de 3, no puede spawnear una bomba
+		if (stack.size()%3 == 0) {
+			type = (PieceType)((rand() % 6) + 1); 
+		}
+		else {
+			type = (PieceType)((rand() % 5) + 1);
+		}
 		newPiece->SetType(type);
+		if (type == PieceType::BOMB) {
+			for (size_t j = 0; j < 2; j++, amount--)
+			{
+				//Las bombas van siempre solas
+				stack.push(emptyPiece);
+			}
+		}
 		stack.push(newPiece);
 	}
 	return stack;
@@ -210,93 +224,6 @@ void ModulePuzzlePiecesV3::RemovePuzzlePiece(PuzzlePiece* piece)
 	}
 }
 
-/*bool ModulePuzzlePiecesV3::WillCollide(PlayerCollisionCheck direction)
-{
-	// TODO usar el modulo de colisiones existente si puede ser
-	SDL_Rect& rect = collisionTester->rect;
-	rect.w = PIECE_SIZE;
-	rect.h = PIECE_SIZE;
-	int x = 0, y = 0;
-
-	switch (direction)
-	{
-	case CENTER: {
-		break;
-	}
-	case LEFT: {
-		x = -1;
-
-		//Si el colisionador de la pieza correspondiente esta desactivado no hace falta comprobar más allá de donde se encuentra
-		if (player.pieces[0][0]->collider->enabled) y--;
-		if (player.pieces[1][0]->collider->enabled) y++;
-		break;
-	}
-	case RIGHT: {
-		x = 1;
-		if (player.pieces[0][1]->collider->enabled) y--;
-		if (player.pieces[1][1]->collider->enabled) y++;
-		break;
-	}
-	case TOP: {
-		y = -1;
-		if (player.pieces[0][0]->collider->enabled) x--;
-		if (player.pieces[0][1]->collider->enabled) x++;
-		break;
-	}
-	case BOTTOM: {
-		y = 1;
-		if (player.pieces[1][0]->collider->enabled) x--;
-		if (player.pieces[1][1]->collider->enabled) x++;
-		break;
-	}
-	default:
-		break;
-	}
-
-	if (x == 0) {
-		//Hace que el colisionador ocupe el ancho del jugador
-		rect.x = player.position.x;
-		rect.w = PIECE_SIZE * 2;
-	}
-	else {
-		// Pone el colisionador a la izquierda o la derecha
-		if (x > 0)
-			rect.x = player.position.x + (PIECE_SIZE * 2);
-		else
-			rect.x = player.position.x - PIECE_SIZE;
-	}
-
-	if (y == 0) {
-		//Hace que el colisionador ocupe el alto del jugador
-		rect.y = player.position.y + gravity;
-		rect.h = PIECE_SIZE * 2;
-	}
-	else {
-		// Pone el colisionador debajo (+1) o arriba (-1) del jugador
-		if (y > 0)
-			rect.y = player.position.y + (PIECE_SIZE)+gravity;
-
-		else
-			rect.y = player.position.y - PIECE_SIZE + gravity;
-	}
-
-	if (direction != PlayerCollisionCheck::DEBUG) {
-
-		for (size_t i = 0; i < MAX_PIECES; i++)
-		{
-			if (pieces[i] != nullptr && collisionTester->Intersects(pieces[i]->collider->rect)) {
-				return true;
-			}
-		}
-		if (direction != CENTER && (x != 0 || y != 0)) {
-			return WillCollide(PlayerCollisionCheck::CENTER);
-		}
-
-	}
-
-	return false;
-}*/
-
 bool ModulePuzzlePiecesV3::CheckOutOfBounds(PlayArea* area, PlayerPieceV2* player)
 {
 	iPoint playerPos = player->position;
@@ -319,6 +246,10 @@ bool ModulePuzzlePiecesV3::CanGoLeft(PlayArea* area, PlayerPieceV2* player)
 	PuzzlePiece* leftTop = area->table[gridPos.y][gridPos.x - offsetTop];
 	PuzzlePiece* leftBot = area->table[gridPos.y + 1][gridPos.x - offsetBot];
 
+	//Si hay bomba en juego nunca habra pieza que comprobar abajo
+	if (player->pieces[0][0]->type == PieceType::BOMB)
+		return leftTop->type == PieceType::NONE;
+	else
 	return leftTop->type == PieceType::NONE && leftBot->type == PieceType::NONE;
 	/*
 	//Check top piece
@@ -346,14 +277,18 @@ bool ModulePuzzlePiecesV3::CanGoRight(PlayArea* area, PlayerPieceV2* player)
 		LOG("Can't move right, player is out of bounds: x=%i, y=%i", gridPos.x, gridPos.y);
 		return false;
 	}
-	if (gridPos.x > PLAY_AREA_W - 4) // Tiene pared a la derecha
-		return false;
+	//if (gridPos.x > PLAY_AREA_W - 4) // Tiene pared a la derecha
+	//	return false;
 	int offsetTop = (player->pieces[0][1]->isEmpty) ? 1 : 2;
 	int offsetBot = (player->pieces[1][1]->isEmpty) ? 1 : 2;
 	PuzzlePiece* rightTop = area->table[gridPos.y][gridPos.x + offsetTop];
 	PuzzlePiece* rightBot = area->table[gridPos.y + 1][gridPos.x + offsetBot];
 
-	return rightTop->type == PieceType::NONE && rightBot->type == PieceType::NONE;
+	//Si hay bomba en juego nunca habra pieza que comprobar abajo
+	if (player->pieces[0][0]->type == PieceType::BOMB)
+		return rightTop->type == PieceType::NONE;
+	else
+		return rightTop->type == PieceType::NONE && rightBot->type == PieceType::NONE;
 
 	/*
 	//Check top piece
@@ -390,8 +325,11 @@ bool ModulePuzzlePiecesV3::CanGoDown(PlayArea* area, PlayerPieceV2* player)
 	PuzzlePiece* botLeft = area->table[gridPos.y + offsetLeft][gridPos.x];
 	PuzzlePiece* botRight = area->table[gridPos.y + offsetRight][gridPos.x + 1];
 
-
-	return botLeft->type == PieceType::NONE && botRight->type == PieceType::NONE;
+	//Si hay bomba en juego nunca habra pieza que comprobar a la derecha
+	if (player->pieces[0][0]->type == PieceType::BOMB)
+		return botLeft->type == PieceType::NONE;
+	else
+		return botLeft->type == PieceType::NONE && botRight->type == PieceType::NONE;
 	/*
 	// Check left piece
 	if (!player->pieces[1][0]->isEmpty) {
@@ -505,7 +443,7 @@ void ModulePuzzlePiecesV3::InitAnims()
 	// Animacion bomberman /Negro
 	pixelCoords.create(0, 0);
 	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
-	for (size_t i = 0; i < 13; i++)
+	for (size_t i = 0; i < 12; i++)
 	{
 		animIdle[PieceType::BLACK].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
@@ -560,13 +498,15 @@ void ModulePuzzlePiecesV3::InitAnims()
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
 	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i < 3; i++)
 	{
 		animIdle[PieceType::BOMB].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
 	}
 	animIdle[PieceType::BOMB].PushBack(firstFrame);
 	animIdle[PieceType::BOMB].pingpong = true;
+
+	animIdle[PieceType::PRIMED_BOMB].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 
 	//Desactiva bucle para las piezas
 	for (size_t i = 0; i < PieceType::MAX; i++)

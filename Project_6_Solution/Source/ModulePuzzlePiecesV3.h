@@ -146,7 +146,12 @@ public:
 	// Animaciones
 	Animation animNone;
 	Animation animDefaultTest;
+
+	//Animación pasiva
 	Animation animIdle[PieceType::MAX];
+
+	//Animación usada cuando se eliminan las piezas
+	Animation animDeletion[PieceType::MAX];
 
 
 

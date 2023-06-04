@@ -159,8 +159,10 @@ void PlayerPieceV2::setPieces(PuzzlePiece* newPieces[4])
 	pieces[1][0] = newPieces[2];
 	pieces[1][1] = newPieces[3];
 
+	/*
 	pieces[0][0]->name = "TopLeft";
 	pieces[0][1]->name = "TopRight";
 	pieces[1][0]->name = "BotLeft";
 	pieces[1][1]->name = "BotRight";
+	*/
 }

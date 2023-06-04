@@ -43,14 +43,17 @@ PuzzlePiece::~PuzzlePiece()
 
 void PuzzlePiece::Update()
 {
-	if (!isEmpty &&!moving) {
+	if (!isEmpty && !moving) {
 		if (animTimer > 0)
 			animTimer--;
 		else {
 			currentAnimation.Update();
 		}
 		if (currentAnimation.HasFinished()) {
-			animTimer = rand() % MAX_ANIMATION_TIMER;
+			if (PieceType::BOMB)
+				animTimer = 0;
+			else
+				animTimer = rand() % MAX_ANIMATION_TIMER;
 			currentAnimation.Reset();
 		}
 	}
