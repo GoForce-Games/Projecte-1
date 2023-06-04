@@ -16,6 +16,12 @@ PlayArea::PlayArea()
 			table[i][j] = nullptr;
 		}
 	}
+
+	explosionRange = 2;
+	bigBombCharge = 0;
+	bombsToSpawn = 0;
+
+	state = PlayAreaState::INIT;
 }
 
 PlayArea::~PlayArea()
@@ -39,6 +45,8 @@ void PlayArea::Init(PuzzlePiece* fillWith)
 	}
 
 	explosionRange = 2;
+	bigBombCharge = 0;
+	bombsToSpawn = 0;
 
 	state = PlayAreaState::INIT;
 }
@@ -109,6 +117,7 @@ bool PlayArea::checkGroupedPieces()
 				RecursePieces(deq, pos, p->type, CheckDirection::VERTICAL);
 				deq.push_back(p);
 				if (deq.size() >= GROUP_MIN_COUNT) {
+					bombsToSpawn += (deq.size() - GROUP_MIN_COUNT + 1);
 					for (PuzzlePiece* n; deq.size() > 0;)
 					{
 						n = deq.back();
@@ -250,4 +259,25 @@ bool PlayArea::PieceCanDrop(PuzzlePiece* pieceTop, PuzzlePiece* pieceBot)
 	if (pieceBot->type == PieceType::NONE) return true; // Espacio sin colision debajo
 
 	return false;
+}
+
+bool PlayArea::PlaceBomb(int col)
+{
+	if (!table[1][col]->isEmpty) return false;
+
+	for (size_t i = 1; i < PLAY_AREA_H - 2; i++)
+	{
+		PuzzlePiece* aux = table[i][col];
+		table[i][col] = table[i + 1][col];
+		table[i + 1][col] = aux;
+	}
+	App->pieces->RemovePuzzlePiece(table[PLAY_AREA_H - 2][col]);
+	table[PLAY_AREA_H - 2][col] = App->pieces->AddPuzzlePiece(*App->pieces->templateBomb);
+
+	return false;
+}
+
+PuzzlePiece* PlayArea::GetPiece(int x, int y)
+{
+	return table[y][x];
 }

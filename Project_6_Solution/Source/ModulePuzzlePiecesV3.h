@@ -1,4 +1,8 @@
-#pragma once
+#ifndef MODULE_PUZZLE_PIECES_H
+
+#define MODULE_PUZZLE_PIECES_H
+
+
 #include "Module.h"
 #include <stack>
 #include <queue>
@@ -6,6 +10,8 @@
 #include "Collider.h"
 #include "PlayerPieceV2.h"
 #include "PlayArea.h"
+
+#include "Particle.h"
 
 #include "GameConstants.h"
 
@@ -98,6 +104,8 @@ private: // Helper functions
 
 	void RemoveGroups();
 
+	void AddBombs(PlayArea& area);
+
 	void AssignNewPieces(PlayerPieceV2* player);
 
 	void DetonateBombs(PlayArea& area);
@@ -115,7 +123,11 @@ public:
 	// Avoid enabling twice
 	bool isInitialized = false;
 
+	//Godmode-related variable
+	bool forcePrimedBomb = false;
+
 	PuzzlePiece* templateMan = nullptr;
+	PuzzlePiece* templateBomb = nullptr;
 
 	//Pieza vacía, sin nada asignado
 	PuzzlePiece* emptyPiece = nullptr;
@@ -162,6 +174,8 @@ public:
 
 	Animation animExplosionEffect[ExplosionDir::MAX_BOMB_ANIM];
 
+	Particle explosionTemplates[7];
+
 
 	Collider* collider = nullptr;
 
@@ -175,5 +189,8 @@ public:
 	// SFX id number
 	const uint explosionFX = 0;
 
+	bool cleanedUp = false;
+
 };
 
+#endif // !MODULE_PUZZLE_PIECES_H

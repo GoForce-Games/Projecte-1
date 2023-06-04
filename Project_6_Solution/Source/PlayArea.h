@@ -17,6 +17,7 @@ enum PlayAreaState {
 	PIECES_PLACED,
 	ANIMATE_DELETION,
 	DELETE_GROUPS,
+	ADD_BOMBS,
 	DETONATE_BOMBS,
 	NEW_PIECES,
 	PAUSE,
@@ -56,6 +57,11 @@ public:
 	void DropPieces();
 
 	bool PieceCanDrop(PuzzlePiece* pieceTop, PuzzlePiece* pieceBot);
+	
+	// Devuelve true si hay espacio debajo de las piezas
+	bool PlaceBomb(int col);
+
+	PuzzlePiece* GetPiece(int x, int y);
 
 
 public:
@@ -74,5 +80,9 @@ public:
 	Collider* collisionTester = nullptr;
 
 	uint explosionRange;
+	
+	uint bombsToSpawn;
+
+	uint bigBombCharge;
 };
 

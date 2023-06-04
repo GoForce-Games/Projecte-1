@@ -64,6 +64,7 @@ bool ModulePuzzlePiecesV3::Start()
 	InitPlayers();
 	InitMisc();
 
+	cleanedUp = false;
 	return true;
 }
 
@@ -92,7 +93,7 @@ Update_Status ModulePuzzlePiecesV3::Update()
 
 		ApplyLogic(); // TODO logic devuelve estado de juego (?)
 
-		if (playArea.piecesToRemove.size()>0)
+		if (playArea.piecesToRemove.size() > 0)
 			playArea.state = PlayAreaState::DELETE_GROUPS;
 		else
 			playArea.state = PlayAreaState::NEW_PIECES;
@@ -101,7 +102,8 @@ Update_Status ModulePuzzlePiecesV3::Update()
 	}
 	case PlayAreaState::DETONATE_BOMBS: {
 		DetonateBombs(playArea);
-
+		if (playArea.piecesToRemove.size() == 0) // Si no se han detectado mas bombas que borrar vuelve a comprobar grupos de piezas
+			playArea.state = PlayAreaState::PIECES_PLACED;
 		break;
 	}
 	case PlayAreaState::ANIMATE_DELETION: {
@@ -118,7 +120,12 @@ Update_Status ModulePuzzlePiecesV3::Update()
 	}
 	case PlayAreaState::DELETE_GROUPS: {
 		RemoveGroups();
-		playArea.state = PlayAreaState::PIECES_PLACED; // Vuelve a comprobar si hay más grupos que eliminar (cadena)
+		playArea.state = PlayAreaState::ADD_BOMBS; // Vuelve a comprobar si hay más grupos que eliminar (cadena)
+		break;
+	}
+	case PlayAreaState::ADD_BOMBS: {
+		AddBombs(playArea);
+		playArea.state = PlayAreaState::PIECES_PLACED; // Si la colocacion de bombas causa más grupos hay que eliminarlos
 		break;
 	}
 	case PlayAreaState::NEW_PIECES: {
@@ -167,6 +174,15 @@ void ModulePuzzlePiecesV3::OnCollision(Collider* c1, Collider* c2)
 
 bool ModulePuzzlePiecesV3::CleanUp()
 {
+	// Impide hacer dos cleanups seguidos
+	if (cleanedUp) return true;
+
+	// Vacia la lista de piezas proximas
+	while (pieceQueue.size() > 0)
+	{
+		pieceQueue.pop();
+	}
+
 	RemovePuzzlePiece(templateMan);
 	playArea.CleanUp();
 	App->collisions->CleanUp();
@@ -180,6 +196,8 @@ bool ModulePuzzlePiecesV3::CleanUp()
 	textureBomberman = nullptr;
 	App->textures->Unload(textureExplosion);
 	textureExplosion = nullptr;
+
+	cleanedUp = true;
 	return true;
 }
 
@@ -189,15 +207,24 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<
 	{
 		PuzzlePiece* newPiece = AddPuzzlePiece(*templateMan, Collider::Type::PUZZLE_PIECE);
 		PieceType type;
+
 		// Si no esta al principio de un set de 3, no puede spawnear una bomba
 		if (stack.size() % 3 == 0) {
-			type = (PieceType)((rand() % 6) + 1);
+			int whatToGenerate = rand() % 100;
+			if (whatToGenerate < 85) //85% pieza normal
+				type = (PieceType)((rand() % 5) + 1);
+			else if (whatToGenerate < 99) { // 14% bomba normal
+				type = PieceType::BOMB;
+			}
+			else { //1% de bomba encendida
+				type = PieceType::PRIMED_BOMB;
+			}
 		}
-		else {
+		else
 			type = (PieceType)((rand() % 5) + 1);
-		}
+
 		newPiece->SetType(type);
-		if (type == PieceType::BOMB) {
+		if (type == PieceType::BOMB || type == PieceType::PRIMED_BOMB) {
 			for (size_t j = 0; j < 2; j++, amount--)
 			{
 				//Las bombas van siempre solas
@@ -231,17 +258,16 @@ void ModulePuzzlePiecesV3::RemovePuzzlePiece(PuzzlePiece* piece)
 {
 	if (piece == nullptr) return;
 
-	piece->name = "To be deleted"; // Para debug
-
+	//Lo quita del array de piezas si existe
 	for (size_t i = 0; i < MAX_PIECES; i++)
 	{
 		if (pieces[i] == piece) {
-			delete piece;
 			pieces[i] = nullptr;
 			break;
 		}
 
 	}
+	delete piece;
 }
 
 bool ModulePuzzlePiecesV3::CheckOutOfBounds(PlayArea* area, PlayerPieceV2* player)
@@ -542,7 +568,16 @@ void ModulePuzzlePiecesV3::InitAnims()
 	iPoint offset; offset.create(0, 0);
 	for (size_t i = 0; i < 3; i++)
 	{
-		//animExplosionEffect[ExplosionDir::TOP_TIP].PushBack({offset.x,offset.y,})
+		animExplosionEffect[ExplosionDir::TOP_TIP].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE }); // TODO terminar las animaciones de explosion
+		animExplosionEffect[ExplosionDir::TOP_MIDDLE].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE });
+		animExplosionEffect[ExplosionDir::BOTTOM_TIP].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE });
+		animExplosionEffect[ExplosionDir::BOTTOM_MIDDLE].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE });
+		animExplosionEffect[ExplosionDir::LEFT_TIP].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE });
+		animExplosionEffect[ExplosionDir::LEFT_MIDDLE].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE });
+		animExplosionEffect[ExplosionDir::RIGHT_TIP].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE });
+		animExplosionEffect[ExplosionDir::RIGHT_MIDDLE].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE });
+		animExplosionEffect[ExplosionDir::BOMB_CENTER].PushBack({ offset.x,offset.y,PIECE_SIZE,PIECE_SIZE });
+		offset.x += PIECE_SIZE;
 	}
 
 }
@@ -566,6 +601,11 @@ void ModulePuzzlePiecesV3::InitTemplates()
 	templateMan->SetAnimation(&animDefaultTest);
 	templateMan->moving = false;
 	templateMan->type = PieceType::WHITE;
+
+	templateBomb = AddPuzzlePiece(*templateMan);
+	templateBomb->type = PieceType::BOMB;
+	templateBomb->SetAnimation(&animIdle[PieceType::BOMB]);
+	templateBomb->name = "BOMB";
 
 
 	emptyPiece = AddPuzzlePiece(*templateMan, Collider::Type::NONE);
@@ -642,23 +682,7 @@ void ModulePuzzlePiecesV3::InitPlayers()
 
 	player.position.create(64, 16);
 
-	while (pieceQueue.size() > 0)
-	{
-		pieceQueue.pop();
-	}
-	if (pieceQueue.size() < 3)
-		GeneratePuzzlePieces(pieceQueue, 12);
-
-	PuzzlePiece* newPieces[4];
-	newPieces[0] = pieceQueue.top();
-	pieceQueue.pop();
-	newPieces[1] = pieceQueue.top();
-	pieceQueue.pop();
-	newPieces[2] = pieceQueue.top();
-	pieceQueue.pop();
-	newPieces[3] = emptyPiece;
-	player.setPieces(newPieces);
-	player.locked = false;
+	AssignNewPieces(&player);
 
 	playArea.Init(emptyPiece);
 	playArea.player = &player;
@@ -684,6 +708,11 @@ void ModulePuzzlePiecesV3::ProcessInput()
 		// Godmode: activa/desactiva gravedad
 		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == Key_State::KEY_DOWN) {
 			gravity = (gravity == 0) ? GRAVITY : 0;
+		}
+
+		// Godmode: fuerza que la proxima pieza sea una bomba roja
+		if (keys[SDL_Scancode::SDL_SCANCODE_F5] == Key_State::KEY_DOWN) {
+			forcePrimedBomb = true;
 		}
 
 
@@ -779,8 +808,6 @@ void ModulePuzzlePiecesV3::ApplyLogic()
 		if (playArea.checkGroupedPieces()) {
 			return;
 		}
-
-		
 	}
 }
 
@@ -798,16 +825,47 @@ void ModulePuzzlePiecesV3::RemoveGroups()
 	}
 	playArea.DropPieces(); // Aplica gravedad para que no haya piezas flotantes
 
-	
+
+}
+
+void ModulePuzzlePiecesV3::AddBombs(PlayArea& area)
+{
+	//Evita bucle infinito
+	const uint MAX_CYCLES = 2000;
+	uint currCycles = 0;
+	bool pushedCols[PLAY_AREA_W] = { false };
+	pushedCols[0] = pushedCols[PLAY_AREA_W - 1] = true; //Las columnas no pueden ser empujadas
+	int availableColumns = PLAY_AREA_W - 2;
+	while (area.bombsToSpawn > 0 && currCycles < MAX_CYCLES) {
+		currCycles++;
+
+
+		//Busca la primera columna disponible para añadir una bomba
+		int count = rand() % availableColumns;
+		size_t col = 0;
+		for (; col < PLAY_AREA_W; col++)
+		{
+			if (pushedCols[col]) continue;
+
+			if (count > 0) count--;
+			else
+				break; //Ha llegado a la columna objetivo
+		}
+		//No intenta mover si por alguna razon el contador esta en la pared
+		if (col == PLAY_AREA_W - 1)
+			continue;
+
+		area.PlaceBomb(col);
+		availableColumns--;
+		area.bombsToSpawn--;
+	}
+	LOG("Bucles necesitados para colocar bombas: %i", currCycles);
 }
 
 void ModulePuzzlePiecesV3::AssignNewPieces(PlayerPieceV2* player)
 {
 	if (pieceQueue.size() < 3)
 		GeneratePuzzlePieces(pieceQueue, 12);
-
-
-	//A partir de aqui solo cuando ya se haya procesado todo el tablero y se pueda sacar una pieza nueva
 
 	PuzzlePiece* newPieces[4];
 	newPieces[0] = pieceQueue.top();
@@ -816,9 +874,8 @@ void ModulePuzzlePiecesV3::AssignNewPieces(PlayerPieceV2* player)
 	pieceQueue.pop();
 	newPieces[2] = pieceQueue.top();
 	pieceQueue.pop();
-	newPieces[3] = AddPuzzlePiece(*emptyPiece);
+	newPieces[3] = emptyPiece;
 	player->setPieces(newPieces);
-
 	player->locked = false;
 }
 
@@ -826,13 +883,29 @@ void ModulePuzzlePiecesV3::DetonateBombs(PlayArea& area)
 {
 	ModuleParticles* particles = App->particles;
 	int explosionRange = area.explosionRange;
-	for (PuzzlePiece* bomb: playArea.piecesToRemove)
+	PuzzlePiece* primedBomb = nullptr;
+	//Busca la bomba encendida
+	for (PuzzlePiece* p : pieces)
 	{
-		iPoint coords = bomb->position;
-		for (size_t i = -explosionRange; i < explosionRange; i++)
-		{
-			//particles->AddParticle() // TODO Implementar animacion de explosion
+		if (p != nullptr && p->type == PieceType::PRIMED_BOMB)
+			primedBomb = p;
+	}
+
+	//Coordenadas centrales para el spawneo de particulas
+	iPoint centerCoords = primedBomb->position;
+
+	//Coordenadas para encontrar bombas afectadas
+	iPoint gridPosCenter = WorldToLocal(area, centerCoords);
+	iPoint offset; offset.create(0, 0);
+
+	for (offset.x = -explosionRange; offset.x < explosionRange; offset.x++)
+	{
+		if (!area.GetPiece(gridPosCenter.x + offset.x, gridPosCenter.y + offset.y)->exploding) {
+			//playArea.piecesToRemove;
+			//particles->AddParticle
 		}
+
+		//particles->AddParticle() // TODO Implementar animacion de explosion
 	}
 
 }

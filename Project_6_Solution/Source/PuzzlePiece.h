@@ -34,6 +34,7 @@ enum ExplosionDir {
 	LEFT_MIDDLE,
 	RIGHT_TIP,
 	RIGHT_MIDDLE,
+	BOMB_CENTER,
 
 	MAX_BOMB_ANIM
 };
@@ -62,7 +63,7 @@ public:
 
 public:
 	// For debug purposes
-	std::string name;
+	std::string name = "";
 
 	PieceType type;
 
@@ -82,5 +83,8 @@ public:
 	SDL_Texture* texture = nullptr;
 
 	int animTimer = 0;
+
+	//For use with bombs
+	bool exploding = false;
 	
 };
