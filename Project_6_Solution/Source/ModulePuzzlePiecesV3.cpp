@@ -411,6 +411,31 @@ bool ModulePuzzlePiecesV3::CanGoDown(PlayArea* area, PlayerPieceV2* player)
 	*/
 }
 
+bool ModulePuzzlePiecesV3::CanRotate(PlayArea* area, PlayerPieceV2* player)
+{
+	iPoint playerPos = player->position;
+	iPoint gridPos = WorldToLocal(*area, playerPos);
+	if (CheckOutOfBounds(area, player)) {
+		LOG("Warning - player is out of bounds: x=%i, y=%i", gridPos.x, gridPos.y);
+	}
+
+	//No puede rotar cuando hay bomba activa
+	if (player->pieces[0][0]->type == PieceType::BOMB || player->pieces[0][0]->type == PieceType::PRIMED_BOMB)
+		return false;
+
+	//Offset para cuando esta parcialmente en una casilla más abajo
+	//gridPos.y += ((playerPos.y % PIECE_SIZE) > 0 ? 1 : 0);
+
+	bool ret = true;
+
+	ret &= area->table[gridPos.y][gridPos.x]->isEmpty;
+	ret &= area->table[gridPos.y][gridPos.x + 1]->isEmpty;
+	ret &= area->table[gridPos.y + 1][gridPos.x]->isEmpty;
+	ret &= area->table[gridPos.y + 1][gridPos.x + 1]->isEmpty;
+
+	return ret;
+}
+
 void ModulePuzzlePiecesV3::PlacePieces()
 {
 	iPoint posTablero = WorldToLocal(playArea, player.position);
@@ -491,7 +516,7 @@ void ModulePuzzlePiecesV3::InitAnims()
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
 	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
-	for (size_t i = 0; i < 9; i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		animIdle[PieceType::WHITE].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
@@ -502,7 +527,7 @@ void ModulePuzzlePiecesV3::InitAnims()
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
 	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
-	for (size_t i = 0; i < 9; i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		animIdle[PieceType::RED].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
@@ -524,12 +549,24 @@ void ModulePuzzlePiecesV3::InitAnims()
 	pixelCoords.x = 0;
 	pixelCoords.y += PIECE_SIZE;
 	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i < 5; i++)
 	{
 		animIdle[PieceType::GREEN].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
 		pixelCoords.x += PIECE_SIZE;
 	}
 	animIdle[PieceType::GREEN].PushBack(firstFrame);
+
+	// Animacion bomba normal
+	pixelCoords.x = 0;
+	pixelCoords.y += PIECE_SIZE;
+	firstFrame = { pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE };
+	for (size_t i = 0; i < 2; i++)
+	{
+		animIdle[PieceType::BOMB].PushBack({ pixelCoords.x,pixelCoords.y,PIECE_SIZE,PIECE_SIZE });
+		pixelCoords.x += PIECE_SIZE;
+	}
+	animIdle[PieceType::BOMB].PushBack(firstFrame);
+	animIdle[PieceType::BOMB].pingpong = true;
 
 	//Desactiva bucle para las piezas
 	for (size_t i = 0; i < PieceType::MAX; i++)
@@ -674,7 +711,8 @@ void ModulePuzzlePiecesV3::ProcessInput()
 		// Rotacion
 
 		if (pad.rotatePiece == Key_State::KEY_DOWN) {
-			player.Rotate();
+			if (CanRotate(&playArea, &player))
+				player.Rotate();
 		}
 
 
@@ -794,7 +832,7 @@ void ModulePuzzlePiecesV3::RemoveGroups()
 		{
 			App->puntuation->score += 50;
 		}
-		
+
 		playArea.piecesToRemove.pop_back();
 	}
 	playArea.DropPieces(); // Aplica gravedad para que no haya piezas flotantes

@@ -59,6 +59,8 @@ public:
 	// Check if gravity can pull down on player
 	bool CanGoDown(PlayArea* area, PlayerPieceV2* player);
 
+	bool CanRotate(PlayArea* area, PlayerPieceV2* player);
+
 	//Saca las piezas del jugador y las coloca en el tablero donde les toca
 	void PlacePieces();
 
