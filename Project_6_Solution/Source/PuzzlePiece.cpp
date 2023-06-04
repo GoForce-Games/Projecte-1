@@ -5,6 +5,8 @@
 #include "Collider.h"
 #include "ModulePuzzlePiecesV3.h"
 
+#include <random>
+
 const char* PuzzlePiece::enumLookup[] = {
 	"NONE",
 	"BLACK",
@@ -32,6 +34,7 @@ PuzzlePiece::PuzzlePiece(const PuzzlePiece& p)
 	texture = p.texture;
 	isEmpty = p.isEmpty;
 	type = p.type;
+	animTimer = rand() % MAX_ANIMATION_TIMER;
 }
 
 PuzzlePiece::~PuzzlePiece()
@@ -40,7 +43,17 @@ PuzzlePiece::~PuzzlePiece()
 
 void PuzzlePiece::Update()
 {
-	currentAnimation.Update();
+	if (!isEmpty &&!moving) {
+		if (animTimer > 0)
+			animTimer--;
+		else {
+			currentAnimation.Update();
+		}
+		if (currentAnimation.HasFinished()) {
+			animTimer = rand() % MAX_ANIMATION_TIMER;
+			currentAnimation.Reset();
+		}
+	}
 }
 
 void PuzzlePiece::SetType(PieceType newType)

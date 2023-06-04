@@ -67,5 +67,7 @@ public:
 	Animation currentAnimation;
 
 	SDL_Texture* texture = nullptr;
+
+	int animTimer = 0;
 	
 };

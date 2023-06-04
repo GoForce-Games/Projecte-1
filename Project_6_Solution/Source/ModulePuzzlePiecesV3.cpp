@@ -168,7 +168,7 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<
 	for (size_t i = 0; i < amount; i++)
 	{
 		PuzzlePiece* newPiece = AddPuzzlePiece(*templateMan, Collider::Type::PUZZLE_PIECE);
-		PieceType type = (PieceType)((rand() % 4) + 1); // TODO CAMBIAR ESTO 
+		PieceType type = (PieceType)((rand() % 5) + 1); // TODO CAMBIAR ESTO 
 		newPiece->SetType(type);
 		stack.push(newPiece);
 	}
@@ -306,7 +306,6 @@ bool ModulePuzzlePiecesV3::CheckOutOfBounds(PlayArea* area, PlayerPieceV2* playe
 
 bool ModulePuzzlePiecesV3::CanGoLeft(PlayArea* area, PlayerPieceV2* player)
 {
-	// TODO finish this
 	iPoint playerPos = player->position;
 	iPoint gridPos = WorldToLocal(*area, playerPos);
 	if (CheckOutOfBounds(area, player)) {
@@ -425,12 +424,14 @@ void ModulePuzzlePiecesV3::PlacePieces()
 				if (playArea.table[posTablero.y + i][posTablero.x + j]->isEmpty) {
 					RemovePuzzlePiece(playArea.table[posTablero.y + i][posTablero.x + j]);
 					playArea.table[posTablero.y + i][posTablero.x + j] = player.pieces[i][j];
+					playArea.table[posTablero.y + i][posTablero.x + j]->moving = false;
 				}
 				else { //TODO: este puede ser un buen sitio para asignar la variable responsable de la condicion de fin de partida, ya que en un principio solo se intentara sobreescribir piezas si ya se ha llegado arriba del todo en la zona de juego
 					//Si las coordenadas del jugador son las iniciales entonces fin de juego (?)
 					playArea.state = PlayAreaState::GAME_END;
 					RemovePuzzlePiece(playArea.table[posTablero.y + i][posTablero.x + j]);
 					playArea.table[posTablero.y + i][posTablero.x + j] = player.pieces[i][j];
+					playArea.table[posTablero.y + i][posTablero.x + j]->moving = false;
 
 					LOG("TRIED TO REPLACE EXISTING PIECE AT COORDINATES (x:%i, y:%i)\n", posTablero.x + j, posTablero.y + i);
 				}

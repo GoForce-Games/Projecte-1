@@ -1,6 +1,8 @@
 #pragma once
 #include "PuzzlePiece.h"
 
+#define MAX_ANIMATION_TIMER 1200
+
 class Path;
 class PlayerInput;
 
