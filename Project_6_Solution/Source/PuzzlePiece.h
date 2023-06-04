@@ -22,7 +22,20 @@ enum PieceType {
 	PRIMED_BOMB,
 	WALL,
 
-	MAX
+	MAX_PIECE_TYPE
+};
+
+enum ExplosionDir {
+	TOP_TIP,
+	TOP_MIDDLE,
+	BOTTOM_TIP,
+	BOTTOM_MIDDLE,
+	LEFT_TIP,
+	LEFT_MIDDLE,
+	RIGHT_TIP,
+	RIGHT_MIDDLE,
+
+	MAX_BOMB_ANIM
 };
 
 class PuzzlePiece {

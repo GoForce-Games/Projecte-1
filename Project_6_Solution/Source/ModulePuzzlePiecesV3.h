@@ -79,6 +79,9 @@ private: // Helper functions
 
 	void InitTemplates();
 
+	// MUST RUN AFTER InitTemplates()
+	void InitPieceArray();
+
 	void InitWalls();
 
 	void InitPlayers();
@@ -94,6 +97,10 @@ private: // Helper functions
 	void ApplyLogic();
 
 	void RemoveGroups();
+
+	void AssignNewPieces(PlayerPieceV2* player);
+
+	void DetonateBombs(PlayArea& area);
 
 public:
 
@@ -141,18 +148,19 @@ public:
 
 	// Texture sheets
 	SDL_Texture* textureBomberman = nullptr;
-	SDL_Texture* textureBomb = nullptr;
+	SDL_Texture* textureExplosion = nullptr;
 
 	// Animaciones
 	Animation animNone;
 	Animation animDefaultTest;
 
 	//Animación pasiva
-	Animation animIdle[PieceType::MAX];
+	Animation animIdle[PieceType::MAX_PIECE_TYPE];
 
 	//Animación usada cuando se eliminan las piezas
-	Animation animDeletion[PieceType::MAX];
+	Animation animDeletion[PieceType::MAX_PIECE_TYPE];
 
+	Animation animExplosionEffect[ExplosionDir::MAX_BOMB_ANIM];
 
 
 	Collider* collider = nullptr;

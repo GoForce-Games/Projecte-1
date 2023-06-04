@@ -38,6 +38,8 @@ void PlayArea::Init(PuzzlePiece* fillWith)
 		}
 	}
 
+	explosionRange = 2;
+
 	state = PlayAreaState::INIT;
 }
 

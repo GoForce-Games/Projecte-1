@@ -9,6 +9,7 @@
 #include "ModuleFonts.h"
 #include "ModulePlayer.h"
 #include "Puntuation.h"
+#include "ModuleEmpezar.h"
 #include "../External_Libraries/SDL/include/SDL.h"
 #include "Module.h"
 
@@ -33,6 +34,8 @@ ModuleLose::~ModuleLose()
 
 bool ModuleLose::Start() {
 	LOG("Loading gameover assets");
+	App->puntuation->Disable();
+	App->moduleEmpezar->Disable();
 
 	bool ret = true;
 	textFont = App->puntuation->textFont;
