@@ -74,7 +74,6 @@ void PlayArea::RecursePieces(std::deque<PuzzlePiece*>& deq, iPoint currPos, cons
 		currPos.x++;
 	else
 		currPos.y++;
-	//TODO terminar esto
 	PuzzlePiece* piece = table[currPos.y][currPos.x];
 	if (piece == nullptr || piece->type != type) return;
 	deq.push_back(piece);
@@ -104,10 +103,13 @@ bool PlayArea::checkGroupedPieces()
 				RecursePieces(deq, pos, p->type, CheckDirection::HORIZONTAL);
 				deq.push_back(p);
 				if (deq.size() >= GROUP_MIN_COUNT) {
+					bombsToSpawn += (deq.size() - GROUP_MIN_COUNT + 1);
 					for (PuzzlePiece* n; deq.size()>0;)
 					{
 						n = deq.back();
 						piecesToRemove.push_back(n);
+						n->SetAnimation(&App->pieces->animDeletion[n->type]);
+						n->texture = App->pieces->textureDeletion;
 						deq.pop_back();
 					}
 				}
@@ -122,9 +124,15 @@ bool PlayArea::checkGroupedPieces()
 					{
 						n = deq.back();
 						piecesToRemove.push_back(n);
+						n->SetAnimation(&App->pieces->animDeletion[n->type]);
+						n->texture = App->pieces->textureDeletion;
 						deq.pop_back();
 					}
 				}
+			}
+			else if (p->type == PieceType::PRIMED_BOMB) {
+				piecesToRemove.push_back(p);
+				return true;
 			}
 		}
 	}
@@ -279,5 +287,8 @@ bool PlayArea::PlaceBomb(int col)
 
 PuzzlePiece* PlayArea::GetPiece(int x, int y)
 {
+	if (x < 0 || x >= PLAY_AREA_W) return nullptr;
+	if (y < 0 || y >= PLAY_AREA_H) return nullptr;
 	return table[y][x];
 }
+

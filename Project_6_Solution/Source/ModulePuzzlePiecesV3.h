@@ -44,7 +44,7 @@ public:
 
 	bool CleanUp() override;
 
-	std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<PuzzlePiece*>& stack, uint amount);
+	std::stack<PuzzlePiece*>& ModulePuzzlePiecesV3::GeneratePuzzlePieces(std::stack<PuzzlePiece*>& stack, uint amount, bool noBombs = false);
 
 	// Add new PuzzlePiece to the board
 	PuzzlePiece* AddPuzzlePiece(const PuzzlePiece& newPiece, Collider::Type type = Collider::Type::PUZZLE_PIECE);
@@ -106,7 +106,7 @@ private: // Helper functions
 
 	void AddBombs(PlayArea& area);
 
-	void AssignNewPieces(PlayerPieceV2* player);
+	void AssignNewPieces(PlayerPieceV2* player, bool noBombs = false);
 
 	void DetonateBombs(PlayArea& area);
 
@@ -123,8 +123,9 @@ public:
 	// Avoid enabling twice
 	bool isInitialized = false;
 
-	//Godmode-related variable
+	//Godmode-related variables
 	bool forcePrimedBomb = false;
+	bool forceBombToggle = false;
 
 	PuzzlePiece* templateMan = nullptr;
 	PuzzlePiece* templateBomb = nullptr;
@@ -161,6 +162,7 @@ public:
 	// Texture sheets
 	SDL_Texture* textureBomberman = nullptr;
 	SDL_Texture* textureExplosion = nullptr;
+	SDL_Texture* textureDeletion = nullptr;
 
 	// Animaciones
 	Animation animNone;
@@ -174,7 +176,11 @@ public:
 
 	Animation animExplosionEffect[ExplosionDir::MAX_BOMB_ANIM];
 
-	Particle explosionTemplates[7];
+	Particle explosionTemplates[ExplosionDir::MAX_BOMB_ANIM];
+
+	Animation EXPLTestAnim;
+
+	Particle testParticle;
 
 
 	Collider* collider = nullptr;

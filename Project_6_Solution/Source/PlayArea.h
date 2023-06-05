@@ -71,7 +71,7 @@ public:
 
 	PlayerPieceV2* player = nullptr;
 
-	//Array bidimensional de punteros a pieza, recorrer con las coordenadas invertidas (table[coord_y][coord_x])
+	//Array bidimensional de punteros a pieza, recorrer con las coordenadas invertidas (table[coord_y/Fila][coord_x/Columna])
 	PuzzlePiece* table[PLAY_AREA_H][PLAY_AREA_W];
 
 	// Posiciones de las piezas a quitar

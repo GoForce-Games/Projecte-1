@@ -44,12 +44,12 @@ PuzzlePiece::~PuzzlePiece()
 void PuzzlePiece::Update()
 {
 	if (!isEmpty && !moving) {
-		if (animTimer > 0)
+		if (animTimer > 0 && !pendingToDelete)
 			animTimer--;
 		else {
 			currentAnimation.Update();
 		}
-		if (currentAnimation.HasFinished()) {
+		if (currentAnimation.HasFinished() && !pendingToDelete) {
 			if (PieceType::BOMB)
 				animTimer = 0;
 			else
