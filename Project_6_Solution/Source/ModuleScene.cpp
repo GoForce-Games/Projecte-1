@@ -34,7 +34,7 @@ bool SceneLevel1::Start()
 	bgTexture = App->textures->Load("Assets/Sprites/BattleArena2.png");
 	background = App->textures->Load("Assets/Sprites/BattleArenaBackground.png");
 	background2 = App->textures->Load("Assets/Sprites/BattleArenaBackground.png"); // Roger: Por que cargar el mismo archivo dos veces?
-	App->audio->PlayMusic("Assets/stage1.ogg", 1.0f);
+	App->audio->PlayMusic("Assets/Music/stage1.ogg", 1.0f);
 	backgroundRect = { 0,16,128,192 };
 	App->puntuation->score = 0;
 	//background2.PushBack({ 176,16,32,32 });

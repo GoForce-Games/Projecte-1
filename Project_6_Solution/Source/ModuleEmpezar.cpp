@@ -67,7 +67,7 @@ Update_Status ModuleEmpezar::Update()
    {
        App->pieces->Enable();
        App->fade->FadeToBlack((Module*)App->moduleEmpezar, (Module*)App->sceneLevel_1, 0);
-       App->audio->PlayMusic("Assets/stage1.ogg");
+       App->audio->PlayMusic("Assets/Music/stage1.ogg");
    }
     return Update_Status::UPDATE_CONTINUE;
 }
