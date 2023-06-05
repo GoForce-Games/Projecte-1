@@ -80,6 +80,8 @@ bool IntroJuego::CleanUp()
 	{
 		SDL_DestroyTexture(IntroJuegoTexture);
 		IntroJuegoTexture = nullptr;
+		IntroJuegoAnimation.Reset();
+		IAnimationPath.Reset();
 	}
 
 	return true;
