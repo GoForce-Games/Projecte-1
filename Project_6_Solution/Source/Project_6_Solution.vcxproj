@@ -107,6 +107,7 @@
     </ClInclude>
     <ClInclude Include="PlayerInput.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="PlayerPieceV2.h" />
     <ClInclude Include="Puntuation.h" />
@@ -144,6 +145,7 @@
     </ClCompile>
     <ClCompile Include="PlayerInput.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="PlayerPieceV2.cpp" />
     <ClCompile Include="Puntuation.cpp" />
