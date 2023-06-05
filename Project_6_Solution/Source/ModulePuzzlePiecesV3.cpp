@@ -606,20 +606,20 @@ void ModulePuzzlePiecesV3::InitAnims()
 	}
 
 	animDeletion[PieceType::BLACK].loop = false;
-	animDeletion[PieceType::BLACK].speed = 0.08f;
+	animDeletion[PieceType::BLACK].speed = 0.16f;
 	animDeletion[PieceType::WHITE].loop = false;
-	animDeletion[PieceType::WHITE].speed = 0.08f;
+	animDeletion[PieceType::WHITE].speed = 0.16f;
 	animDeletion[PieceType::RED].loop = false;
-	animDeletion[PieceType::RED].speed = 0.08f;
+	animDeletion[PieceType::RED].speed = 0.16f;
 	animDeletion[PieceType::BLUE].loop = false;
-	animDeletion[PieceType::BLUE].speed = 0.08f;
+	animDeletion[PieceType::BLUE].speed = 0.16f;
 	animDeletion[PieceType::GREEN].loop = false;
-	animDeletion[PieceType::GREEN].speed = 0.08f;
+	animDeletion[PieceType::GREEN].speed = 0.16f;
 
 
 	//Las piezas "no bomberman" no tienen animacion
 	animDeletion[PieceType::BOMB] = animDeletion[PieceType::NONE] = animDeletion[PieceType::PRIMED_BOMB] = animDeletion[PieceType::WALL] = animNone;
-
+	
 	//Animacion de particulas de explosion
 	offset.create(0, 0);
 	for (size_t i = 0; i < 3; i++)
@@ -795,7 +795,7 @@ void ModulePuzzlePiecesV3::ProcessInput()
 			if (CanRotate(&playArea, &player))
 			{
 				player.Rotate();
-				App->audio->PlayFx(lockedFX);
+				App->audio->PlayFx(rotateFX);
 			}
 		}
 
@@ -902,6 +902,7 @@ void ModulePuzzlePiecesV3::RemoveGroups()
 	}
 	playArea.DropPieces(); // Aplica gravedad para que no haya piezas flotantes
 
+	App->audio->PlayFx(eliminaePiecesFX);
 
 }
 
