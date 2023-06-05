@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 
-#define NUM_MODULES 16
+#define NUM_MODULES 19
 
 class Module;
 class ModuleWindow;
@@ -13,17 +13,19 @@ class ModuleAudio;
 class ModulePlayer;
 class ModulePresentation;
 class SceneLevel1;
-class SceneIntro;
 class ModuleParticles;
 class ModuleCollisions;
 class ModuleFadeToBlack;
 class ModuleFonts;
 class ModuleRender;
-class ModulePuzzlePiecesV2;
+class ModulePuzzlePiecesV3;
 class Puntuation;
 class Intro;
-class Intro2;
+class IntroJuego;
 class WinLose;
+class Continue;
+class ModuleLose;
+class ModuleEmpezar;
 
 class Application
 {
@@ -46,6 +48,9 @@ public:
 	bool CleanUp();
 
 public:
+	// Flag for cleanup
+	bool cleanUp = false;
+
 	// An array to store all modules
 	Module* modules[NUM_MODULES];
 
@@ -57,9 +62,11 @@ public:
 
 	ModulePlayer* player = nullptr;
 	ModulePresentation* presentation = nullptr;
-	SceneIntro* sceneIntro = nullptr;
+	Intro* intro = nullptr;
+	IntroJuego* introJuego = nullptr;
 
 	SceneLevel1* sceneLevel_1 = nullptr;
+	ModuleEmpezar* moduleEmpezar = nullptr;
 
 	ModuleParticles* particles = nullptr;
 
@@ -69,12 +76,12 @@ public:
 
 	ModuleRender* render = nullptr;
 
-	ModulePuzzlePiecesV2* pieces = nullptr;
+	ModulePuzzlePiecesV3* pieces = nullptr;
 	Puntuation* puntuation = nullptr;
 	WinLose* win_lose = nullptr;
+	Continue* module_continue = nullptr;
+	ModuleLose* lose_screen = nullptr;
 
-	Intro* intro = nullptr;
-	Intro2* intro2 = nullptr;
 };
 
 // Global var made extern for Application ---

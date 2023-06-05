@@ -4,18 +4,24 @@
 #include "Globals.h"
 #include "PlayerPiece.h"
 #include "Collider.h"
-#include "ModulePuzzlePiecesV2.h"
+#include "ModulePuzzlePiecesV3.h"
 #include <stack>
 
 PlayArea::PlayArea()
 {
-	for (uint i = 0; i < PLAY_AREA_X; i++)
+	for (uint i = 0; i < PLAY_AREA_W; i++)
 	{
-		for (uint j = 0; j < PLAY_AREA_Y; j++)
+		for (uint j = 0; j < PLAY_AREA_H; j++)
 		{
 			table[i][j] = nullptr;
 		}
 	}
+
+	explosionRange = 2;
+	bigBombCharge = 0;
+	bombsToSpawn = 0;
+
+	state = PlayAreaState::INIT;
 }
 
 PlayArea::~PlayArea()
@@ -24,26 +30,36 @@ PlayArea::~PlayArea()
 
 void PlayArea::Init(PuzzlePiece* fillWith)
 {
-	ModulePuzzlePiecesV2* manager = App->pieces;
+	ModulePuzzlePiecesV3* manager = App->pieces;
+	state = PlayAreaState::INIT;
 
-	for (uint i = 0; i < PLAY_AREA_X; i++)
+	for (uint i = 0; i < PLAY_AREA_H; i++)
 	{
-		for (uint j = 0; j < PLAY_AREA_Y; j++)
+		for (uint j = 0; j < PLAY_AREA_W; j++)
 		{
-			if (table[i][j] == nullptr)
-				table[i][j] = manager->AddPuzzlePiece(*fillWith, fillWith->collider->type);
+			if (table[i][j] == nullptr) {
+				table[i][j] = manager->AddPuzzlePiece(*fillWith/*, fillWith->collider->type */ );
+				//table[i][j]->collider->name = "filler";
+			}
 		}
 	}
+
+	explosionRange = 2;
+	bigBombCharge = 0;
+	bombsToSpawn = 0;
+
+	state = PlayAreaState::INIT;
 }
 
 bool PlayArea::Update()
 {
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	if (player != nullptr) player->Update();
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
-		for (size_t j = 0; j < PLAY_AREA_Y; j++)
+		for (size_t j = 0; j < PLAY_AREA_W; j++)
 		{
 			if (table[i][j] != nullptr) {
-				table[i][j]->position.create(position.x + PIECE_SIZE * i, position.y + PIECE_SIZE * (j + 1));
+				table[i][j]->position.create(position.x + PIECE_SIZE * j, position.y + PIECE_SIZE * (i + 1));
 				table[i][j]->Update();
 			}
 		}
@@ -52,107 +68,83 @@ bool PlayArea::Update()
 	return true;
 }
 
-/*
-void PlayArea::NewPieceSet(PlayerPiece* player)
-{
-	PuzzlePiece newPiece;
-	newPiece.moving = true;
-	PuzzlePiece** pieceArray = new PuzzlePiece*[3];
-	for (uint i = 0; i < 3; i++)
-	{
-		pieceArray[i] = new PuzzlePiece(newPiece);
-	}
-	player->setPieces(pieceArray);
-}
-*/
+void PlayArea::RecursePieces(std::deque<PuzzlePiece*>& deq, iPoint currPos, const PieceType& type, const CheckDirection& dir) {
 
-void PlayArea::RecurseGroups(std::deque<iPoint>& group, iPoint currPos, PieceType type) {
-	// Si la pieza ya esta en el grupo no hace falta añadirla (no deberia pasar nunca, esto es para evitar recursiones infinitas)
-	for (iPoint p : group)
-	{
-		if (p == table[currPos.x][currPos.y]->position) {
-			return;
-		}
-	}
-	group.push_back(table[currPos.x][currPos.y]->position);
-	bool existsInGroup = false;
-	for (int i = -1; i < 2; i += 2)
-	{
-		//Si no es del mismo tipo salta esta iteracion
-		if (table[currPos.x + i][currPos.y]->type != type) continue;
+	if (dir == CheckDirection::HORIZONTAL)
+		currPos.x++;
+	else
+		currPos.y++;
+	PuzzlePiece* piece = table[currPos.y][currPos.x];
+	if (piece == nullptr || piece->type != type) return;
+	deq.push_back(piece);
+	RecursePieces(deq, currPos, type, dir);
 
-		//Busca si ya se encuentra en el grupo
-		for (iPoint p : group)
-		{
-			if (p == table[currPos.x + i][currPos.y]->position) {
-				existsInGroup = true;
-				break;
-			}
-		}
-
-		//Si ya ha sido añadido salta a la siguiente iteracion
-		if (existsInGroup) {
-			existsInGroup = false;
-			continue;
-		}
-		else { //Si aun no ha sido añadido, lo añade y sigue buscando recursivamente
-			currPos.x += i;
-			RecurseGroups(group, currPos, type);
-		}
-	}
-
-	for (int i = -1; i < 2; i += 2)
-	{
-		//Si no es del mismo tipo salta esta iteracion
-		if (table[currPos.x][currPos.y + i]->type != type) continue;
-
-		//Busca si ya se encuentra en el grupo
-		for (iPoint p : group)
-		{
-			if (p == table[currPos.x][currPos.y + i]->position) {
-				existsInGroup = true;
-				break;
-			}
-		}
-
-		//Si ya ha sido añadido salta a la siguiente iteracion
-		if (existsInGroup) {
-			existsInGroup = false;
-			continue;
-		}
-		else { //Si aun no ha sido añadido, lo añade y sigue buscando recursivamente
-			currPos.y += i;
-			RecurseGroups(group, currPos, type);
-		}
-	}
+	return;
 }
 
-void PlayArea::checkGroupedPieces()
+bool PlayArea::checkGroupedPieces()
 {
-	// Posiciones de las piezas a quitar
-	std::deque<std::deque<iPoint>> groupsToRemove;
 
 	PuzzlePiece* p = nullptr;
 
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	// Empty deque before calculating
+	while (piecesToRemove.size() > 0) piecesToRemove.pop_back();
+
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
-		for (size_t j = 0; j < PLAY_AREA_Y; j++)
+		for (size_t j = 0; j < PLAY_AREA_W; j++)
 		{
 			p = table[i][j];
-			if (p->type != PieceType::NONE && p->type != PieceType::WALL) {
-				std::deque<iPoint> deq;
+			if (p->type == PieceType::BLACK || p->type == PieceType::WHITE || p->type == PieceType::RED || p->type == PieceType::BLUE || p->type == PieceType::GREEN) {
+				std::deque<PuzzlePiece*> deq;
 				iPoint pos;
-				pos.create(i,j);
+				pos.create(j, i);
 				LOG("%s %s\n", "Empieza la busqueda de piezas", (PuzzlePiece::enumLookup[p->type]));
-				RecurseGroups(deq, pos, p->type);
+				RecursePieces(deq, pos, p->type, CheckDirection::HORIZONTAL);
+				deq.push_back(p);
 				if (deq.size() >= GROUP_MIN_COUNT) {
-					groupsToRemove.push_back(deq);
+					bombsToSpawn += (deq.size() - GROUP_MIN_COUNT + 1);
+					for (PuzzlePiece* n; deq.size()>0;)
+					{
+						n = deq.back();
+						piecesToRemove.push_back(n);
+						n->SetAnimation(&App->pieces->animDeletion[n->type]);
+						n->texture = App->pieces->textureDeletion;
+						deq.pop_back();
+					}
+				}
+				else {
+					for (;deq.size()>0;deq.pop_back()) {} //Vacia el grupo
+				}
+				RecursePieces(deq, pos, p->type, CheckDirection::VERTICAL);
+				deq.push_back(p);
+				if (deq.size() >= GROUP_MIN_COUNT) {
+					bombsToSpawn += (deq.size() - GROUP_MIN_COUNT + 1);
+					for (PuzzlePiece* n; deq.size() > 0;)
+					{
+						n = deq.back();
+						piecesToRemove.push_back(n);
+						n->SetAnimation(&App->pieces->animDeletion[n->type]);
+						n->texture = App->pieces->textureDeletion;
+						deq.pop_back();
+					}
 				}
 			}
-
+			else if (p->type == PieceType::PRIMED_BOMB) {
+				piecesToRemove.push_back(p);
+				return true;
+			}
 		}
 	}
 
+	for (PuzzlePiece* p : piecesToRemove)
+	{
+		if (!p->pendingToDelete) {
+			p->pendingToDelete = true;
+		}
+	}
+
+	return piecesToRemove.size() > 0;
 }
 
 
@@ -163,9 +155,9 @@ void PlayArea::explodeBombs()
 
 bool PlayArea::CleanUp()
 {
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
-		for (size_t j = 0; j < PLAY_AREA_Y; j++)
+		for (size_t j = 0; j < PLAY_AREA_W; j++)
 		{
 			if (table[i][j] != nullptr) {
 				table[i][j] = nullptr;
@@ -179,11 +171,11 @@ bool PlayArea::CleanUp()
 void PlayArea::debugPiecePosition() {
 	LOG("ALERTA, EL USO DE LA FUNCION PlayArea::debugPiecePosition() IMPLICA UN ALTO IMPACTO EN RENDIMIENTO DEBIDO A SU IMPLEMENTACION")
 
-		for (size_t i = 0; i < PLAY_AREA_Y; i++)
+		for (size_t i = 0; i < PLAY_AREA_H; i++)
 		{
-			for (size_t j = 0; j < PLAY_AREA_X; j++)
+			for (size_t j = 0; j < PLAY_AREA_W; j++)
 			{
-				switch (table[j][i]->type)
+				switch (table[i][j]->type)
 				{
 				case NONE: {
 					OutputDebugString("-");
@@ -236,23 +228,28 @@ void PlayArea::DropPieces()
 {
 	//OutputDebugString("Haciendo caer a las piezas...\n");
 	//debugPiecePosition();
-	for (size_t i = 0; i < PLAY_AREA_Y - 2; i++)
-	{
-		for (size_t j = 1; j < PLAY_AREA_X - 1; j++)
+	bool finishedDropping = false;
+	while (!finishedDropping) {
+		finishedDropping = true;
+		for (size_t i = 1; i < PLAY_AREA_H - 2; i++)
 		{
-			if (table[i][j] != nullptr)
-				if (PieceCanDrop(table[j][i], table[j][i + 1])) {
-					PuzzlePiece* aux = table[j][i];
-					table[j][i] = table[j][i + 1];
-					table[j][i + 1] = aux;
+			for (size_t j = 1; j < PLAY_AREA_W - 0; j++)
+			{
+				if (table[i][j] != nullptr)
+					if (PieceCanDrop(table[i][j], table[i + 1][j])) {
+						finishedDropping = false;
+						PuzzlePiece* aux = table[i][j];
+						table[i][j] = table[i + 1][j];
+						table[i + 1][j] = aux;
 
-					//Actualiza la posicion de las piezas
-					//table[j][i]->position.y += PIECE_SIZE;
-					//table[j][i + 1]->position.y -= PIECE_SIZE;
+						//Actualiza la posicion de las piezas
+						//table[j][i]->position.y += PIECE_SIZE;
+						//table[j][i + 1]->position.y -= PIECE_SIZE;
 
 
-				}
+					}
 
+			}
 		}
 	}
 	//OutputDebugString("Resultado:\n");
@@ -271,3 +268,27 @@ bool PlayArea::PieceCanDrop(PuzzlePiece* pieceTop, PuzzlePiece* pieceBot)
 
 	return false;
 }
+
+bool PlayArea::PlaceBomb(int col)
+{
+	if (!table[1][col]->isEmpty) return false;
+
+	for (size_t i = 1; i < PLAY_AREA_H - 2; i++)
+	{
+		PuzzlePiece* aux = table[i][col];
+		table[i][col] = table[i + 1][col];
+		table[i + 1][col] = aux;
+	}
+	App->pieces->RemovePuzzlePiece(table[PLAY_AREA_H - 2][col]);
+	table[PLAY_AREA_H - 2][col] = App->pieces->AddPuzzlePiece(*App->pieces->templateBomb);
+
+	return false;
+}
+
+PuzzlePiece* PlayArea::GetPiece(int x, int y)
+{
+	if (x < 0 || x >= PLAY_AREA_W) return nullptr;
+	if (y < 0 || y >= PLAY_AREA_H) return nullptr;
+	return table[y][x];
+}
+

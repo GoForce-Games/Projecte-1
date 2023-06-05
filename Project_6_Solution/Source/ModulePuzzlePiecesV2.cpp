@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
+#include "ModuleAudio.h"
 
 #include "../External_Libraries/SDL/include/SDL.h"
 
@@ -37,7 +38,6 @@ bool ModulePuzzlePiecesV2::Start()
 		walls[i] = nullptr;
 	}
 
-	// TODO textura para probar, hay que recortar el spritesheet
 	textureBomberman = App->textures->Load("Assets/testerman.png");
 	if (textureBomberman == nullptr) return false;
 
@@ -78,7 +78,7 @@ bool ModulePuzzlePiecesV2::Start()
 	// Columna izquierda
 	iPoint offset = playArea.position;
 	//offset.y += PIECE_SIZE;
-	for (size_t i = 0; i < PLAY_AREA_Y; i++)
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
 		PuzzlePiece* piece = playArea.table[0][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
@@ -88,11 +88,11 @@ bool ModulePuzzlePiecesV2::Start()
 	// Columna derecha
 	offset = playArea.position;
 	//offset.y += PIECE_SIZE;
-	offset.x += PIECE_SIZE * (PLAY_AREA_X - 1);
-	for (size_t i = 0; i < PLAY_AREA_Y; i++)
+	offset.x += PIECE_SIZE * (PLAY_AREA_W - 1);
+	for (size_t i = 0; i < PLAY_AREA_H; i++)
 	{
 		templateWall->position = offset;
-		PuzzlePiece* piece = playArea.table[PLAY_AREA_X - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		PuzzlePiece* piece = playArea.table[PLAY_AREA_W - 1][i] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.y += PIECE_SIZE;
 
 	}
@@ -100,11 +100,11 @@ bool ModulePuzzlePiecesV2::Start()
 
 	// Fondo
 	offset = playArea.position;
-	offset.y += PIECE_SIZE * (PLAY_AREA_Y);
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	offset.y += PIECE_SIZE * (PLAY_AREA_H);
+	for (size_t i = 0; i < PLAY_AREA_W; i++)
 	{
 		templateWall->position = offset;
-		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_Y - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
+		PuzzlePiece* piece = playArea.table[i][PLAY_AREA_H - 1] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
 		offset.x += PIECE_SIZE;
 	}
 
@@ -112,7 +112,7 @@ bool ModulePuzzlePiecesV2::Start()
 	// Fondo
 	offset = playArea.position;
 	offset.y += 0;
-	for (size_t i = 0; i < PLAY_AREA_X; i++)
+	for (size_t i = 0; i < PLAY_AREA_W; i++)
 	{
 		templateWall->position = offset;
 		PuzzlePiece* piece = playArea.table[i][0] = AddPuzzlePiece(*templateWall, Collider::Type::WALL);
@@ -137,6 +137,8 @@ bool ModulePuzzlePiecesV2::Start()
 	player.position.create(64, 16);
 
 
+	rotateFX = App->audio->LoadFx("Assets/SFX/rotate.wav");
+	lockedFX = App->audio->LoadFx("Assets/SFX/piecelocked.wav");
 
 	return true;
 }
@@ -156,7 +158,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 
 		// Godmode: activa/desactiva gravedad
-		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == Key_State::KEY_DOWN) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_F9] == Key_State::KEY_DOWN || pad.a < 0.0f) {
 			gravity = (gravity == 0) ? GRAVITY : 0;
 		}
 
@@ -164,8 +166,9 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 		// Rotacion
 
-		if ((keys[SDL_Scancode::SDL_SCANCODE_P] == Key_State::KEY_DOWN) || pad.a){
+		if ((keys[SDL_Scancode::SDL_SCANCODE_P] == Key_State::KEY_DOWN) || pad.a < 0.0f){
 			player.Rotate();
+			App->audio->PlayFx(rotateFX);
 		}
 
 
@@ -173,19 +176,19 @@ Update_Status ModulePuzzlePiecesV2::Update()
 
 
 		// Acelera la caída
-		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN || pad.a < 0.0f) {
 			dropDelay = MIN_DROP_DELAY;
 		}
-		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT;
+		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT || pad.b < 0.0f;
 
 
 		//El primer frame en el que intentas moverte a un lado es instantaneo
-		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN) moveDelay = 0;
-		else if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN)	moveDelay = 0;
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN || pad.a < 0.0f) moveDelay = 0;
+		else if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN || pad.a < 0.0f)	moveDelay = 0;
 
 
 		// Mueve a la izquierda
-		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT || pad.b < 0.0f && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE || pad.x < 0.0f) {
 
 			if (!WillCollide(PlayerCollisionCheck::LEFT)) {
 
@@ -224,6 +227,7 @@ Update_Status ModulePuzzlePiecesV2::Update()
 			}
 			else {
 				locked = true;
+				App->audio->PlayFx(lockedFX);
 				PlacePieces();
 			}
 			WillCollide(PlayerCollisionCheck::DEBUG); // Curiosamente quitar esto rompe la colision con el borde de abajo
@@ -306,7 +310,6 @@ std::stack<PuzzlePiece*>& ModulePuzzlePiecesV2::GeneratePuzzlePieces(std::stack<
 		PuzzlePiece* newPiece = AddPuzzlePiece(templateMan);
 		newPiece->type = (PieceType)(2 + (rand() % 3));
 		stack.push(newPiece);
-		//TODO asignar animaciones individuales
 	}
 
 
@@ -320,7 +323,7 @@ PuzzlePiece* ModulePuzzlePiecesV2::AddPuzzlePiece(const PuzzlePiece& piece, Coll
 			//Crea nueva pieza con una caja de colision copiada de la plantilla
 			PuzzlePiece* newPiece = new PuzzlePiece(piece);
 			newPiece->collider = App->collisions->AddCollider(templateMan.collider->rect, type);
-			if (newPiece->collider != nullptr) //TODO solucionar problema de colliders
+			if (newPiece->collider != nullptr) 
 				newPiece->collider->SetPos(newPiece->position.x, newPiece->position.y);
 			return pieces[i] = newPiece;
 		}
@@ -390,7 +393,7 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	}
 
 	if (x == 0) {
-		//Hace que el colisionador ocupe todo el ancho del jugador
+		//Hace que el colisionador ocupe completamente el ancho del jugador
 		rect.x = player.position.x;
 		rect.w = PIECE_SIZE * 2;
 	}
@@ -403,7 +406,7 @@ bool ModulePuzzlePiecesV2::WillCollide(PlayerCollisionCheck direction)
 	}
 
 	if (y == 0) {
-		//Hace que el colisionador ocupe todo el alto del jugador
+		//Hace que el colisionador ocupe completamente el alto del jugador
 		rect.y = player.position.y + gravity;
 		rect.h = PIECE_SIZE * 2;
 	}
@@ -447,7 +450,7 @@ void ModulePuzzlePiecesV2::PlacePieces() {
 			player.pieces[i][j] = nullptr;
 		}
 	}
-	playArea.debugPiecePosition();
+	//playArea.debugPiecePosition();
 }
 
 bool ModulePuzzlePiecesV2::PieceCanDrop(PuzzlePiece* piece)
@@ -461,7 +464,7 @@ bool ModulePuzzlePiecesV2::PieceCanDrop(PuzzlePiece* piece)
 	{
 		if (walls[i] != nullptr && collisionTester->Intersects(walls[i]->rect)) {
 			return true;
-		}
+		} 
 	}
 
 	return false;

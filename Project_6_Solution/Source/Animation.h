@@ -2,7 +2,7 @@
 #define __ANIMATION_H__
 
 #include "SDL/include/SDL_rect.h"
-#define MAX_FRAMES 25
+#define MAX_FRAMES 300
 
 class Animation
 {
@@ -10,11 +10,13 @@ public:
 	bool loop = true;
 	float speed = 1.0f;
 	SDL_Rect frames[MAX_FRAMES];
+	bool pingpong = false;
 
 private:
 	float currentFrame = 0.0f;
 	int totalFrames = 0;
 	int loopCount = 0;
+	int pingpongDirection = 1;
 
 public:
 
@@ -30,7 +32,7 @@ public:
 	
 	bool HasFinished()
 	{
-		return !loop && loopCount > 0;
+		return !loop && !pingpong && loopCount > 0;
 	}
 
 	void Update()
@@ -38,8 +40,11 @@ public:
 		currentFrame += speed;
 		if (currentFrame >= totalFrames)
 		{
-			currentFrame = (loop) ? 0.0f : totalFrames - 1;
+			currentFrame = (loop || pingpong) ? 0.0f : totalFrames - 1;
 			++loopCount;
+
+			if (pingpong)
+				pingpongDirection = -pingpongDirection;
 		}
 	}
 

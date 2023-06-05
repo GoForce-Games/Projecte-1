@@ -1,5 +1,7 @@
 #include "Module.h"
 #include "Globals.h"
+#include "Animation.h"
+#include "Path.h"
 
 struct SDL_Texture;
 
@@ -33,7 +35,20 @@ public:
     bool gameFinish = false;
     
     // The scene sprite sheet loaded into an SDL_Texture
+
     SDL_Texture* WinTexture = nullptr;
     SDL_Texture* LoseTexture = nullptr;
     SDL_Texture* ActiveTexture = nullptr;
+
+
+    Animation idleAnimation;
+    Animation WinAnimation;
+    Animation LoseAnimation;
+
+    Path AAnimationPath;
+    Path WAnimationPath;
+    Path LAnimationPath;
+
+    uint LoseFX;
+
 };

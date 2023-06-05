@@ -2,8 +2,8 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "Puntuation.h"
-
 #include "SDL/include/SDL.h"
+
 
 ModuleInput::ModuleInput(bool startEnabled) : Module(startEnabled)
 {
@@ -24,7 +24,7 @@ bool ModuleInput::Init()
 	bool ret = true;
 	SDL_Init(0);
 
-	if(SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
+	if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 	{
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
@@ -47,6 +47,7 @@ bool ModuleInput::Init()
 
 Update_Status ModuleInput::PreUpdate()
 {
+
 	//Read all keyboard data and update our custom array
 	const Uint8* keyboard = SDL_GetKeyboardState(NULL);
 	for (int i = 0; i < MAX_KEYS; ++i)
@@ -63,36 +64,37 @@ Update_Status ModuleInput::PreUpdate()
 	{
 		switch (event.type)
 		{
-			case(SDL_CONTROLLERDEVICEADDED):
-			{
-				HandleDeviceConnection(event.cdevice.which);
-				break;
-			}
-			case(SDL_CONTROLLERDEVICEREMOVED):
-			{
-				HandleDeviceRemoval(event.cdevice.which);
-				break;
-			}
-			case(SDL_QUIT):
-			{
-				return Update_Status::UPDATE_STOP;
-				break;
-			}
+		case(SDL_CONTROLLERDEVICEADDED):
+		{
+			HandleDeviceConnection(event.cdevice.which);
+			break;
+		}
+		case(SDL_CONTROLLERDEVICEREMOVED):
+		{
+			HandleDeviceRemoval(event.cdevice.which);
+			break;
+		}
+		case(SDL_QUIT):
+		{
+			return Update_Status::UPDATE_STOP;
+			break;
+		}
 		}
 	}
-	//HACER QUE LA TECLA ESCAPE CIERRE EL PROGRAMA
+
 	if (keys[SDL_SCANCODE_ESCAPE] == KEY_DOWN)
 	{
 		return Update_Status::UPDATE_STOP;
 	}
 
-	if (App->input->keys[SDL_SCANCODE_F2] == KEY_DOWN)
+	if (App->input->keys[SDL_SCANCODE_F2] == KEY_DOWN )
 	{
 		App->puntuation->score = App->puntuation->score + 100;
 	}
 
-
 	UpdateGamepadsInput();
+
+	control[0].StoreInput(keys, pads[0]);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
@@ -245,4 +247,57 @@ const char* ModuleInput::GetControllerName(int id) const
 		return SDL_GameControllerName(pads[id].controller);
 
 	return "unplugged";
+}
+
+PlayerInput::PlayerInput()
+{}
+
+PlayerInput::~PlayerInput()
+{}
+void PlayerInput::StoreInput(const Key_State keyboard[MAX_KEYS], const GamePad& gamepad)
+{
+	if (keyboard[KeyboardSetup::FastFall] != Key_State::KEY_IDLE)
+		fastFall = keyboard[KeyboardSetup::FastFall];
+	else {
+		if (gamepad.down)
+			fastFall = (fastFall == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			fastFall = (fastFall == KEY_REPEAT || fastFall == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+
+	if (keyboard[KeyboardSetup::MoveLeft] != Key_State::KEY_IDLE)
+		moveLeft = keyboard[KeyboardSetup::MoveLeft];
+	else {
+		if (gamepad.left)
+			moveLeft = (moveLeft == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			moveLeft = (moveLeft == KEY_REPEAT || moveLeft == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+
+	if (keyboard[KeyboardSetup::MoveRight] != Key_State::KEY_IDLE)
+		moveRight = keyboard[KeyboardSetup::MoveRight];
+	else {
+		if (gamepad.right)
+			moveRight = (moveRight == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			moveRight = (moveRight == KEY_REPEAT || moveRight == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+
+	if (keyboard[KeyboardSetup::Pause] != Key_State::KEY_IDLE)
+		pause = keyboard[KeyboardSetup::Pause];
+	else {
+		if (gamepad.x)
+			pause = (pause == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			pause = (pause == KEY_REPEAT || pause == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
+
+	if (keyboard[KeyboardSetup::RotatePiece] != Key_State::KEY_IDLE)
+		rotatePiece = keyboard[KeyboardSetup::RotatePiece];
+	else {
+		if (gamepad.a)
+			rotatePiece = (rotatePiece == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT;
+		else
+			rotatePiece = (rotatePiece == KEY_REPEAT || rotatePiece == KEY_DOWN) ? KEY_UP : KEY_IDLE;
+	}
 }

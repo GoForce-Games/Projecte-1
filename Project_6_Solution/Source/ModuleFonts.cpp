@@ -24,8 +24,11 @@ bool ModuleFonts::Start()
 {
 	char lookupTable[] = { " !\"#$%&\'()*+,-./0123456789:;<=>?çabcdefghijklmnopqrstuvwxyz´`¨_|º" };
 	char specialNumbers[] = { "0123456789:PT+-" };
+	char scoreTable[] = { "0123456789" };
+
 	textFont = App->fonts->Load("Assets/Fonts/fonts4.png", lookupTable, 4);
 	scoreFont = App->fonts->Load("Assets/Fonts/fonts3.png", specialNumbers, 1);
+	scoreFont2 = App->fonts->Load("Assets/Fonts/fonts5.png", scoreTable, 1);
 
 	bool ret = true;
 	return ret;
@@ -107,7 +110,6 @@ void ModuleFonts::BlitText(int x, int y, int font_id, const char* text) const
 
 	for(uint i = 0; i < len; ++i)
 	{
-		// TODO 2: Find the character in the table and its position in the texture, then Blit
 		uint charIndex = 0;
 
 		// Find the location of the current character in the lookup table

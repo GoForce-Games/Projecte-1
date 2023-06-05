@@ -4,6 +4,7 @@
 #include <queue>
 #include <stack>
 
+#include "GameConstants.h"
 #include "Animation.h"
 #include "p2Point.h"
 #include "PuzzlePiece.h"
@@ -25,17 +26,6 @@ struct SDL_Texture;
 #define GRAVITY 4
 
 #define EXPLODE_COUNTDOWN 100
-
-enum PlayerCollisionCheck {
-	CENTER,
-	LEFT,
-	RIGHT,
-	TOP,
-	BOTTOM,
-	DEBUG
-
-	
-};
 
 class ModulePuzzlePiecesV2 :
 	public Module
@@ -71,7 +61,7 @@ public:
 
 	void RemovePuzzlePiece(PuzzlePiece* piece);
 
-	//Comprueba la colisión en eje cardinal según la dirección proporcionada (si solo una de las coordenadas es 1/-1 comprueba todo el lado)
+	//Comprueba la colisión en eje cardinal según la dirección proporcionada (si solo una de las coordenadas es 1/-1 comprueba el lado completo)
 	bool WillCollide(PlayerCollisionCheck direction);
 
 	//Saca las piezas del jugador y las coloca en el tablero donde les toca
@@ -143,4 +133,6 @@ public:
 	// SFX id number
 	const static uint explosionFX = 0;
 
+	uint rotateFX = 0;
+	uint lockedFX = 0;
 };

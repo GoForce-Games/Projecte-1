@@ -77,16 +77,18 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Collider.h" />
-    <ClInclude Include="Intro2.h" />
+    <ClInclude Include="GameConstants.h" />
     <ClInclude Include="Intro.h" />
+    <ClInclude Include="IntroJuego.h" />
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCollisions.h" />
-    <ClInclude Include="ModuleControlV3.h" />
+    <ClInclude Include="ModuleContinue.h" />
+    <ClInclude Include="ModuleEmpezar.h" />
+    <ClInclude Include="ModuleLose.h" />
+    <ClInclude Include="ModulePuzzlePiecesV3.h" />
     <ClInclude Include="ModuleFadeToBlack.h" />
     <ClInclude Include="ModuleFonts.h" />
     <ClInclude Include="ModuleParticles.h" />
-    <ClInclude Include="ModulePuzzlePieces.h" />
-    <ClInclude Include="ModulePuzzlePiecesV2.h" />
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModulePlayer.h" />
@@ -100,26 +102,33 @@
     <ClInclude Include="p2Point.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Path.h" />
-    <ClInclude Include="PlayArea.h" />
-    <ClInclude Include="PlayerPiece.h" />
+    <ClInclude Include="PlayArea.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="PlayerInput.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="PlayerPieceV2.h" />
     <ClInclude Include="Puntuation.h" />
     <ClInclude Include="PuzzlePiece.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="Intro2.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Intro.cpp" />
+    <ClCompile Include="IntroJuego.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCollisions.cpp" />
-    <ClCompile Include="ModuleControlV3.cpp" />
+    <ClCompile Include="ModuleContinue.cpp" />
+    <ClCompile Include="ModuleEmpezar.cpp" />
+    <ClCompile Include="ModuleLose.cpp" />
+    <ClCompile Include="ModulePuzzlePiecesV3.cpp" />
     <ClCompile Include="ModuleFadeToBlack.cpp" />
     <ClCompile Include="ModuleFonts.cpp" />
     <ClCompile Include="ModuleParticles.cpp" />
     <ClCompile Include="ModulePresentation.cpp" />
-    <ClCompile Include="ModulePuzzlePieces.cpp" />
-    <ClCompile Include="ModulePuzzlePiecesV2.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModulePlayer.cpp" />
@@ -131,10 +140,17 @@
     <ClCompile Include="ModuleWinLose.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Path.cpp" />
-    <ClCompile Include="PlayArea.cpp" />
-    <ClCompile Include="PlayerPiece.cpp" />
+    <ClCompile Include="PlayArea.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="PlayerInput.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="PlayerPieceV2.cpp" />
     <ClCompile Include="Puntuation.cpp" />
     <ClCompile Include="PuzzlePiece.cpp" />
+    <ClCompile Include="PuzzleUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ModulePresentation.h" />

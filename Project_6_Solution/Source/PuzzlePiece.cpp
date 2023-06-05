@@ -3,9 +3,12 @@
 
 #include "Animation.h"
 #include "Collider.h"
+#include "ModulePuzzlePiecesV3.h"
+
+#include <random>
 
 const char* PuzzlePiece::enumLookup[] = {
-		"NONE",
+	"NONE",
 	"BLACK",
 	"WHITE",
 	"RED",
@@ -15,8 +18,7 @@ const char* PuzzlePiece::enumLookup[] = {
 	"PRIMED_BOMB",
 	"WALL",
 
-
-	"MAX"
+	"MAX_PIECE_TYPE"
 };
 
 PuzzlePiece::PuzzlePiece() : position()
@@ -27,29 +29,45 @@ PuzzlePiece::PuzzlePiece() : position()
 PuzzlePiece::PuzzlePiece(const PuzzlePiece& p)
 {
 	moving = p.moving;
-	position.create(p.position.x,p.position.y);
-	collider = nullptr;
-	currentAnimation = new Animation(*p.currentAnimation);
+	position.create(p.position.x, p.position.y);
+	currentAnimation = p.currentAnimation;
 	texture = p.texture;
 	isEmpty = p.isEmpty;
 	type = p.type;
+	animTimer = rand() % MAX_ANIMATION_TIMER;
 }
 
 PuzzlePiece::~PuzzlePiece()
 {
-	if (collider != nullptr) {
-		collider->pendingToDelete = true;
-		collider = nullptr;
-	}
 }
 
 void PuzzlePiece::Update()
 {
-	currentAnimation->Update();
+	if (!isEmpty && !moving) {
+		if (animTimer > 0 && !pendingToDelete)
+			animTimer--;
+		else {
+			currentAnimation.Update();
+		}
+		if (currentAnimation.HasFinished() && !pendingToDelete) {
+			if (PieceType::BOMB)
+				animTimer = 0;
+			else
+				animTimer = rand() % MAX_ANIMATION_TIMER;
+			currentAnimation.Reset();
+		}
+	}
+}
+
+void PuzzlePiece::SetType(PieceType newType)
+{
+	type = newType;
+	SetAnimation(&App->pieces->animIdle[type]);
 }
 
 // Borra la copia de la animación actual y asigna una nueva
 // Esto permite que las piezas se animen por separado, aunque seguro que hay mejores formas de hacerlo
 void PuzzlePiece::SetAnimation(Animation* newAnimation) {
-	currentAnimation = newAnimation;
+	if (newAnimation != nullptr)
+		currentAnimation = *newAnimation;
 }

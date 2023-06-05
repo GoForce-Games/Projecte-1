@@ -12,12 +12,15 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleFonts.h"
 #include "ModuleRender.h"
-#include "ModulePuzzlePiecesV2.h"
+#include "ModulePuzzlePiecesV3.h"
 #include "Puntuation.h"
 #include "ModulePresentation.h"
 #include "Intro.h"
-#include "Intro2.h"
+#include "IntroJuego.h"
 #include "ModuleWinLose.h"
+#include "ModuleLose.h"
+#include "ModuleContinue.h"
+#include "ModuleEmpezar.h"
 
 Application::Application()
 {
@@ -32,22 +35,27 @@ Application::Application()
 	modules[4] = fonts = new ModuleFonts(true);
 	modules[5] = presentation = new ModulePresentation(true);
 
-	modules[6] = intro = new Intro(false);
-	modules[7] = intro2 = new Intro2(false);
 	//modules[i++] = sceneIntro = new SceneIntro(true); // Hay que aumentar el maximo de modulos para poner esto, ademas de "mover" los modulos de debajo un espacio mas adelante (sumar 1 a los indices)
-
-	modules[8] = sceneLevel_1 = new SceneLevel1(false);
-	modules[9] = puntuation = new Puntuation(false);
-	modules[10] = win_lose = new WinLose(false);
+	modules[6] = sceneLevel_1 = new SceneLevel1(false);
+	modules[7] = moduleEmpezar = new ModuleEmpezar(false);
+	modules[8] = puntuation = new Puntuation(false);
+	
 	// AVISO: una vez se ponga la sceneIntro hay que poner un false en los parámetros de SceneLevel1() o sino va a cargar ambas escenas al mismo tiempo
 	// Si esto peta al añadir un modulo quedais avisados
-	modules[11] = pieces = new ModulePuzzlePiecesV2(false);
-	modules[12] = particles = new ModuleParticles(true);
+	modules[9] = pieces = new ModulePuzzlePiecesV3(false);
+	modules[10] = particles = new ModuleParticles(true);
 
-	modules[13] = collisions = new ModuleCollisions(true);
-	modules[14] = fade = new ModuleFadeToBlack(true);
+	modules[11] = win_lose = new WinLose(false);
 
-	modules[15] = render = new ModuleRender();
+	modules[12] = intro = new Intro(false);
+	modules[13] = introJuego = new IntroJuego(false);
+	modules[14] = lose_screen = new ModuleLose(false);
+	modules[15] = module_continue = new Continue(false);
+
+	modules[16] = collisions = new ModuleCollisions(true);
+	modules[17] = fade = new ModuleFadeToBlack(true);
+
+	modules[18] = render = new ModuleRender();
 }
 
 Application::~Application()
@@ -67,7 +75,7 @@ bool Application::Init()
 	bool ret = true;
 
 	for (int i = 0; i < NUM_MODULES && ret; ++i)
-		if (modules[i]->IsEnabled())
+		//if (modules[i]->IsEnabled())
 			ret = modules[i]->Init();
 
 
@@ -102,6 +110,8 @@ Update_Status Application::Update()
 bool Application::CleanUp()
 {
 	bool ret = true;
+
+	cleanUp = true;
 
 	for (int i = NUM_MODULES - 1; i >= 0 && ret; --i)
 		if (modules[i]->IsEnabled())

@@ -22,8 +22,19 @@ enum PieceType {
 	PRIMED_BOMB,
 	WALL,
 
+	MAX_PIECE_TYPE
+};
 
-	MAX
+enum ExplosionDir {
+	EXPL_TOP,
+	EXPL_VERTICAL,
+	EXPL_BOTTOM,
+	EXPL_LEFT,
+	EXPL_HORIZONTAL,
+	EXPL_RIGHT,
+	EXPL_CENTER,
+
+	MAX_BOMB_ANIM
 };
 
 class PuzzlePiece {
@@ -44,11 +55,13 @@ public:
 	// Active piece update (player movement)
 	void Update();
 
+	void SetType(PieceType color);
+
 	void SetAnimation(Animation* newAnimation);
 
 public:
 	// For debug purposes
-	std::string name;
+	std::string name = "";
 
 	PieceType type;
 
@@ -57,15 +70,19 @@ public:
 	// Variable para indicar si la pieza está siendo movida por el jugador o no
 	bool moving = false;
 
+	bool pendingToDelete = false;
+
 	// Position of the puzzle piece on the screen
 	iPoint position;
 
-	//This piece's collider;
-	Collider* collider = nullptr;
-
 	// The piece's current animation
-	Animation* currentAnimation = nullptr;
+	Animation currentAnimation;
 
 	SDL_Texture* texture = nullptr;
 
+	int animTimer = 0;
+
+	//For use with bombs
+	bool exploding = false;
+	
 };

@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Animation.h"
+#include "Path.h"
 
 struct SDL_Texture;
 
@@ -14,10 +15,15 @@ public:
 
 	bool Start() override;
 
+	bool CleanUp();
+
 	Update_Status Update() override;
 	Update_Status PostUpdate() override;
 
 	SDL_Texture* IntroTexture = nullptr;
-};
 
+	Animation IntroAnimation;
+
+	Path IAnimationPath;
+};
 #endif

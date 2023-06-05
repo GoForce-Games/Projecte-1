@@ -2,6 +2,7 @@
 #define __MODULE_PRESENTATION_H__
 #include "Module.h"
 #include "Animation.h"
+#include "Path.h"
 
 struct SDL_Texture;
 
@@ -29,6 +30,10 @@ public:
 	
 	SDL_Texture* bgTexture = nullptr;
 	SDL_Texture* PresentationTexture = nullptr;
+
+	Animation presentationAnimation;
+
+	Path presentationPath;
 };
 
 #endif

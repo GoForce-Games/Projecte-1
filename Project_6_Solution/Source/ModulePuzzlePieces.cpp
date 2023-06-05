@@ -28,7 +28,6 @@ bool ModulePuzzlePieces::Start()
 {
 	if (DEBUG_V2) return debug->Start();
 
-	// TODO textura para probar, hay que recortar el spritesheet
 	textureBomberman = App->textures->Load("Assets/testerman.png");
 	if (textureBomberman == nullptr) return false;
 
@@ -59,6 +58,7 @@ bool ModulePuzzlePieces::Start()
 
 Update_Status ModulePuzzlePieces::Update()
 {
+	GamePad& pad = App->input->pads[0];
 	if (DEBUG_V2) return debug->Update();
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 
@@ -90,16 +90,16 @@ Update_Status ModulePuzzlePieces::Update()
 		Key_State* keys = App->input->keys;
 
 		// Acelera la caída
-		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_DOWN || pad.a < 0.0f) {
 			dropDelay = MIN_DROP_DELAY;
 		}
 
-		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT;
+		fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == Key_State::KEY_REPEAT || pad.b < 0.0f;
 
 		// Mueve a la izquierda
 		if (!WillCollide({ -16,0 })) {
-			if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN) moveDelay = 0;
-			if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE) {
+			if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_DOWN || pad.a < 0.0f) moveDelay = 0;
+			if (keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_REPEAT || pad.b < 0.0f && keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_IDLE || pad.x < 0.0f) {
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
@@ -113,8 +113,8 @@ Update_Status ModulePuzzlePieces::Update()
 
 		// Mueve a la derecha
 		if (!WillCollide({ 16,0 })) {
-			if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN) moveDelay = 0;
-			if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_REPEAT && keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_IDLE) {
+			if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_DOWN || pad.a < 0.0f) moveDelay = 0;
+			if (keys[SDL_Scancode::SDL_SCANCODE_D] == Key_State::KEY_REPEAT || pad.b < 0.0f && keys[SDL_Scancode::SDL_SCANCODE_A] == Key_State::KEY_IDLE || pad.x < 0.0f) {
 
 				if (moveDelay == 0) {
 					moveDelay = MAX_MOVE_DELAY;
